@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Provider } from 'mobx-react';
 
+import createTheme from './createTheme';
+import Client from './http';
+import { RootStore } from './stores';
+import { paths } from './constants';
+import Root from './containers';
+
+const options = { baseURL: paths.BASE_URL };
+
+const client = Client.getInstance(options);
+
+const theme = createTheme({});
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+	private rootStore: RootStore = new RootStore(client);
+
+	public render() {
+		return (
+			<Provider {...this.rootStore}>
+				<Root />
+			</Provider>
+		);
+	}
 }
 
 export default App;
