@@ -1,17 +1,17 @@
 import { observable, action } from 'mobx';
 
-import Client, { queries } from '../http';
+import { Services } from '../services';
 
 class AppStore {
-	@observable private http: Client;
+	@observable private services: Services;
 
-	constructor(client: Client) {
-		this.http = client;
+	constructor(services: Services) {
+		this.services = services;
 	}
 
 	@action
 	public auth = () => {
-		queries.auth().subscribe({ next: (data: any) => console.log(data) });
+		// queries.auth().subscribe({ next: (data: any) => console.log(data) });
 	};
 }
 

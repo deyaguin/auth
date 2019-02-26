@@ -1,11 +1,11 @@
 import { observable } from 'mobx';
 
-import Client from '../http';
+import { Services } from '../services';
 
 class RegistryStore {
 	@observable public a: string;
 
-	constructor(client: Client) {
+	constructor(services: Services) {
 		this.a = 'a';
 	}
 }

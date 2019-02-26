@@ -1,17 +1,18 @@
+import { Services } from '../services';
+
 import AppStore from './AppStore';
 import UsersStore from './UsersStore';
 import GroupsStore from './GroupsStore';
-import Client from '../http';
 
 class RootStore {
 	public appStore: AppStore;
 	public usersStore: UsersStore;
 	public groupsStore: GroupsStore;
 
-	constructor(client: Client) {
-		this.appStore = new AppStore(client);
-		this.usersStore = new UsersStore(client);
-		this.groupsStore = new GroupsStore(client);
+	constructor(services: Services) {
+		this.appStore = new AppStore(services);
+		this.usersStore = new UsersStore(services);
+		this.groupsStore = new GroupsStore(services);
 	}
 }
 

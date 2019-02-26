@@ -1,11 +1,14 @@
 import { observable } from 'mobx';
 
-import Client from '../http';
+import { Services } from '../services';
 
 class UsersStore {
 	@observable public a: string;
 
-	constructor(client: Client) {
+	constructor(services: Services) {
+		services.authentication.requests
+			.usersList()
+			.subscribe({ next: (data: any) => console.log(data), error: (e: any) => console.log(e) });
 		this.a = 'a';
 	}
 }
