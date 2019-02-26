@@ -1,6 +1,7 @@
+import { Observable } from 'rxjs';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 
-import RequestFunction from './requestFunction';
+type RequestFunction = (data?: any) => Observable<any>;
 
 interface RequestFunctions {
 	[name: string]: RequestFunction;

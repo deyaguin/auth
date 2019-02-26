@@ -15,39 +15,31 @@ class Services {
 	}
 
 	private initAuthentication = () => {
-		this.authentication.requests.usersList = request(
-			{
-				method: methodNames.GET,
-				url: authenticationPaths.AUTHENTICATION_USERS_LIST,
-			},
-			this.authentication.client,
-		);
+		const authenticationRequest = request.bind(this.authentication);
 
-		this.authentication.requests.createUser = request(
-			{
-				method: methodNames.POST,
-				url: authenticationPaths.AUTHENTICATION_USER_CREATE,
-			},
-			this.authentication.client,
-		);
+		this.authentication.requests.usersList = authenticationRequest({
+			method: methodNames.GET,
+			url: authenticationPaths.AUTHENTICATION_USERS_LIST,
+		});
+
+		this.authentication.requests.createUser = authenticationRequest({
+			method: methodNames.POST,
+			url: authenticationPaths.AUTHENTICATION_USER_CREATE,
+		});
 	};
 
 	private initAutherization = () => {
-		this.authorization.requests.rolesList = request(
-			{
-				method: methodNames.GET,
-				url: authorizationPaths.AUTHORIZATION_ROLES_LIST,
-			},
-			this.authorization.client,
-		);
+		const authenticationRequest = request.bind(this.authorization);
 
-		this.authorization.requests.createRole = request(
-			{
-				method: methodNames.POST,
-				url: authorizationPaths.AUTHORIZATION_ROLE_CREATE,
-			},
-			this.authorization.client,
-		);
+		this.authorization.requests.rolesList = authenticationRequest({
+			method: methodNames.GET,
+			url: authorizationPaths.AUTHORIZATION_ROLES_LIST,
+		});
+
+		this.authorization.requests.createRole = authenticationRequest({
+			method: methodNames.POST,
+			url: authorizationPaths.AUTHORIZATION_ROLE_CREATE,
+		});
 	};
 }
 

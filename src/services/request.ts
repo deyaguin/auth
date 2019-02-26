@@ -1,14 +1,15 @@
 import { Observable } from 'rxjs';
 import { AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 
+import Service from './service';
 import RequestConfig from './requestConfig';
 
-const request = (config: RequestConfig, client: AxiosInstance) => {
+const request = function(this: any, config: RequestConfig) {
 	return (data?: any) => {
 		const requestConfig = { ...config, data };
 
 		return Observable.create((observer: any) => {
-			client
+			this.client
 				.request(requestConfig)
 				.then((response: AxiosResponse) => {
 					observer.next(response);
