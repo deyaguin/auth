@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'mobx-react';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import { Services } from './services';
 import createTheme from './createTheme';
@@ -15,7 +16,9 @@ class App extends Component {
 	public render() {
 		return (
 			<Provider {...this.rootStore}>
-				<Root />
+				<MuiThemeProvider theme={theme}>
+					<Root />
+				</MuiThemeProvider>
 			</Provider>
 		);
 	}

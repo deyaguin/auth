@@ -11,7 +11,7 @@ class Services {
 		this.authorization = new Service({ baseURL: authorizationPaths.AUTHORIZATION_BASE_URL });
 
 		this.initAuthentication();
-		this.initAutherization();
+		this.initAuthorization();
 	}
 
 	private initAuthentication = () => {
@@ -28,15 +28,15 @@ class Services {
 		});
 	};
 
-	private initAutherization = () => {
-		const authenticationRequest = request.bind(this.authorization);
+	private initAuthorization = () => {
+		const authorizationRequest = request.bind(this.authorization);
 
-		this.authorization.requests.rolesList = authenticationRequest({
+		this.authorization.requests.rolesList = authorizationRequest({
 			method: methodNames.GET,
 			url: authorizationPaths.AUTHORIZATION_ROLES_LIST,
 		});
 
-		this.authorization.requests.createRole = authenticationRequest({
+		this.authorization.requests.createRole = authorizationRequest({
 			method: methodNames.POST,
 			url: authorizationPaths.AUTHORIZATION_ROLE_CREATE,
 		});

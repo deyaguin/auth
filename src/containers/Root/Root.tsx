@@ -9,9 +9,21 @@ import Roles from '../Roles';
 import Registry from '../Registry';
 import { Layout } from '../../components';
 
-const Root = () => (
+interface SnackbarOptions {
+	open: boolean;
+	message: string;
+	type: string;
+	onClose: () => void;
+	onAction: () => void;
+}
+
+interface RootProps {
+	snackbarOptions?: SnackbarOptions;
+}
+
+const Root = ({ snackbarOptions }: RootProps) => (
 	<BrowserRouter>
-		<Layout>
+		<Layout snackbarOptions={snackbarOptions}>
 			<Switch>
 				<Route path={routes.AUTH} component={Auth} />
 				<Route path={routes.USERS} component={Users} />

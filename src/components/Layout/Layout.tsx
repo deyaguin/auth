@@ -5,6 +5,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { ui } from '../../constants';
 import AppBar from './AppBar';
 import AppDrawer from './AppDrawer';
+import AppSnackbar from './AppSnackbar';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -30,11 +31,26 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface LayoutProps extends WithStyles<typeof styles> {
-	children: React.ReactElement;
+interface SnackbarOptions {
+	open: boolean;
+	message: string;
+	type: string;
+	onClose: () => void;
+	onAction: () => void;
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ children, classes }) => {
+interface LayoutProps extends WithStyles<typeof styles> {
+	children: React.ReactElement;
+	snackbarOptions?: SnackbarOptions;
+}
+
+const appSnackbarDefaultProps = {
+	message: '',
+	open: false,
+	type: 'default',
+};
+
+const Layout: FunctionComponent<LayoutProps> = ({ children, classes, snackbarOptions }) => {
 	const [open, setOpen]: [boolean, (open: boolean) => void] = useState(false);
 
 	const handleMenuClick = (): void => {
@@ -48,6 +64,7 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, classes }) => {
 			<main className={classNames(classes.appContent, { [classes.appContentShift]: open })}>
 				{children}
 			</main>
+			<AppSnackbar {...{ ...appSnackbarDefaultProps, ...snackbarOptions }} />
 		</div>
 	);
 };
