@@ -5,7 +5,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { ui } from '../../constants';
 import AppBar from './AppBar';
 import AppDrawer from './AppDrawer';
-import AppSnackbar from './AppSnackbar';
+import AppBody from './AppBody';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -31,26 +31,11 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface SnackbarOptions {
-	open: boolean;
-	message: string;
-	type: string;
-	onClose: () => void;
-	onAction: () => void;
-}
-
 interface LayoutProps extends WithStyles<typeof styles> {
 	children: React.ReactElement;
-	snackbarOptions?: SnackbarOptions;
 }
 
-const appSnackbarDefaultProps = {
-	message: '',
-	open: false,
-	type: 'default',
-};
-
-const Layout: FunctionComponent<LayoutProps> = ({ children, classes, snackbarOptions }) => {
+const Layout: FunctionComponent<LayoutProps> = ({ children, classes }) => {
 	const [open, setOpen]: [boolean, (open: boolean) => void] = useState(false);
 
 	const handleMenuClick = (): void => {
@@ -61,10 +46,9 @@ const Layout: FunctionComponent<LayoutProps> = ({ children, classes, snackbarOpt
 		<div className={classes.container}>
 			<AppBar onMenuClick={handleMenuClick} open={open} />
 			<AppDrawer onMenuClose={handleMenuClick} open={open} />
-			<main className={classNames(classes.appContent, { [classes.appContentShift]: open })}>
+			<AppBody className={classNames(classes.appContent, { [classes.appContentShift]: open })}>
 				{children}
-			</main>
-			<AppSnackbar {...{ ...appSnackbarDefaultProps, ...snackbarOptions }} />
+			</AppBody>
 		</div>
 	);
 };

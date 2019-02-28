@@ -5,7 +5,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import { Services } from './services';
 import createTheme from './createTheme';
 import { RootStore } from './stores';
-import Root from './containers';
+import Root from './pages';
 
 const theme = createTheme({});
 

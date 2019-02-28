@@ -25,18 +25,18 @@ const styles = (theme: Theme): StyleRules =>
 	});
 
 interface AppSnackbarProps extends WithStyles<typeof styles> {
-	open: boolean;
-	message: string;
-	type: string;
+	open?: boolean;
+	message?: string;
+	type?: string;
 	onClose?: () => void;
 	onAction?: () => void;
 }
 
 const AppSnackbar: FunctionComponent<AppSnackbarProps> = ({
 	classes,
-	open,
-	message,
-	type,
+	open = false,
+	message = '',
+	type = 'default',
 	onClose,
 }) => (
 	<Snackbar

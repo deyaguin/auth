@@ -1,16 +1,16 @@
 import { observable, action } from 'mobx';
 
-import { Services } from '../services';
-
 class SnackbarStore {
 	@observable public open: boolean;
 	@observable public message: string;
 	@observable public type: string;
+	@observable public action: any;
 
 	constructor() {
 		this.open = false;
 		this.message = '';
 		this.type = 'default';
+		this.action = null;
 	}
 
 	@action public onClose = () => {
@@ -23,8 +23,11 @@ class SnackbarStore {
 		this.open = true;
 	};
 
-	@action public onAction = async (someAction: any) => {
-		await someAction();
+	@action public onAction = async () => {
+		if (this.action) {
+			await this.action();
+		}
+
 		this.onClose();
 	};
 }
