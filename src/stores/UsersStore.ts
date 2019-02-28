@@ -1,20 +1,18 @@
 import { observable } from 'mobx';
-
+import { tap } from 'rxjs/operators';
 import Store from './Store';
 import { Services } from '../services';
 
 class UsersStore extends Store {
-	@observable public a: string;
-
 	constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
-		services.authentication.requests.usersList().subscribe({
-			error: (e: any) => setSnackbar(e.toString(), 'error'),
-			next: (data: any) => console.log(data),
+		this.services.authentication.subscriptions.usersList.subscribe({
+			next: (r: any) => console.log(r),
+			error: (e: any) => console.log(e),
 		});
 
-		this.a = 'a';
+		services.authentication.requests.usersList();
 	}
 }
 

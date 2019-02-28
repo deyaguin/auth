@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { AxiosResponse, AxiosError } from 'axios';
 
 import { methodNames } from '../constants';
@@ -8,22 +7,19 @@ interface RequestConfig {
 	url: string;
 }
 
-const request = function(this: any, config: RequestConfig) {
+const request = function(this: any, config: RequestConfig, actionName: string) {
 	return (data?: any) => {
+		const { client, observer } = this;
 		const requestConfig = { ...config, data };
 
-		return Observable.create((observer: any) => {
-			observer.next(10);
-			this.client
-				.request(requestConfig)
-				.then((response: AxiosResponse) => {
-					observer.next(response);
-					observer.complete();
-				})
-				.catch((error: AxiosError) => {
-					observer.error(error);
-				});
-		});
+		client
+			.request(requestConfig)
+			.then((response: AxiosResponse) => {
+				observer.next({ actionName, response });
+			})
+			.catch((error: AxiosError) => {
+				observer.next({ actionName, error });
+			});
 	};
 };
 

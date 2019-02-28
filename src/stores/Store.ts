@@ -3,8 +3,8 @@ import { Services } from '../services';
 type SetSnackbarFunction = (message: string, type: string) => void;
 
 class Store {
-	private services: Services;
-	private setSnackbar: SetSnackbarFunction;
+	protected services: Services;
+	protected setSnackbar: SetSnackbarFunction;
 
 	public constructor(services: Services, setSnackbar: SetSnackbarFunction) {
 		this.services = services;
