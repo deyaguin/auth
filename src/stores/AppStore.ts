@@ -1,18 +1,16 @@
 import { observable, action } from 'mobx';
 
+import Store from './Store';
 import { Services } from '../services';
 
-class AppStore {
-	@observable private services: Services;
-
-	constructor(services: Services) {
+class AppStore extends Store {
+	constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
+		super(services, setSnackbar);
 		this.services = services;
 	}
 
 	@action
-	public auth = () => {
-		// queries.auth().subscribe({ next: (data: any) => console.log(data) });
-	};
+	public auth = () => {};
 }
 
 export default AppStore;

@@ -13,7 +13,7 @@ class RootStore {
 
 	constructor(services: Services) {
 		this.snackbarStore = new SnackbarStore();
-		this.appStore = new AppStore(services);
+		this.appStore = new AppStore(services, this.snackbarStore.setSnackbar);
 		this.usersStore = new UsersStore(services, this.snackbarStore.setSnackbar);
 		this.groupsStore = new GroupsStore(services, this.snackbarStore.setSnackbar);
 	}
