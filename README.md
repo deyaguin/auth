@@ -28,25 +28,25 @@ const Проект: Typescript;
 
 if (!Ты.hasOwnProperty("Typescript")) console.log("Нужно изучить TS");
 
-### React
+### [React](https://reactjs.org/docs/getting-started.html)
 
 При разработке использовать функциональные компоненты.
 
-### MobX
+### [MobX](https://mobx.js.org/)
 
 Store приложения.
 
-### Rxjs
+### [RxJS](https://rxjs.dev/)
 
 Используется для создания side effects.
 
-### @material
+### [@material](https://material-ui.com/)
 
 Библиотека компонентов. Стили также описываются с помощью нее (a.k.a JSS).
 
 ### dev dependencies
 
-TSLint, Prettier - линтер и форматирование, интегрированы между собой.
+[TSLint](https://palantir.github.io/tslint/), [Prettier](https://prettier.io/) - линтер и форматирование, интегрированы между собой.
 
 ## Архитектура
 
