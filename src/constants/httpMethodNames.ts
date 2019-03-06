@@ -1,4 +1,4 @@
-enum methodNames {
+enum httpMethodNames {
 	OPTIONS = 'options',
 	HEAD = 'head',
 	GET = 'get',
@@ -8,4 +8,4 @@ enum methodNames {
 	DELETE = 'delete',
 }
 
-export default methodNames;
+export default httpMethodNames;

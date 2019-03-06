@@ -12,6 +12,8 @@ class UsersStore extends Store {
 		});
 
 		services.authentication.requests.usersList();
+		services.authentication.requests.usersList();
+		services.authentication.requests.usersList();
 	}
 }
 

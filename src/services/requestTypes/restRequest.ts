@@ -1,13 +1,13 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { methodNames } from '../constants';
+import { methodNames } from '../../constants';
 
-interface RequestConfig {
-	method: methodNames;
+interface RestRequestConfig {
 	url: string;
+	method: methodNames;
 }
 
-const request = function(this: any, config: RequestConfig, actionName: string) {
+const request = function(this: any, config: RestRequestConfig, actionName: string) {
 	return (data?: any) => {
 		const { client, observer } = this;
 		const requestConfig = { ...config, data };
@@ -15,12 +15,12 @@ const request = function(this: any, config: RequestConfig, actionName: string) {
 		client
 			.request(requestConfig)
 			.then((response: AxiosResponse) => {
-				observer.next({ actionName, response });
+				observer.next({ actionName, result: response.data });
 			})
 			.catch((error: AxiosError) => {
-				observer.next({ actionName, error });
+				observer.error({ actionName, error });
 			});
 	};
 };
 
-export { request };
+export default request;
