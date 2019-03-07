@@ -2,25 +2,22 @@ import { AxiosRequestConfig } from 'axios';
 import { filter } from 'rxjs/operators';
 
 import { methodNames, authorizationPaths, authorizationActionNames } from '../constants';
-import Service from './service';
-import { restRequest } from './requestTypes';
+import HttpService from './httpService';
 import RequestFunction from './requestTypes/requestFunctionType';
 
 interface SubscriptionProps {
 	actionName: authorizationActionNames;
 }
 
-class AuthorizationService extends Service {
-	constructor(options?: AxiosRequestConfig, requestFunction?: RequestFunction) {
-		super(options, requestFunction);
+class AuthorizationService extends HttpService {
+	constructor(request: RequestFunction, options?: AxiosRequestConfig) {
+		super(request, options);
 
 		this.init();
 	}
 
 	private init = () => {
-		const request = restRequest.bind(this);
-
-		this.requests.rolesList = request(
+		this.requests.rolesList = this.request(
 			{
 				method: methodNames.GET,
 				url: authorizationPaths.AUTHORIZATION_ROLES_LIST,
@@ -28,7 +25,7 @@ class AuthorizationService extends Service {
 			authorizationActionNames.ROLES_LIST,
 		);
 
-		this.requests.createRole = request(
+		this.requests.createRole = this.request(
 			{
 				method: methodNames.POST,
 				url: authorizationPaths.AUTHORIZATION_ROLE_CREATE,

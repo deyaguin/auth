@@ -1,4 +1,4 @@
 import restRequest from './restRequest';
-import jsonRpcRequest from './jrpcRequest';
+import jrpcRequest from './jrpcRequest';
 
-export { restRequest, jsonRpcRequest };
+export { restRequest, jrpcRequest };

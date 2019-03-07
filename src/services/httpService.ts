@@ -2,27 +2,27 @@ import { Observable, Observer } from 'rxjs';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import RequestFunction from './requestTypes/requestFunctionType';
 
-interface RequestFunctions {
+interface RequestCallback {
 	[name: string]: (data?: any) => void;
 }
 
-class Service {
-	public requests: RequestFunctions;
+class HttpService {
+	public requests: RequestCallback;
 	public subscriptions: any;
 	public client: AxiosInstance;
 	public observable: Observable<any>;
-	protected requestFunction?: RequestFunction;
+	protected request: RequestFunction;
 
 	private observer?: Observer<any>;
 
-	public constructor(options?: AxiosRequestConfig, requestFunction?: RequestFunction) {
+	public constructor(request: RequestFunction, options?: AxiosRequestConfig) {
 		this.client = axios.create(options);
 		this.requests = {};
 		this.subscriptions = {};
 		this.observable = Observable.create((observer: any) => {
 			this.observer = observer;
 		});
-		this.requestFunction = requestFunction;
+		this.request = request;
 	}
 
 	public setHeaders = (headers: any): void => {
@@ -41,4 +41,4 @@ class Service {
 	};
 }
 
-export default Service;
+export default HttpService;

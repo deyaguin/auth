@@ -1,4 +1,4 @@
-import Service from './service';
+import HttpService from './httpService';
 import Services from './services';
 
-export { Service, Services };
+export { HttpService, Services };
