@@ -1,10 +1,9 @@
 import { Observable, Observer } from 'rxjs';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
-
-type RequestFunction = (data?: any) => void;
+import RequestFunction from './requestTypes/requestFunctionType';
 
 interface RequestFunctions {
-	[name: string]: RequestFunction;
+	[name: string]: (data?: any) => void;
 }
 
 class Service {
@@ -12,16 +11,18 @@ class Service {
 	public subscriptions: any;
 	public client: AxiosInstance;
 	public observable: Observable<any>;
+	protected requestFunction?: RequestFunction;
 
 	private observer?: Observer<any>;
 
-	public constructor(options?: AxiosRequestConfig) {
+	public constructor(options?: AxiosRequestConfig, requestFunction?: RequestFunction) {
 		this.client = axios.create(options);
 		this.requests = {};
 		this.subscriptions = {};
 		this.observable = Observable.create((observer: any) => {
 			this.observer = observer;
 		});
+		this.requestFunction = requestFunction;
 	}
 
 	public setHeaders = (headers: any): void => {

@@ -4,14 +4,15 @@ import { filter } from 'rxjs/operators';
 import { methodNames, authenticationPaths, authenticationActionNames } from '../constants';
 import Service from './service';
 import { restRequest } from './requestTypes';
+import RequestFunction from './requestTypes/requestFunctionType';
 
 interface SubscriptionProps {
 	actionName: authenticationActionNames;
 }
 
 class AuthenticationService extends Service {
-	constructor(options?: AxiosRequestConfig) {
-		super(options);
+	constructor(options?: AxiosRequestConfig, requestFunction?: RequestFunction) {
+		super(options, requestFunction);
 
 		this.init();
 	}

@@ -1,6 +1,7 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
 import { jrpcConfig } from '../../constants';
+import RequestFunction from './requestFunctionType';
 
 interface JrpcRequestConfig {
 	method: string;
@@ -11,7 +12,11 @@ interface JrpcResponse {
 	result?: any;
 }
 
-const request = function(this: any, config: JrpcRequestConfig, actionName: string) {
+const request: RequestFunction = function(
+	this: any,
+	config: JrpcRequestConfig,
+	actionName: string,
+) {
 	return (params?: any) => {
 		const { client, observer } = this;
 		const requestConfig = { data: { ...jrpcConfig, ...config, params } };
@@ -23,11 +28,11 @@ const request = function(this: any, config: JrpcRequestConfig, actionName: strin
 					observer.next({ actionName, result: response.data.result });
 				}
 				if (response.data.error) {
-					observer.error({ actionName, error: response.data.error });
+					observer.next({ actionName, error: response.data.error });
 				}
 			})
 			.catch((error: AxiosError) => {
-				observer.error({ actionName, error });
+				observer.next({ actionName, error });
 			});
 	};
 };
