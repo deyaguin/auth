@@ -1,4 +1,4 @@
 import HttpClient from './httpClient';
-import { RestRequest, JrpcRequest } from './requestTypes';
+import { restRequest, jrpcRequest } from './requestTypes';
 
-export { HttpClient, RestRequest, JrpcRequest };
+export { HttpClient, restRequest, jrpcRequest };

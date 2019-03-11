@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { filter } from 'rxjs/operators';
 
-import { methodNames, authenticationPaths, authenticationActionNames } from '../constants';
+import { methodNames, authenticationService, authenticationActionNames } from '../constants';
 import { HttpClient } from '../core/httpClient';
 import RequestFunction from '../core/httpClient/requestTypes/requestFunctionType';
 
@@ -19,8 +19,7 @@ class AuthenticationService extends HttpClient {
 	private init = () => {
 		this.requests.usersList = this.request(
 			{
-				method: methodNames.GET,
-				url: authenticationPaths.AUTHENTICATION_USERS_LIST,
+				method: authenticationService.AUTHENTICATION_USERS_LIST,
 			},
 			authenticationActionNames.USERS_LIST,
 		);
@@ -28,7 +27,7 @@ class AuthenticationService extends HttpClient {
 		this.requests.createUser = this.request(
 			{
 				method: methodNames.POST,
-				url: authenticationPaths.AUTHENTICATION_USER_CREATE,
+				url: authenticationService.AUTHENTICATION_USER_CREATE,
 			},
 			authenticationActionNames.CREATE_USER,
 		);

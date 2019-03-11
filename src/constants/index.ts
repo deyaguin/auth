@@ -1,6 +1,6 @@
 import * as routes from './routes';
 import * as ui from './ui';
-import * as authenticationPaths from './authenticationPaths';
+import * as authenticationService from './authenticationService';
 import * as authorizationPaths from './authorizationPaths';
 import jrpcConfig from './jrpcConfig';
 import methodNames from './httpMethodNames';
@@ -12,7 +12,7 @@ export {
 	ui,
 	jrpcConfig,
 	methodNames,
-	authenticationPaths,
+	authenticationService,
 	authorizationPaths,
 	authenticationActionNames,
 	authorizationActionNames,

@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import RequestFunction from './requestTypes/requestFunctionType';
 
 interface RequestCallback {
-	[name: string]: (data?: any) => void;
+	[name: string]: (params?: any, action?: () => void) => void;
 }
 
 class HttpClient {

@@ -13,9 +13,13 @@ const request: RequestFunction = function(
 	config: RestRequestConfig,
 	actionName: string,
 ) {
-	return (data?: any) => {
+	return async (data?: any, action?: () => void) => {
 		const { client, observer } = this;
 		const requestConfig = { ...config, data };
+
+		if (action) {
+			await action();
+		}
 
 		client
 			.request(requestConfig)
