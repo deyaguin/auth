@@ -1,6 +1,5 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { jrpcConfig } from '../../../constants';
 import RequestFunction from './requestFunctionType';
 
 interface IJrpcRequestConfig {
@@ -12,7 +11,10 @@ interface IJrpcResponse {
 	result?: any;
 }
 
-const request: (entryPoint?: string) => RequestFunction = (entryPoint?: string) =>
+const request: (entryPoint?: string, jrpcConfig?: any) => RequestFunction = (
+	entryPoint?: string,
+	jrpcConfig?: any,
+) =>
 	function(this: any, config: IJrpcRequestConfig, actionName: string) {
 		return async (params?: any, action?: () => void) => {
 			const { client, observer } = this;

@@ -2,7 +2,7 @@ import { observable } from 'mobx';
 
 import IUser from '../Interfaces/User';
 
-class UserModel {
+class User {
 	@observable private login: string;
 	@observable private userId: string;
 
@@ -12,4 +12,4 @@ class UserModel {
 	}
 }
 
-export default UserModel;
+export default User;
