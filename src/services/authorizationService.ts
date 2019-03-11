@@ -2,14 +2,14 @@ import { AxiosRequestConfig } from 'axios';
 import { filter } from 'rxjs/operators';
 
 import { methodNames, authorizationPaths, authorizationActionNames } from '../constants';
-import { HttpService } from '../core/httpService';
-import RequestFunction from '../core/httpService/requestTypes/requestFunctionType';
+import { HttpClient } from '../core/httpClient';
+import RequestFunction from '../core/httpClient/requestTypes/requestFunctionType';
 
 interface SubscriptionProps {
 	actionName: authorizationActionNames;
 }
 
-class AuthorizationService extends HttpService {
+class AuthorizationService extends HttpClient {
 	constructor(request: RequestFunction, options?: AxiosRequestConfig) {
 		super(request, options);
 

@@ -6,7 +6,7 @@ interface RequestCallback {
 	[name: string]: (data?: any) => void;
 }
 
-class HttpService {
+class HttpClient {
 	public requests: RequestCallback;
 	public subscriptions: any;
 	public client: AxiosInstance;
@@ -41,4 +41,4 @@ class HttpService {
 	};
 }
 
-export default HttpService;
+export default HttpClient;

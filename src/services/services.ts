@@ -1,11 +1,11 @@
 import { authenticationPaths, authorizationPaths } from '../constants';
 import AuthorizationService from './authorizationService';
 import AuthenticationService from './authenticationService';
-import { HttpService, RestRequest, JrpcRequest } from '../core/httpService';
+import { HttpClient, RestRequest, JrpcRequest } from '../core/httpClient';
 
 class Services {
-	public authentication: HttpService;
-	public authorization: HttpService;
+	public authentication: HttpClient;
+	public authorization: HttpClient;
 
 	public constructor() {
 		this.authentication = new AuthenticationService(RestRequest, {
