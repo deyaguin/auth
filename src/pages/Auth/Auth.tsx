@@ -3,11 +3,11 @@ import { observer, inject } from 'mobx-react';
 
 import { AppStore } from '../../stores';
 
-interface AppStoreProps {
+interface IAppStoreProps {
 	appStore?: AppStore;
 }
 
-const Auth: React.SFC<AppStoreProps> = ({ appStore }) => {
+const Auth: React.SFC<IAppStoreProps> = ({ appStore }) => {
 	if (appStore) {
 		appStore.auth();
 	}

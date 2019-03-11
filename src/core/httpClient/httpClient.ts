@@ -2,12 +2,12 @@ import { Observable, Observer } from 'rxjs';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import RequestFunction from './requestTypes/requestFunctionType';
 
-interface RequestCallback {
+interface IRequestCallback {
 	[name: string]: (params?: any, action?: () => void) => void;
 }
 
 class HttpClient {
-	public requests: RequestCallback;
+	public requests: IRequestCallback;
 	public subscriptions: any;
 	public client: AxiosInstance;
 	public observable: Observable<any>;

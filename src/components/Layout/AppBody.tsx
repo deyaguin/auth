@@ -1,11 +1,11 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 
-interface AppBodyProps {
+interface IAppBodyProps {
 	children: ReactElement;
 	className: string;
 }
 
-const AppBody: FunctionComponent<AppBodyProps> = ({ children, ...props }) => (
+const AppBody: FunctionComponent<IAppBodyProps> = ({ children, ...props }) => (
 	<main {...props}>{children}</main>
 );
 

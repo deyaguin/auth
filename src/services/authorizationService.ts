@@ -5,7 +5,7 @@ import { methodNames, authorizationPaths, authorizationActionNames } from '../co
 import { HttpClient } from '../core/httpClient';
 import RequestFunction from '../core/httpClient/requestTypes/requestFunctionType';
 
-interface SubscriptionProps {
+interface ISubscriptionProps {
 	actionName: authorizationActionNames;
 }
 
@@ -35,13 +35,13 @@ class AuthorizationService extends HttpClient {
 
 		this.subscriptions.usersList = this.observable.pipe(
 			filter(
-				({ actionName }: SubscriptionProps) => actionName === authorizationActionNames.ROLES_LIST,
+				({ actionName }: ISubscriptionProps) => actionName === authorizationActionNames.ROLES_LIST,
 			),
 		);
 
 		this.subscriptions.usersList = this.observable.pipe(
 			filter(
-				({ actionName }: SubscriptionProps) => actionName === authorizationActionNames.CREATE_ROLE,
+				({ actionName }: ISubscriptionProps) => actionName === authorizationActionNames.CREATE_ROLE,
 			),
 		);
 	};

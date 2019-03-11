@@ -5,7 +5,7 @@ import { methodNames, authenticationService, authenticationActionNames } from '.
 import { HttpClient } from '../core/httpClient';
 import RequestFunction from '../core/httpClient/requestTypes/requestFunctionType';
 
-interface SubscriptionProps {
+interface ISubscriptionProps {
 	actionName: authenticationActionNames;
 }
 
@@ -34,13 +34,14 @@ class AuthenticationService extends HttpClient {
 
 		this.subscriptions.usersList = this.observable.pipe(
 			filter(
-				({ actionName }: SubscriptionProps) => actionName === authenticationActionNames.USERS_LIST,
+				({ actionName }: ISubscriptionProps) => actionName === authenticationActionNames.USERS_LIST,
 			),
 		);
 
 		this.subscriptions.createUser = this.observable.pipe(
 			filter(
-				({ actionName }: SubscriptionProps) => actionName === authenticationActionNames.CREATE_USER,
+				({ actionName }: ISubscriptionProps) =>
+					actionName === authenticationActionNames.CREATE_USER,
 			),
 		);
 	};

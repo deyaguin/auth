@@ -3,14 +3,14 @@ import { AxiosResponse, AxiosError } from 'axios';
 import { methodNames } from '../../../constants';
 import RequestFunction from './requestFunctionType';
 
-interface RestRequestConfig {
+interface IRestRequestConfig {
 	url: string;
 	method: methodNames;
 }
 
 const request: RequestFunction = function(
 	this: any,
-	config: RestRequestConfig,
+	config: IRestRequestConfig,
 	actionName: string,
 ) {
 	return async (data?: any, action?: () => void) => {

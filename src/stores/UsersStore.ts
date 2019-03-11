@@ -2,11 +2,11 @@ import { observable, computed, action, toJS } from 'mobx';
 
 import Store from './Store';
 import { Services } from '../services';
-import UserModel from './Models/User';
-import User from './Interfaces/User';
+import User from './Models/User';
+import IUser from './Interfaces/User';
 
 class UsersStore extends Store {
-	@observable private usersMap: { [id: string]: UserModel };
+	@observable private usersMap: { [id: string]: User };
 	@observable private limit: number;
 	@observable private offset: number;
 	@observable private loading: boolean;
@@ -31,9 +31,9 @@ class UsersStore extends Store {
 		services.authentication.requests.usersList({}, () => this.setLoading(true));
 	}
 
-	@action private setUsers = async (values: User[]) => {
-		const users = await values.reduce((acc: { [id: string]: UserModel }, item: User) => {
-			const user = new UserModel(item);
+	@action private setUsers = async (values: IUser[]) => {
+		const users = await values.reduce((acc: { [id: string]: User }, item: IUser) => {
+			const user = new User(item);
 
 			return { ...acc, [item.user_id]: user };
 		}, {});

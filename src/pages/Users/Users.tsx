@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react';
 
-interface UsersProps {
+interface IUsersProps {
 	users: Array<{ login: string }>;
 	loading: boolean;
 	usersList: () => void;
 }
 
-const Users: FunctionComponent<UsersProps> = ({ users, loading, usersList }) => (
+const Users: FunctionComponent<IUsersProps> = ({ users, loading, usersList }) => (
 	<section>
 		{console.log(loading)}
 		{console.log(users)}

@@ -29,12 +29,12 @@ const styles = createStyles({
 	},
 });
 
-interface AppBarProps extends WithStyles<typeof styles> {
+interface IAppBarProps extends WithStyles<typeof styles> {
 	onMenuClick: (e: any) => void;
 	open: boolean;
 }
 
-const AppBar: FunctionComponent<AppBarProps> = ({ open, classes, onMenuClick }) => {
+const AppBar: FunctionComponent<IAppBarProps> = ({ open, classes, onMenuClick }) => {
 	return (
 		<BaseAppBar className={classNames(classes.appBar, { [classes.appBarShift]: open })}>
 			<Toolbar className={classNames(classes.toolbar, { [classes.toolbarShift]: open })}>

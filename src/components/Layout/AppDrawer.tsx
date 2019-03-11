@@ -40,12 +40,12 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface AppDrawerProps extends WithStyles<typeof styles> {
+interface IAppDrawerProps extends WithStyles<typeof styles> {
 	open: boolean;
 	onMenuClose: () => void;
 }
 
-const AppDrawer: FunctionComponent<AppDrawerProps> = ({ open, onMenuClose, classes }) => {
+const AppDrawer: FunctionComponent<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 	const renderHeader = (): ReactElement => (
 		<div className={classes.drawerHeader}>
 			<IconButton onClick={onMenuClose}>

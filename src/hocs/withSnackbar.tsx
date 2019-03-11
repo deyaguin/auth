@@ -2,7 +2,7 @@ import React, { Fragment, FunctionComponent } from 'react';
 
 import { AppSnackbar } from '../components';
 
-interface SnackbarOptions {
+interface ISnackbarOptions {
 	open: boolean;
 	message: string;
 	type: string;
@@ -10,11 +10,11 @@ interface SnackbarOptions {
 	onAction: () => void;
 }
 
-interface WithSnackbarProps {
-	snackbarOptions?: SnackbarOptions;
+interface IWithSnackbarProps {
+	snackbarOptions?: ISnackbarOptions;
 }
 
-const withSnackbar = (Children: any): FunctionComponent<WithSnackbarProps> => ({
+const withSnackbar = (Children: any): FunctionComponent<IWithSnackbarProps> => ({
 	snackbarOptions,
 	...props
 }) => (

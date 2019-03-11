@@ -9,7 +9,7 @@ import Roles from '../Roles';
 import Registry from '../Registry';
 import { Layout } from '../../components';
 
-interface SnackbarOptions {
+interface ISnackbarOptions {
 	open: boolean;
 	message: string;
 	type: string;
@@ -17,11 +17,11 @@ interface SnackbarOptions {
 	onAction: () => void;
 }
 
-interface RootProps {
-	snackbarOptions?: SnackbarOptions;
+interface IRootProps {
+	snackbarOptions?: ISnackbarOptions;
 }
 
-const Root = ({ snackbarOptions }: RootProps) => (
+const Root = ({ snackbarOptions }: IRootProps) => (
 	<BrowserRouter>
 		<Layout snackbarOptions={snackbarOptions}>
 			<Switch>

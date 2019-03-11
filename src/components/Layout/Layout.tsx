@@ -31,11 +31,11 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface LayoutProps extends WithStyles<typeof styles> {
+interface ILayoutProps extends WithStyles<typeof styles> {
 	children: React.ReactElement;
 }
 
-const Layout: FunctionComponent<LayoutProps> = ({ children, classes }) => {
+const Layout: FunctionComponent<ILayoutProps> = ({ children, classes }) => {
 	const [open, setOpen]: [boolean, (open: boolean) => void] = useState(false);
 
 	const handleMenuClick = (): void => {

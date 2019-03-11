@@ -24,7 +24,7 @@ const styles = (theme: Theme): StyleRules =>
 		},
 	});
 
-interface AppSnackbarProps extends WithStyles<typeof styles> {
+interface IAppSnackbarProps extends WithStyles<typeof styles> {
 	open?: boolean;
 	message?: string;
 	type?: string;
@@ -32,7 +32,7 @@ interface AppSnackbarProps extends WithStyles<typeof styles> {
 	onAction?: () => void;
 }
 
-const AppSnackbar: FunctionComponent<AppSnackbarProps> = ({
+const AppSnackbar: FunctionComponent<IAppSnackbarProps> = ({
 	classes,
 	open = false,
 	message = '',
