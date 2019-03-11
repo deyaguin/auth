@@ -1,6 +1,6 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { jrpcConfig } from '../../constants';
+import { jrpcConfig } from '../../../constants';
 import RequestFunction from './requestFunctionType';
 
 interface JrpcRequestConfig {

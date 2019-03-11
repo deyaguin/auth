@@ -1,6 +1,6 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { methodNames } from '../../constants';
+import { methodNames } from '../../../constants';
 import RequestFunction from './requestFunctionType';
 
 interface RestRequestConfig {
