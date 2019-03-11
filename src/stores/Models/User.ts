@@ -1,11 +1,15 @@
 import { observable } from 'mobx';
 
-class User {
-	@observable public login: string;
+import User from '../Interfaces/User';
 
-	constructor(login: string) {
-		this.login = login;
+class UserModel {
+	@observable private login: string;
+	@observable private userId: string;
+
+	constructor(user: User) {
+		this.login = user.login;
+		this.userId = user.user_id;
 	}
 }
 
-export default User;
+export default UserModel;
