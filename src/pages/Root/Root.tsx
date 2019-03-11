@@ -7,6 +7,7 @@ import Users from '../Users';
 import Groups from '../Groups';
 import Roles from '../Roles';
 import Registry from '../Registry';
+import NotFound from '../NotFound';
 import { Layout } from '../../components';
 
 interface ISnackbarOptions {
@@ -30,6 +31,7 @@ const Root = ({ snackbarOptions }: IRootProps) => (
 				<Route path={routes.GROUPS} component={Groups} />
 				<Route path={routes.ROLES} component={Roles} />
 				<Route path={routes.REGISTRY} component={Registry} />
+				<Route component={NotFound} />
 			</Switch>
 		</Layout>
 	</BrowserRouter>
