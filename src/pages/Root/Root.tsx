@@ -20,11 +20,13 @@ interface ISnackbarOptions {
 
 interface IRootProps {
 	snackbarOptions?: ISnackbarOptions;
+	drawerOpen?: boolean;
+	setDrawerOpen?: (drawerOpen: boolean) => void;
 }
 
-const Root = ({ snackbarOptions }: IRootProps) => (
+const Root = ({ snackbarOptions, drawerOpen, setDrawerOpen }: IRootProps) => (
 	<BrowserRouter>
-		<Layout snackbarOptions={snackbarOptions}>
+		<Layout drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} snackbarOptions={snackbarOptions}>
 			<Switch>
 				<Route path={routes.AUTH} component={Auth} />
 				<Route path={routes.USERS} component={Users} />

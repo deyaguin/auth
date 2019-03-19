@@ -33,20 +33,27 @@ const styles = (theme: Theme) =>
 
 interface ILayoutProps extends WithStyles<typeof styles> {
 	children: React.ReactElement;
+	drawerOpen: boolean;
+	setDrawerOpen: (drawerOpen: boolean) => void;
 }
 
-const Layout: FunctionComponent<ILayoutProps> = ({ children, classes }) => {
-	const [open, setOpen]: [boolean, (open: boolean) => void] = useState(false);
-
+const Layout: FunctionComponent<ILayoutProps> = ({
+	children,
+	classes,
+	drawerOpen,
+	setDrawerOpen,
+}) => {
 	const handleMenuClick = (): void => {
-		setOpen(!open);
+		setDrawerOpen(!drawerOpen);
 	};
 
 	return (
 		<div className={classes.container}>
-			<AppBar onMenuClick={handleMenuClick} open={open} />
-			<AppDrawer onMenuClose={handleMenuClick} open={open} />
-			<AppBody className={classNames(classes.appContent, { [classes.appContentShift]: open })}>
+			<AppBar onMenuClick={handleMenuClick} open={drawerOpen} />
+			<AppDrawer onMenuClose={handleMenuClick} open={drawerOpen} />
+			<AppBody
+				className={classNames(classes.appContent, { [classes.appContentShift]: drawerOpen })}
+			>
 				{children}
 			</AppBody>
 		</div>

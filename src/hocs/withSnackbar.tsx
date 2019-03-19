@@ -12,6 +12,7 @@ interface ISnackbarOptions {
 
 interface IWithSnackbarProps {
 	snackbarOptions?: ISnackbarOptions;
+	[name: string]: any;
 }
 
 const withSnackbar = (Children: any): FunctionComponent<IWithSnackbarProps> => ({

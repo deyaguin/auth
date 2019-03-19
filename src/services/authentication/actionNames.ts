@@ -1,6 +1,6 @@
 enum authenticationActionNames {
 	USERS_LIST = 'usersList',
-	CREATE_USER = 'createUser',
+	USER_CREATE = 'userCreate',
 }
 
 export default authenticationActionNames;

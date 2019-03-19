@@ -1,5 +1,6 @@
 import { Observable, Observer } from 'rxjs';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+
 import RequestFunction from './requestTypes/requestFunctionType';
 
 interface IRequestCallback {

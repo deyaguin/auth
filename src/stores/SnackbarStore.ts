@@ -1,10 +1,10 @@
 import { observable, action } from 'mobx';
 
 class SnackbarStore {
-	@observable public open: boolean;
-	@observable public message: string;
-	@observable public type: string;
-	@observable public action: any;
+	@observable private open: boolean;
+	@observable private message: string;
+	@observable private type: string;
+	@observable private action: any;
 
 	constructor() {
 		this.open = false;
