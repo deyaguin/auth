@@ -1,6 +1,6 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { httpMethods } from '../../../constants';
+import { httpMethods } from '../../constants';
 import RequestFunction from './requestFunctionType';
 
 interface IRestRequestConfig {

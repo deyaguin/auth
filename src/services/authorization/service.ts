@@ -3,8 +3,8 @@ import { filter } from 'rxjs/operators';
 
 import actionNames from './actionNames';
 import { httpMethods } from '../../constants';
-import { HttpClient } from '../../core/httpClient';
-import RequestFunction from '../../core/httpClient/requestTypes/requestFunctionType';
+import { HttpClient } from '../../httpClient';
+import RequestFunction from '../../httpClient/requestTypes/requestFunctionType';
 import * as config from './config';
 
 interface ISubscriptionProps {

@@ -1,5 +1,5 @@
 import AuthorizationService from './service';
-import { HttpClient, restRequest } from '../../core/httpClient';
+import { HttpClient, restRequest } from '../../httpClient';
 import * as config from './config';
 
 export default (): HttpClient =>

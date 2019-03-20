@@ -1,4 +1,4 @@
-import { HttpClient, jrpcRequest } from '../../core/httpClient';
+import { HttpClient, jrpcRequest } from '../../httpClient';
 import AuthenticationService from './service';
 import { AUTHENTICATION_BASE_URL, AUTHENTICATION_ENTRY_POINT } from './config';
 import jrpcConfig from './jrpcConfig';

@@ -1,4 +1,4 @@
-import { HttpClient } from '../core/httpClient';
+import { HttpClient } from '../httpClient';
 import authenticationCreator from './authentication';
 import authorizationCreator from './authorization';
 
