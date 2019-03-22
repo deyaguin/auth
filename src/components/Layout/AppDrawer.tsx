@@ -65,9 +65,7 @@ const AppDrawer: FunctionComponent<IAppDrawerProps> = ({ open, onMenuClose, clas
 	const renderMenu = (): ReactElement => (
 		<List className={classes.menu}>
 			{renderMenuItem(routes.USERS, 'Пользователи')}
-			{renderMenuItem(routes.GROUPS, 'Группы')}
-			{renderMenuItem(routes.ROLES, 'Роли')}
-			{renderMenuItem(routes.REGISTRY, 'REGISTRY')}
+			{renderMenuItem(routes.TEMPLATES, 'Шаблоны')}
 		</List>
 	);
 

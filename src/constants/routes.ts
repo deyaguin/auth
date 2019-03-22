@@ -1,7 +1,7 @@
 const AUTH = '/auth';
 const USERS = '/users';
-const GROUPS = '/groups';
-const ROLES = '/roles';
-const REGISTRY = '/registry';
+const TEMPLATES = '/templates';
+const TEMPLATE_CREATE = `${TEMPLATES}/create`;
+const USER_CREATE = `${USERS}/create`;
 
-export { AUTH, USERS, GROUPS, ROLES, REGISTRY };
+export { AUTH, USERS, TEMPLATES, TEMPLATE_CREATE, USER_CREATE };
