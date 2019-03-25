@@ -4,11 +4,11 @@ import IUser from '../Interfaces/User';
 
 class User {
 	@observable private login: string;
-	@observable private userId: string;
+	@observable private id: string;
 
 	public constructor(user: IUser) {
 		this.login = user.login;
-		this.userId = user.user_id;
+		this.id = user.user_id;
 	}
 }
 

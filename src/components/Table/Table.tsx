@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import BaseTable from '@material-ui/core/Table';
 import BaseTableBody from '@material-ui/core/TableBody';
@@ -11,12 +11,22 @@ const styles = createStyles({
 });
 
 interface ITableProps extends WithStyles<typeof styles> {
-	data?: Array<{}>;
-	head: Array<{}>;
+	data?: Array<{ [name: string]: any }>;
+	head: Array<{ key: string; [name: string]: string | ReactNode }>;
 }
 
 const Table: FunctionComponent<ITableProps> = ({ classes, head, data }) => {
-	const renderHead = () => (
+	const renderRow: (item: { [name: string]: any }) => ReactNode = (item: {
+		[name: string]: any;
+	}) => (
+		<BaseTableRow key={item.id}>
+			{head.map(({ key }) => (
+				<BaseTableCell key={key}>{item[key]}</BaseTableCell>
+			))}
+		</BaseTableRow>
+	);
+
+	const renderHead: () => ReactNode = () => (
 		<BaseTableRow>
 			{head.map(item => (
 				<BaseTableCell {...item} />
@@ -24,10 +34,16 @@ const Table: FunctionComponent<ITableProps> = ({ classes, head, data }) => {
 		</BaseTableRow>
 	);
 
+	const renderData: () => ReactNode = () => {
+		const cells: ReactNode[] = Object.keys(head).map(key => data);
+
+		return data ? data.map(item => renderRow(item)) : null;
+	};
+
 	return (
 		<BaseTable className={classes.table}>
 			<BaseTableHead>{renderHead()}</BaseTableHead>
-			<BaseTableBody>test</BaseTableBody>
+			<BaseTableBody>{renderData()}</BaseTableBody>
 		</BaseTable>
 	);
 };

@@ -15,7 +15,11 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
-		this.templatesMap = {};
+		this.templatesMap = {
+			'1': new Template({ template_id: '1', name: 'Диспетчер УК', comment: 'test' }),
+			'2': new Template({ template_id: '2', name: 'Диспетчер УК', comment: 'test' }),
+			'3': new Template({ template_id: '3', name: 'Диспетчер УК', comment: 'test' }),
+		};
 		this.loading = false;
 		this.limit = 10;
 		this.offset = 0;

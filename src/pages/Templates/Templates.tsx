@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import Button from '@material-ui/core/Button';
 
 import { Page, Table } from '../../components';
 
+interface ITemplateProps {
+	loading: boolean;
+	templates: Array<{}>;
+}
+
 const tableHead = [
-	{ key: 'template', children: 'Шаблон' },
+	{ key: 'name', children: 'Шаблон' },
 	{ key: 'comment', children: 'Комментарий' },
 	{ key: 'action', children: '' },
 ];
 
-const Roles = () => (
+const Templates: FunctionComponent<ITemplateProps> = ({ loading, templates }) => (
 	<Page
 		actions={[
 			<Button variant="contained" color="primary" key="new-template">
@@ -18,8 +23,8 @@ const Roles = () => (
 		]}
 		headerTitle="Шаблоны"
 	>
-		<Table head={tableHead} />
+		<Table head={tableHead} data={templates} />
 	</Page>
 );
 
-export default Roles;
+export default Templates;

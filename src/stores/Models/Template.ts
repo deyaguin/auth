@@ -3,12 +3,12 @@ import { observable } from 'mobx';
 import ITemplate from '../Interfaces/Template';
 
 class Template {
-	@observable private templateId: string;
+	@observable private id: string;
 	@observable private name: string;
 	@observable private comment?: string;
 
 	public constructor(template: ITemplate) {
-		this.templateId = template.template_id;
+		this.id = template.template_id;
 		this.name = template.name;
 		this.comment = template.comment;
 	}
