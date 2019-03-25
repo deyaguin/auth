@@ -1,30 +1,41 @@
 import React, { FunctionComponent } from 'react';
+import { Link } from 'react-router-dom';
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import { Page, Table } from '../../components';
+import { TEMPLATE_CREATE } from '../../constants/routes';
+import { Page, TemplatesTable } from '../../components';
 
-interface ITemplateProps {
+const styles = createStyles({
+	link: {
+		textDecoration: 'none',
+	},
+});
+
+interface ITemplateProps extends WithStyles<typeof styles> {
 	loading: boolean;
-	templates: Array<{}>;
+	templates: Array<{ id: string; name: string; comment: string }>;
+	templateDelete: (id: string) => void;
 }
 
-const tableHead = [
-	{ key: 'name', children: 'Шаблон' },
-	{ key: 'comment', children: 'Комментарий' },
-	{ key: 'action', children: '' },
-];
-
-const Templates: FunctionComponent<ITemplateProps> = ({ loading, templates }) => (
+const Templates: FunctionComponent<ITemplateProps> = ({
+	classes,
+	loading,
+	templates,
+	templateDelete,
+}) => (
 	<Page
 		actions={[
-			<Button variant="contained" color="primary" key="new-template">
-				Создать новый шаблон
-			</Button>,
+			<Link key="new-template" className={classes.link} to={TEMPLATE_CREATE}>
+				<Button variant="contained" color="primary">
+					Создать новый шаблон
+				</Button>
+			</Link>,
 		]}
 		headerTitle="Шаблоны"
 	>
-		<Table head={tableHead} data={templates} />
+		<TemplatesTable templates={templates} templateDelete={templateDelete} />
 	</Page>
 );
 
-export default Templates;
+export default withStyles(styles)(Templates);

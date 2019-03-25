@@ -4,4 +4,4 @@ export { default as AppSnackbar } from './AppSnackbar';
 
 export { default as Page } from './Page';
 
-export { default as Table } from './Table';
+export { default as TemplatesTable } from './TemplatesTable';

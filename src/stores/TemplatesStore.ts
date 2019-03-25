@@ -41,6 +41,11 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
 		// todo
 	};
 
+	@action public templateDelete = (id: string) => {
+		// todo
+		console.log(id);
+	};
+
 	@computed public get templates() {
 		return Object.values(toJS(this.templatesMap));
 	}
