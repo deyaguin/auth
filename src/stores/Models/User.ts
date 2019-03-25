@@ -6,7 +6,7 @@ class User {
 	@observable private login: string;
 	@observable private userId: string;
 
-	constructor(user: IUser) {
+	public constructor(user: IUser) {
 		this.login = user.login;
 		this.userId = user.user_id;
 	}

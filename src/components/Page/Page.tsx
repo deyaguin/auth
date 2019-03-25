@@ -1,5 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
 import PageTitle from './PageTitle';
 
@@ -24,7 +25,7 @@ interface IPageProps extends WithStyles<typeof styles> {
 const Page: FunctionComponent<IPageProps> = ({ children, headerTitle, actions, classes }) => (
 	<div className={classes.container}>
 		<PageTitle actions={actions}>{headerTitle}</PageTitle>
-		<section className={classes.content}>{children}</section>
+		<Paper className={classes.content}>{children}</Paper>
 	</div>
 );
 

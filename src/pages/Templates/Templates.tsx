@@ -1,7 +1,13 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 
-import { Page } from '../../components';
+import { Page, Table } from '../../components';
+
+const tableHead = [
+	{ key: 'template', children: 'Шаблон' },
+	{ key: 'comment', children: 'Комментарий' },
+	{ key: 'action', children: '' },
+];
 
 const Roles = () => (
 	<Page
@@ -12,7 +18,7 @@ const Roles = () => (
 		]}
 		headerTitle="Шаблоны"
 	>
-		<div>content</div>
+		<Table head={tableHead} />
 	</Page>
 );
 

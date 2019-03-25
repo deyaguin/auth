@@ -1,8 +1,8 @@
 import RootStore from './RootStore';
 import AppStore from './AppStore';
 import UsersStore from './UsersStore';
-import GroupsStore from './GroupsStore';
+import TemplatesStore from './TemplatesStore';
 import RegistryStore from './RegistryStore';
 import SnackbarStore from './SnackbarStore';
 
-export { RootStore, AppStore, UsersStore, GroupsStore, RegistryStore, SnackbarStore };
+export { RootStore, AppStore, UsersStore, TemplatesStore, RegistryStore, SnackbarStore };

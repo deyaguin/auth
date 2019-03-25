@@ -4,20 +4,22 @@ import Store from './Store';
 import { Services } from '../services';
 import User from './Models/User';
 import IUser from './Interfaces/User';
+import ILoadingStore from './Interfaces/LoadingStore';
+import IPagintaionStore from './Interfaces/PaginationStore';
 
-class UsersStore extends Store {
+class UsersStore extends Store implements ILoadingStore, IPagintaionStore {
+	@observable public loading: boolean;
+	@observable public limit: number;
+	@observable public offset: number;
 	@observable private usersMap: { [id: string]: User };
-	@observable private limit: number;
-	@observable private offset: number;
-	@observable private loading: boolean;
 
-	constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
+	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
+		this.usersMap = {};
+		this.loading = false;
 		this.limit = 10;
 		this.offset = 0;
-		this.loading = false;
-		this.usersMap = {};
 
 		// this.services.authentication.subscriptions.usersList.subscribe({
 		// 	next: async (response: any) => {
@@ -31,7 +33,19 @@ class UsersStore extends Store {
 		// services.authentication.requests.usersList({}, () => this.setLoading(true));
 	}
 
-	@action private setUsers = async (values: IUser[]) => {
+	@action public setLoading = (loading: boolean) => {
+		this.loading = loading;
+	};
+
+	@action public setLimit = (limit: number) => {
+		this.limit = limit;
+	};
+
+	@action public setOffset = (offset: number) => {
+		this.offset = offset;
+	};
+
+	@action public setUsers = async (values: IUser[]) => {
 		const users = await values.reduce((acc: { [id: string]: User }, item: IUser) => {
 			const user = new User(item);
 
@@ -41,27 +55,15 @@ class UsersStore extends Store {
 		this.usersMap = users;
 	};
 
-	@action private setLoading = (loading: boolean) => {
-		this.loading = loading;
-	};
-
-	@action private setLimit = (limit: number) => {
-		this.limit = limit;
-	};
-
-	@action private setOffset = (offset: number) => {
-		this.offset = offset;
-	};
-
-	@action private usersList = () => {
+	@action public usersList = () => {
 		this.services.authentication.requests.usersList({}, () => this.setLoading(true));
 	};
 
-	@action private userCreate = (values: any) => {
+	@action public userCreate = (values: any) => {
 		// todo
 	};
 
-	@computed private get users() {
+	@computed public get users() {
 		return Object.values(toJS(this.usersMap));
 	}
 }
