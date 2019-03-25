@@ -1,4 +1,5 @@
-import Layout from './Layout';
-import AppSnackbar from './AppSnackbar';
+export { default as Layout } from './Layout';
 
-export { Layout, AppSnackbar };
+export { default as AppSnackbar } from './AppSnackbar';
+
+export { default as Page } from './Page';

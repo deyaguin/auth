@@ -19,16 +19,16 @@ class UsersStore extends Store {
 		this.loading = false;
 		this.usersMap = {};
 
-		this.services.authentication.subscriptions.usersList.subscribe({
-			next: async (response: any) => {
-				const { result } = response;
+		// this.services.authentication.subscriptions.usersList.subscribe({
+		// 	next: async (response: any) => {
+		// 		const { result } = response;
 
-				this.setUsers(result).then(() => this.setLoading(false));
-			},
-			error: (e: any) => console.log(e),
-		});
+		// 		this.setUsers(result).then(() => this.setLoading(false));
+		// 	},
+		// 	error: (e: any) => console.log(e),
+		// });
 
-		services.authentication.requests.usersList({}, () => this.setLoading(true));
+		// services.authentication.requests.usersList({}, () => this.setLoading(true));
 	}
 
 	@action private setUsers = async (values: IUser[]) => {
