@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { Fragment, FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -12,6 +12,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { TEMPLATES } from '../../constants/routes';
+import Popper from '../../components/Popper';
 
 const styles = createStyles({
 	actions: {
@@ -31,33 +32,48 @@ interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	templateDelete: (id: string) => void;
 }
 
-const TemplatesTable: FunctionComponent<ITemplatesTableProps> = ({
-	classes,
-	templates,
-	templateDelete,
-}) => {
-	const handleDelete = (id: string) => () => templateDelete(id);
+const TemplatesTable: FC<ITemplatesTableProps> = ({ classes, templates, templateDelete }) => {
+	const handleDelete = (id: string) => () => {
+		templateDelete(id);
+	};
 
-	const renderTemplate: (template: ITemplate) => ReactNode = ({ id, name, comment }: ITemplate) => (
-		<TableRow key={id}>
-			<TableCell>{name}</TableCell>
-			<TableCell>{comment}</TableCell>
-			<TableCell className={classes.actions}>
-				<Tooltip title="Открыть карточку шаблона">
-					<Link to={`${TEMPLATES}/${id}`}>
-						<IconButton color="primary">
-							<OpenInNewIcon />
-						</IconButton>
-					</Link>
-				</Tooltip>
+	const renderPopper: (id: string) => ReactNode = (id: string) => (
+		<Popper
+			onAgree={handleDelete(id)}
+			title="Удалить шаблон?"
+			agreeText="Удалить"
+			cancelText="Отмена"
+		>
+			{(setButtonRef: (node: any) => void, onClick) => (
 				<Tooltip title="Удалить шаблон">
-					<IconButton color="secondary" onClick={handleDelete(id)}>
+					<IconButton buttonRef={setButtonRef} color="secondary" onClick={onClick}>
 						<DeleteIcon />
 					</IconButton>
 				</Tooltip>
-			</TableCell>
-		</TableRow>
+			)}
+		</Popper>
 	);
+
+	const renderTemplate: (template: ITemplate) => ReactNode = ({ id, name, comment }: ITemplate) => {
+		return (
+			<Fragment key={id}>
+				<TableRow>
+					<TableCell>{name}</TableCell>
+					<TableCell>{comment}</TableCell>
+					<TableCell className={classes.actions}>
+						<Tooltip title="Открыть карточку шаблона">
+							<Link to={`${TEMPLATES}/${id}`}>
+								<IconButton color="primary">
+									<OpenInNewIcon />
+								</IconButton>
+							</Link>
+						</Tooltip>
+						{renderPopper(id)}
+					</TableCell>
+				</TableRow>
+			</Fragment>
+		);
+	};
 
 	return (
 		<Table>
