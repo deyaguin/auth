@@ -52,10 +52,10 @@ const TablePaginationActions: FC<ITablePaginationProps> = ({
 			<IconButton onClick={handlePrev} disabled={page <= 0}>
 				<KeyboardArrowLeftIcon />
 			</IconButton>
-			<IconButton onClick={handleNext} disabled={page >= Math.ceil(count / rowsPerPage)}>
+			<IconButton onClick={handleNext} disabled={page >= Math.round(count / rowsPerPage)}>
 				<KeyboardArrowRightIcon />
 			</IconButton>
-			<IconButton onClick={handleLast} disabled={page >= Math.ceil(count / rowsPerPage)}>
+			<IconButton onClick={handleLast} disabled={page >= Math.round(count / rowsPerPage)}>
 				<LastPageIcon />
 			</IconButton>
 		</div>

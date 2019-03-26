@@ -25,10 +25,12 @@ const TablePagination: FC<ITablePaginationProps> = ({
 
 	const handleSetLimit = (e: any) => {
 		setLimit(Number(e.currentTarget.value));
+
+		setOffset(0);
 	};
 
-	const handleSetOffset = (e: any, page: number) => {
-		setOffset(limit * page);
+	const handleSetOffset = (_: any, pageNumber: number) => {
+		setOffset(limit * pageNumber);
 	};
 
 	return (

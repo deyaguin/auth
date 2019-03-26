@@ -39,6 +39,10 @@ const styles = createStyles({
 	nameCell: {
 		width: 200,
 	},
+	tableScrollWrapper: {
+		height: '100%',
+		overflowY: 'scroll',
+	},
 });
 
 interface ITemplate {
@@ -150,7 +154,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	return (
 		<div className={classes.container}>
 			<Table component="div">{renderTableHeader()}</Table>
-			<div style={{ height: '100%', overflowY: 'auto' }}>
+			<div className={classes.tableScrollWrapper}>
 				<Table component="div">{renderTableBody()}</Table>
 			</div>
 			<Table component="div">{renderTableFooter()}</Table>
