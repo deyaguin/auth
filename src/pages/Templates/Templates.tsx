@@ -16,6 +16,11 @@ interface ITemplateProps extends WithStyles<typeof styles> {
 	loading: boolean;
 	templates: Array<{ id: string; name: string; comment: string }>;
 	templateDelete: (id: string) => void;
+	limit: number;
+	offset: number;
+	total: number;
+	setLimit: (limit: number) => void;
+	setOffset: (offset: number) => void;
 }
 
 const Templates: FunctionComponent<ITemplateProps> = ({
@@ -23,6 +28,11 @@ const Templates: FunctionComponent<ITemplateProps> = ({
 	loading,
 	templates,
 	templateDelete,
+	limit,
+	offset,
+	total,
+	setLimit,
+	setOffset,
 }) => (
 	<Page
 		actions={[
@@ -34,7 +44,15 @@ const Templates: FunctionComponent<ITemplateProps> = ({
 		]}
 		headerTitle="Шаблоны"
 	>
-		<TemplatesTable templates={templates} templateDelete={templateDelete} />
+		<TemplatesTable
+			limit={limit}
+			offset={offset}
+			total={total}
+			setLimit={setLimit}
+			setOffset={setOffset}
+			templates={templates}
+			templateDelete={templateDelete}
+		/>
 	</Page>
 );
 

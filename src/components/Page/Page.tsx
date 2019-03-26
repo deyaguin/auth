@@ -1,20 +1,21 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
 import PageTitle from './PageTitle';
 
-const styles = createStyles({
-	container: {
-		display: 'grid',
-		gridGap: '24px',
-		gridTemplateRows: '40px 1fr',
-		height: '100%',
-	},
-	content: {
-		height: '100%',
-	},
-});
+const styles = (theme: Theme) =>
+	createStyles({
+		container: {
+			display: 'flex',
+			flexDirection: 'column',
+			height: '100%',
+		},
+		content: {
+			height: 'calc(100% - 64px)',
+			marginTop: theme.spacing.unit * 3,
+		},
+	});
 
 interface IPageProps extends WithStyles<typeof styles> {
 	children: ReactNode | string;

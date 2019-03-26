@@ -6,18 +6,38 @@ import TableBody from '@material-ui/core/TableBody';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import TableFooter from '@material-ui/core/TableFooter';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { TEMPLATES } from '../../constants/routes';
-import Popper from '../../components/Popper';
+import { TablePagination, Popper } from '../../components';
 
 const styles = createStyles({
 	actions: {
+		alignItems: 'center',
 		display: 'flex',
 		justifyContent: 'flex-end',
+	},
+	actionsCell: {
+		width: 200,
+	},
+	commentCell: {
+		width: 300,
+	},
+	container: {
+		display: 'flex',
+		flexDirection: 'column',
+		height: '100%',
+		justifyContent: 'space-between',
+	},
+	headerActionsCell: {
+		width: 216,
+	},
+	nameCell: {
+		width: 200,
 	},
 });
 
@@ -30,9 +50,23 @@ interface ITemplate {
 interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	templates: ITemplate[];
 	templateDelete: (id: string) => void;
+	limit: number;
+	offset: number;
+	total: number;
+	setLimit: (limit: number) => void;
+	setOffset: (offset: number) => void;
 }
 
-const TemplatesTable: FC<ITemplatesTableProps> = ({ classes, templates, templateDelete }) => {
+const TemplatesTable: FC<ITemplatesTableProps> = ({
+	classes,
+	templates,
+	templateDelete,
+	setLimit,
+	setOffset,
+	limit,
+	offset,
+	total,
+}) => {
 	const handleDelete = (id: string) => () => {
 		templateDelete(id);
 	};
@@ -54,38 +88,73 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({ classes, templates, template
 		</Popper>
 	);
 
+	const renderTableHeader: () => ReactNode = () => (
+		<TableHead component="div">
+			<TableRow component="div">
+				<TableCell className={classes.nameCell} component="div">
+					Название
+				</TableCell>
+				<TableCell className={classes.commentCell} component="div">
+					Комментарий
+				</TableCell>
+				<TableCell className={classes.headerActionsCell} component="div" />
+			</TableRow>
+		</TableHead>
+	);
+
+	const renderTableFooter: () => ReactNode = () => (
+		<TableFooter component="div">
+			<TableRow component="div">
+				<TablePagination
+					setLimit={setLimit}
+					setOffset={setOffset}
+					limit={limit}
+					offset={offset}
+					total={total}
+				/>
+			</TableRow>
+		</TableFooter>
+	);
+
 	const renderTemplate: (template: ITemplate) => ReactNode = ({ id, name, comment }: ITemplate) => {
 		return (
 			<Fragment key={id}>
-				<TableRow>
-					<TableCell>{name}</TableCell>
-					<TableCell>{comment}</TableCell>
-					<TableCell className={classes.actions}>
-						<Tooltip title="Открыть карточку шаблона">
-							<Link to={`${TEMPLATES}/${id}`}>
-								<IconButton color="primary">
-									<OpenInNewIcon />
-								</IconButton>
-							</Link>
-						</Tooltip>
-						{renderPopper(id)}
+				<TableRow component="div">
+					<TableCell className={classes.nameCell} component="div">
+						{name}
+					</TableCell>
+					<TableCell className={classes.commentCell} component="div">
+						{comment}
+					</TableCell>
+					<TableCell component="div" className={classes.actionsCell}>
+						<div className={classes.actions}>
+							<Tooltip title="Открыть карточку шаблона">
+								<Link to={`${TEMPLATES}/${id}`}>
+									<IconButton color="primary">
+										<OpenInNewIcon />
+									</IconButton>
+								</Link>
+							</Tooltip>
+							{renderPopper(id)}
+						</div>
 					</TableCell>
 				</TableRow>
 			</Fragment>
 		);
 	};
 
+	const renderTableBody: () => ReactNode = () => (
+		<TableBody component="div">{templates.map(renderTemplate)}</TableBody>
+	);
+
 	return (
-		<Table>
-			<TableHead>
-				<TableRow>
-					<TableCell>Название</TableCell>
-					<TableCell>Комментарий</TableCell>
-					<TableCell />
-				</TableRow>
-			</TableHead>
-			<TableBody>{templates.map(renderTemplate)}</TableBody>
-		</Table>
+		<div className={classes.container}>
+			<Table component="div">{renderTableHeader()}</Table>
+			<div style={{ height: '100%', overflowY: 'auto' }}>
+				<Table component="div">{renderTableBody()}</Table>
+			</div>
+			<Table component="div">{renderTableFooter()}</Table>
+		</div>
 	);
 };
 
