@@ -55,6 +55,8 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
 
 	@action public setLimit = (limit: number) => {
 		this.limit = limit;
+
+		this.offset = 0;
 	};
 
 	@action public setOffset = (offset: number) => {

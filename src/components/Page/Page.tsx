@@ -10,9 +10,11 @@ const styles = (theme: Theme) =>
 			display: 'flex',
 			flexDirection: 'column',
 			height: '100%',
+			minWidth: 900,
 		},
 		content: {
-			height: 'calc(100% - 64px)',
+			display: 'flex',
+			flex: 1,
 			marginTop: theme.spacing.unit * 3,
 		},
 	});

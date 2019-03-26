@@ -1,4 +1,4 @@
 const DRAWER_WIDTH = 240;
-const TABLE_PER_PAGE = [5, 10, 20];
+const TABLE_PAGE_SIZES = [5, 10, 20];
 
-export { DRAWER_WIDTH, TABLE_PER_PAGE };
+export { DRAWER_WIDTH, TABLE_PAGE_SIZES };

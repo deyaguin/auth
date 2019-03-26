@@ -767,6 +767,39 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
+"@devexpress/dx-core@1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-core/-/dx-core-1.10.4.tgz#d5073d0864f26e81636e50872518272300e49676"
+  integrity sha512-Uka940wCajZuSQ3snSLaNaryBFafjgmwWVxUgkHcv1fHCUhbaPSi0lpIG5/6nLWRDPZ9D/eUOdIVWlIMiDz5+g==
+
+"@devexpress/dx-grid-core@1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-grid-core/-/dx-grid-core-1.10.4.tgz#8e51dbe2c2ea065046ba3ce1a02bfe646338cf96"
+  integrity sha512-YTpg8cNOlvfumRU4BnOQKHWmy+PbWMofY3FJpX6kyTguuscpa9AC6PINcFLUsqC1lyimWMBwCLSi6XQqX7K0cg==
+
+"@devexpress/dx-react-core@^1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-core/-/dx-react-core-1.10.4.tgz#33d80db414e8ec4ffd4bda6fd3d4c33bda3e6e30"
+  integrity sha512-FWJ9+n8HIpcjApsENaXgc65KwNSI4IXc4reLfwAeyFrh7MfEpZ+TbmAMM/cB75cjHOZ45esIRplY6gDouMSyeg==
+  dependencies:
+    "@devexpress/dx-core" "1.10.4"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-grid-material-ui@^1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid-material-ui/-/dx-react-grid-material-ui-1.10.4.tgz#9e89c094d7865cd32fdf793b6ab37cf58b56bdd2"
+  integrity sha512-Sh7cp+ttFHTY/CQDTXA1JRbiUzSw8b+4WkXTDDjzSl3BFgamBh3ENHHiMjT4wM2gVId3ZvEx441nbgSoKdXTiQ==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-grid@^1.10.4":
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-grid/-/dx-react-grid-1.10.4.tgz#d1ccec26145f0c074e3005d93d750ec32a73b0c6"
+  integrity sha512-1HAF98SB6HfiQiaPoTbv7fGzL+nbK4Ou9QuMyri8/l5gQs4k0fMrTlEbxOvM01bSwPwpbBd8+HniQ4DO13F1KQ==
+  dependencies:
+    "@devexpress/dx-grid-core" "1.10.4"
+
 "@iamstarkov/listr-update-renderer@0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@iamstarkov/listr-update-renderer/-/listr-update-renderer-0.4.1.tgz#d7c48092a2dcf90fd672b6c8b458649cb350c77e"
@@ -8323,7 +8356,7 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@^15.6.0, prop-types@^15.6.1:
+prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
