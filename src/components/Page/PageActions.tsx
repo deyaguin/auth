@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
@@ -16,7 +16,7 @@ interface IPageActionsProps extends WithStyles<typeof styles> {
 	actions?: ReactNode[];
 }
 
-const PageActions: FunctionComponent<IPageActionsProps> = ({ classes, actions = [] }) => (
+const PageActions: FC<IPageActionsProps> = ({ classes, actions = [] }) => (
 	<div className={classes.container}>{actions}</div>
 );
 

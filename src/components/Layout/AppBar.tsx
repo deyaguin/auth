@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import BaseAppBar from '@material-ui/core/AppBar';
@@ -34,7 +34,7 @@ interface IAppBarProps extends WithStyles<typeof styles> {
 	open: boolean;
 }
 
-const AppBar: FunctionComponent<IAppBarProps> = ({ open, classes, onMenuClick }) => {
+const AppBar: FC<IAppBarProps> = ({ open, classes, onMenuClick }) => {
 	return (
 		<BaseAppBar className={classNames(classes.appBar, { [classes.appBarShift]: open })}>
 			<Toolbar className={classNames(classes.toolbar, { [classes.toolbarShift]: open })}>

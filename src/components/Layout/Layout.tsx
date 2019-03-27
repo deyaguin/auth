@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
@@ -39,12 +39,7 @@ interface ILayoutProps extends WithStyles<typeof styles> {
 	setDrawerOpen: (drawerOpen: boolean) => void;
 }
 
-const Layout: FunctionComponent<ILayoutProps> = ({
-	children,
-	classes,
-	drawerOpen,
-	setDrawerOpen,
-}) => {
+const Layout: FC<ILayoutProps> = ({ children, classes, drawerOpen, setDrawerOpen }) => {
 	const handleMenuClick = (): void => {
 		setDrawerOpen(!drawerOpen);
 	};

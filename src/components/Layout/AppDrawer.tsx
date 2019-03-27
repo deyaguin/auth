@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -45,7 +45,7 @@ interface IAppDrawerProps extends WithStyles<typeof styles> {
 	onMenuClose: () => void;
 }
 
-const AppDrawer: FunctionComponent<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
+const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 	const renderHeader = (): ReactElement => (
 		<div className={classes.drawerHeader}>
 			<IconButton onClick={onMenuClose}>

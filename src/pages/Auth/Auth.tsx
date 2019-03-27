@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import { observer, inject } from 'mobx-react';
 
 import { AppStore } from '../../stores';
@@ -7,7 +7,7 @@ interface IAppStoreProps {
 	appStore?: AppStore;
 }
 
-const Auth: FunctionComponent<IAppStoreProps> = ({ appStore }) => {
+const Auth: FC<IAppStoreProps> = ({ appStore }) => {
 	if (appStore) {
 		appStore.auth();
 	}

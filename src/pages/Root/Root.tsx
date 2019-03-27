@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { routes } from '../../constants';
@@ -24,7 +24,7 @@ interface IRootProps {
 	setDrawerOpen?: (drawerOpen: boolean) => void;
 }
 
-const Root = ({ snackbarOptions, drawerOpen, setDrawerOpen }: IRootProps) => (
+const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) => (
 	<BrowserRouter>
 		<Layout drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} snackbarOptions={snackbarOptions}>
 			<Switch>

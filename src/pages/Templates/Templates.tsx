@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,26 +15,32 @@ const styles = createStyles({
 interface ITemplateProps extends WithStyles<typeof styles> {
 	loading: boolean;
 	templates: Array<{ id: string; name: string; comment: string }>;
-	templateDelete: (id: string) => void;
 	limit: number;
 	offset: number;
 	total: number;
+	filters: { [name: string]: boolean | number | string };
+	templateDelete: (id: string) => void;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
 	setSnackbar: (message: string, type?: string) => void;
+	setFilters: (filters: { [name: string]: boolean | number | string }) => void;
+	clearFilters: () => void;
 }
 
-const Templates: FunctionComponent<ITemplateProps> = ({
+const Templates: FC<ITemplateProps> = ({
 	classes,
 	loading,
 	templates,
-	templateDelete,
 	limit,
 	offset,
 	total,
+	filters,
+	templateDelete,
 	setLimit,
 	setOffset,
 	setSnackbar,
+	setFilters,
+	clearFilters,
 }) => {
 	const handleDelete = (id: string) => {
 		templateDelete(id);
@@ -69,6 +75,9 @@ const Templates: FunctionComponent<ITemplateProps> = ({
 				onCurrentPageChange={handleCurrentPageChange}
 				templates={templates}
 				templateDelete={handleDelete}
+				clearFilters={clearFilters}
+				setFilters={setFilters}
+				filters={filters}
 			/>
 		</Page>
 	);

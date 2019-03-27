@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import { Page } from '../../components';
@@ -11,7 +11,7 @@ interface ITemplateProps extends RouteComponentProps {
 	};
 }
 
-const Template: FunctionComponent<ITemplateProps> = props => {
+const Template: FC<ITemplateProps> = props => {
 	return <Page headerTitle="Шаблон">{'content'}</Page>;
 };
 

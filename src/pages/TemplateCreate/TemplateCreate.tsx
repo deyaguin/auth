@@ -1,11 +1,25 @@
 import React, { FunctionComponent } from 'react';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
-import { Page } from '../../components';
+import { Page, TemplateChange } from '../../components';
 
-interface ITemplateCreateProps {}
+const styles = (theme: Theme) =>
+	createStyles({
+		pageContainer: {
+			padding: theme.spacing.unit * 3,
+		},
+	});
 
-const TemplateCreate: FunctionComponent<ITemplateCreateProps> = () => {
-	return <Page headerTitle="Создание шаблона">content</Page>;
+interface ITemplateCreateProps extends WithStyles<typeof styles> {
+	templateCreate: (values: any) => void;
+}
+
+const TemplateCreate: FunctionComponent<ITemplateCreateProps> = ({ templateCreate, classes }) => {
+	return (
+		<Page contentClass={classes.pageContainer} headerTitle="Создание шаблона">
+			<TemplateChange />
+		</Page>
+	);
 };
 
-export default TemplateCreate;
+export default withStyles(styles)(TemplateCreate);

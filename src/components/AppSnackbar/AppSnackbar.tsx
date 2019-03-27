@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import classNames from 'classnames';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
@@ -32,7 +32,7 @@ interface IAppSnackbarProps extends WithStyles<typeof styles> {
 	onAction?: () => void;
 }
 
-const AppSnackbar: FunctionComponent<IAppSnackbarProps> = ({
+const AppSnackbar: FC<IAppSnackbarProps> = ({
 	classes,
 	open = false,
 	message = '',

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -17,7 +17,7 @@ interface IPageTitleProps extends WithStyles<typeof styles> {
 	actions?: ReactNode[];
 }
 
-const PageTitle: FunctionComponent<IPageTitleProps> = ({ children, actions, classes }) => {
+const PageTitle: FC<IPageTitleProps> = ({ children, actions, classes }) => {
 	const hasActions = actions && actions.length > 0;
 
 	return (

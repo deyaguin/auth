@@ -5,6 +5,7 @@ import { Services } from '../services';
 import Template from './Models/Template';
 import ILoadingStore from './Interfaces/LoadingStore';
 import IPagintaionStore from './Interfaces/PaginationStore';
+import IFiltersStore from './Interfaces/FiltersStore';
 
 const TEMPLATES = {
 	'1': new Template({ template_id: '1', name: 'Диспетчер УК1', comment: 'test' }),
@@ -33,10 +34,15 @@ const TEMPLATES = {
 	'24': new Template({ template_id: '24', name: 'Диспетчер УК24', comment: 'test' }),
 };
 
-class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
+interface IFilters {
+	[name: string]: number | boolean | string;
+}
+
+class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, IFiltersStore {
 	@observable public loading: boolean;
 	@observable public limit: number;
 	@observable public offset: number;
+	@observable public filtersMap: IFilters;
 	@observable private templatesMap: { [id: string]: Template };
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
@@ -47,6 +53,7 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
 		this.offset = 0;
 
 		this.templatesMap = TEMPLATES;
+		this.filtersMap = {};
 	}
 
 	@action public setLoading = (loading: boolean) => {
@@ -63,16 +70,33 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore {
 		this.offset = offset;
 	};
 
-	@action public templateCreate = (values: any) => {
-		// todo
+	@action public templateCreate = ({ name, comment }: { name: string; comment: string }) => {
+		const id = Object.keys(this.templatesMap).length.toString();
+
+		this.templatesMap = {
+			...this.templatesMap,
+			[id]: new Template({ template_id: id, name, comment }),
+		};
 	};
 
 	@action public templateDelete = (id: string) => {
 		delete this.templatesMap[id];
 	};
 
+	@action public setFilters = (filters: IFilters) => {
+		this.filtersMap = { ...this.filtersMap, ...filters };
+	};
+
+	@action public clearFilters = () => {
+		this.filtersMap = {};
+	};
+
 	@computed public get templates(): Template[] {
 		return Object.values(toJS(this.templatesMap)).slice(this.offset, this.offset + this.limit);
+	}
+
+	@computed public get filters(): IFilters {
+		return toJS(this.filtersMap);
 	}
 
 	@computed public get total(): number {
