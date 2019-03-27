@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState, ReactNode } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	PagingState,
@@ -16,10 +16,12 @@ import {
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Badge from '@material-ui/core/Badge';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import { TABLE_PAGE_SIZES, FILTER_MESSAGES, TABLE_MESSAGES } from '../../constants/ui';
 import { TEMPLATES } from '../../constants/routes';
@@ -28,7 +30,7 @@ import TableActions from '../TableActions';
 import GridRootContainer from '../GridRootContainer';
 
 const styles = createStyles({
-	fliterActions: {
+	actions: {
 		display: 'flex',
 		flexGrow: 1,
 		justifyContent: 'flex-end',
@@ -80,41 +82,32 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	clearFilters,
 }) => {
 	const [filterIsVisible, setFilterIsVisible] = useState(false);
-	const [filterState, setFiltersState]: [
-		Array<{ columnName: string; value: any }>,
-		(filters: any) => void
-	] = useState([]);
+
+	const filtersCount = Object.keys(filters).length;
 
 	const getFilters: () => Array<{ columnName: string; value: any }> = () => {
 		return Object.keys(filters).map((key: string) => ({ columnName: key, value: filters[key] }));
 	};
 
-	const handleOpenFilter = () => setFilterIsVisible(true);
+	const handleClickFilterButton = () => setFilterIsVisible(!filterIsVisible);
 
-	const handleSetFilters = () => {};
+	const handleSetFilter = (values: any) => {
+		setFilters({
+			...filters,
+			...values.reduce((acc: any, item: any) => ({ ...acc, [item.columnName]: item.value }), {}),
+		});
+	};
 
 	const handleCloseFilter = () => {
-		setFilterIsVisible(false);
-
 		clearFilters();
+
+		setFilterIsVisible(false);
 	};
 
 	const handleTemplateDelete = (id: string) => () => templateDelete(id);
 
 	const renderActions = (id: string) => (
-		<div className={classes.fliterActions} key={id}>
-			<Popover
-				onAgree={handleTemplateDelete(id)}
-				title="Удалить шаблон?"
-				agreeText="Удалить"
-				cancelText="Отмена"
-			>
-				{(setButtonRef: (node: any) => void, onClick) => (
-					<IconButton buttonRef={setButtonRef} onClick={onClick} color="secondary">
-						<DeleteIcon />
-					</IconButton>
-				)}
-			</Popover>
+		<div className={classes.actions} key={id}>
 			<Link to={`${TEMPLATES}/${id}`}>
 				<IconButton color="primary">
 					<OpenInNewIcon />
@@ -123,25 +116,42 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 			<IconButton color="primary">
 				<EditIcon />
 			</IconButton>
+			<Popover
+				onAgree={handleTemplateDelete(id)}
+				title="Удалить шаблон?"
+				agreeText="Удалить"
+				cancelText="Отмена"
+			>
+				{(setButtonRef: (node: any) => void, onClick) => (
+					<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
+						<DeleteIcon />
+					</IconButton>
+				)}
+			</Popover>
 		</div>
 	);
 
 	const renderHeaderActions = () => (
-		<div className={classes.fliterActions}>
+		<div className={classes.actions}>
 			{filterIsVisible ? (
-				<Fragment>
-					<IconButton color="secondary" onClick={handleCloseFilter}>
-						<DeleteIcon />
-					</IconButton>
-					<IconButton color="primary" onClick={handleCloseFilter}>
-						<CheckIcon />
-					</IconButton>
-				</Fragment>
+				<IconButton color="primary" onClick={handleClickFilterButton}>
+					<CheckIcon />
+				</IconButton>
 			) : (
-				<IconButton color="primary" onClick={handleOpenFilter}>
-					<FilterListIcon />
+				<IconButton color="primary" onClick={handleClickFilterButton}>
+					<Badge badgeContent={filtersCount} color="primary">
+						<FilterListIcon />
+					</Badge>
 				</IconButton>
 			)}
+		</div>
+	);
+
+	const renderFilterActions = () => (
+		<div className={classes.actions}>
+			<IconButton color="secondary" onClick={handleCloseFilter}>
+				<ClearIcon />
+			</IconButton>
 		</div>
 	);
 
@@ -154,14 +164,18 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				onCurrentPageChange={onCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
-			<FilteringState filters={filterState} onFiltersChange={setFiltersState} />
+			<FilteringState filters={getFilters()} onFiltersChange={handleSetFilter} />
 			<IntegratedFiltering />
 			<CustomPaging totalCount={total} />
 			<VirtualTable
 				messages={TABLE_MESSAGES}
 				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
 			/>
-			<TableActions headerActions={renderHeaderActions} actions={renderActions} />
+			<TableActions
+				headerActions={renderHeaderActions}
+				actions={renderActions}
+				filterActions={renderFilterActions}
+			/>
 			<TableHeaderRow />
 			{filterIsVisible && <TableFilterRow messages={FILTER_MESSAGES} />}
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} />
