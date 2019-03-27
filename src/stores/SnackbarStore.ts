@@ -1,12 +1,12 @@
 import { observable, action } from 'mobx';
 
 class SnackbarStore {
-	@observable private open: boolean;
-	@observable private message: string;
-	@observable private type: string;
-	@observable private action: any;
+	@observable public open: boolean;
+	@observable public message: string;
+	@observable public type: string;
+	@observable public action: any;
 
-	constructor() {
+	public constructor() {
 		this.open = false;
 		this.message = '';
 		this.type = 'default';
@@ -21,6 +21,10 @@ class SnackbarStore {
 		this.message = message;
 		this.type = type || 'default';
 		this.open = true;
+
+		setTimeout(() => {
+			this.onClose();
+		}, 5000);
 	};
 
 	@action public onAction = async () => {

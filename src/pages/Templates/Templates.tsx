@@ -21,6 +21,7 @@ interface ITemplateProps extends WithStyles<typeof styles> {
 	total: number;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
+	setSnackbar: (message: string, type?: string) => void;
 }
 
 const Templates: FunctionComponent<ITemplateProps> = ({
@@ -33,27 +34,44 @@ const Templates: FunctionComponent<ITemplateProps> = ({
 	total,
 	setLimit,
 	setOffset,
-}) => (
-	<Page
-		actions={[
-			<Link key="new-template" className={classes.link} to={TEMPLATE_CREATE}>
-				<Button variant="contained" color="primary">
-					Создать новый шаблон
-				</Button>
-			</Link>,
-		]}
-		headerTitle="Шаблоны"
-	>
-		<TemplatesTable
-			limit={limit}
-			offset={offset}
-			total={total}
-			setLimit={setLimit}
-			setOffset={setOffset}
-			templates={templates}
-			templateDelete={templateDelete}
-		/>
-	</Page>
-);
+	setSnackbar,
+}) => {
+	const handleDelete = (id: string) => {
+		templateDelete(id);
+
+		setSnackbar('Шаблон успешно удален', 'success');
+	};
+
+	const handlePageSizeChange = (pageSize: number) => {
+		setLimit(pageSize);
+	};
+
+	const handleCurrentPageChange = (currentPage: number) => {
+		setOffset(currentPage * limit);
+	};
+
+	return (
+		<Page
+			actions={[
+				<Link key="new-template" className={classes.link} to={TEMPLATE_CREATE}>
+					<Button variant="contained" color="primary">
+						Создать новый шаблон
+					</Button>
+				</Link>,
+			]}
+			headerTitle="Шаблоны"
+		>
+			<TemplatesTable
+				pageSize={limit}
+				currentPage={offset / limit}
+				total={total}
+				onPageSizeChange={handlePageSizeChange}
+				onCurrentPageChange={handleCurrentPageChange}
+				templates={templates}
+				templateDelete={handleDelete}
+			/>
+		</Page>
+	);
+};
 
 export default withStyles(styles)(Templates);

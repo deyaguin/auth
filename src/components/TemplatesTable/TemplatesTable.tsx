@@ -42,11 +42,11 @@ interface ITemplate {
 interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	templates: ITemplate[];
 	templateDelete: (id: string) => void;
-	limit: number;
-	offset: number;
+	pageSize: number;
+	currentPage: number;
 	total: number;
-	setLimit: (limit: number) => void;
-	setOffset: (offset: number) => void;
+	onPageSizeChange: (pageSize: number) => void;
+	onCurrentPageChange: (currentPage: number) => void;
 }
 
 const COLUMNS = [
@@ -58,21 +58,13 @@ const COLUMNS = [
 const TemplatesTable: FC<ITemplatesTableProps> = ({
 	classes,
 	templates,
-	limit,
-	offset,
-	setOffset,
-	setLimit,
+	pageSize,
+	currentPage,
+	onPageSizeChange,
+	onCurrentPageChange,
 	total,
 	templateDelete,
 }) => {
-	const handlePageSizeChange = (pageSize: number) => {
-		setLimit(pageSize);
-	};
-
-	const handleCurrentPageChange = (currentPage: number) => {
-		setOffset(currentPage * limit);
-	};
-
 	const handleTemplateDelete = (id: string) => () => templateDelete(id);
 
 	const renderActions = (id: string) => (
@@ -116,11 +108,11 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 			columns={COLUMNS}
 		>
 			<PagingState
-				pageSize={limit}
+				pageSize={pageSize}
 				defaultCurrentPage={0}
-				currentPage={offset / limit}
-				onCurrentPageChange={handleCurrentPageChange}
-				onPageSizeChange={handlePageSizeChange}
+				currentPage={currentPage}
+				onCurrentPageChange={onCurrentPageChange}
+				onPageSizeChange={onPageSizeChange}
 			/>
 			<FilteringState />
 			<IntegratedFiltering />

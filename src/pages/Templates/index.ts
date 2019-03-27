@@ -4,7 +4,7 @@ import Templates from './Templates';
 
 export default inject(
 	({
-		snackbarStore: { onError },
+		snackbarStore: { setSnackbar },
 		templatesStore: {
 			templates,
 			loading,
@@ -19,11 +19,11 @@ export default inject(
 		limit,
 		loading,
 		offset,
-		onError,
 		setLimit,
 		setOffset,
 		templateDelete,
 		templates,
 		total,
+		setSnackbar,
 	}),
 )(Templates);
