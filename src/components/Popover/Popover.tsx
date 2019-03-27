@@ -1,10 +1,9 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import BasePopper from '@material-ui/core/Popper';
+import BasePopover from '@material-ui/core/Popover';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grid from '@material-ui/core/Grid';
 
 const styles = (theme: Theme) =>
@@ -47,28 +46,26 @@ class Popper extends Component<IPopperProps, { open: boolean }> {
 		return (
 			<Fragment>
 				{children((node: any) => (this.buttonRef = node), this.onOpen)}
-				<BasePopper open={open} anchorEl={this.buttonRef}>
-					<ClickAwayListener onClickAway={this.onClose}>
-						<Paper className={classes.container}>
-							<Typography align="center" className={classes.title} variant="subheading">
-								{title}
-							</Typography>
-							{content && content /* todo */}
-							<Grid container={true} justify="center" spacing={8}>
-								<Grid item={true}>
-									<Button color="secondary" onClick={this.handleAgree}>
-										{agreeText}
-									</Button>
-								</Grid>
-								<Grid item={true}>
-									<Button color="primary" onClick={this.handleCancel}>
-										{cancelText}
-									</Button>
-								</Grid>
+				<BasePopover open={open} anchorEl={this.buttonRef} onClose={this.onClose}>
+					<Paper className={classes.container}>
+						<Typography align="center" className={classes.title} variant="subheading">
+							{title}
+						</Typography>
+						{content && content /* todo */}
+						<Grid container={true} justify="center" spacing={8}>
+							<Grid item={true}>
+								<Button color="secondary" onClick={this.handleAgree}>
+									{agreeText}
+								</Button>
 							</Grid>
-						</Paper>
-					</ClickAwayListener>
-				</BasePopper>
+							<Grid item={true}>
+								<Button color="primary" onClick={this.handleCancel}>
+									{cancelText}
+								</Button>
+							</Grid>
+						</Grid>
+					</Paper>
+				</BasePopover>
 			</Fragment>
 		);
 	}

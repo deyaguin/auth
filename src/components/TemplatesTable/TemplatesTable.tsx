@@ -1,26 +1,30 @@
-import React, { FC } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { PagingState, CustomPaging } from '@devexpress/dx-react-grid';
+import {
+	PagingState,
+	CustomPaging,
+	FilteringState,
+	IntegratedFiltering,
+} from '@devexpress/dx-react-grid';
 import {
 	Grid,
 	VirtualTable,
 	TableHeaderRow,
 	PagingPanel,
+	TableFilterRow,
 } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
-import { TABLE_PAGE_SIZES } from '../../constants/ui';
+import { TABLE_PAGE_SIZES, FILTER_MESSAGES, TABLE_MESSAGES } from '../../constants/ui';
 import { TEMPLATES } from '../../constants/routes';
-import Popper from '../Popper';
+import Popover from '../Popover';
+
+const { Cell: TableFilterCell } = TableFilterRow;
 
 const styles = createStyles({
-	actions: {
-		display: 'flex',
-		justifyContent: 'flex-end',
-	},
 	link: {
 		textDecoration: 'none',
 	},
@@ -45,7 +49,7 @@ interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	setOffset: (offset: number) => void;
 }
 
-const columns = [
+const COLUMNS = [
 	{ name: 'name', title: 'Шаблон' },
 	{ name: 'comment', title: 'Комментарий' },
 	{ name: 'actions', title: ' ' },
@@ -71,33 +75,45 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 
 	const handleTemplateDelete = (id: string) => () => templateDelete(id);
 
+	const renderActions = (id: string) => (
+		<Fragment key={id}>
+			<Link to={`${TEMPLATES}/${id}`}>
+				<IconButton color="primary">
+					<OpenInNewIcon />
+				</IconButton>
+			</Link>
+			<Popover
+				onAgree={handleTemplateDelete(id)}
+				title="Удалить шаблон?"
+				agreeText="Удалить"
+				cancelText="Отмена"
+			>
+				{(setButtonRef: (node: any) => void, onClick) => (
+					<IconButton buttonRef={setButtonRef} onClick={onClick} color="secondary">
+						<DeleteIcon />
+					</IconButton>
+				)}
+			</Popover>
+		</Fragment>
+	);
+
+	const renderFilterCell = (props: any) => {
+		if (props.column.name === 'actions') {
+			const { children, ...rest } = props;
+
+			return <TableFilterCell {...rest} />;
+		}
+
+		return <TableFilterCell {...props} />;
+	};
+
 	return (
 		<Grid
 			rows={templates.map(item => ({
 				...item,
-				actions: (
-					<div className={classes.actions} key={item.id}>
-						<Link to={`${TEMPLATES}/${item.id}`}>
-							<IconButton color="primary">
-								<OpenInNewIcon />
-							</IconButton>
-						</Link>
-						<Popper
-							onAgree={handleTemplateDelete(item.id)}
-							title="Удалить шаблон?"
-							agreeText="Удалить"
-							cancelText="Отмена"
-						>
-							{onClick => (
-								<IconButton onClick={onClick} color="secondary">
-									<DeleteIcon />
-								</IconButton>
-							)}
-						</Popper>
-					</div>
-				),
+				actions: renderActions(item.id),
 			}))}
-			columns={columns}
+			columns={COLUMNS}
 		>
 			<PagingState
 				pageSize={limit}
@@ -106,9 +122,15 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				onCurrentPageChange={handleCurrentPageChange}
 				onPageSizeChange={handlePageSizeChange}
 			/>
+			<FilteringState />
+			<IntegratedFiltering />
 			<CustomPaging totalCount={total} />
-			<VirtualTable />
+			<VirtualTable
+				messages={TABLE_MESSAGES}
+				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
+			/>
 			<TableHeaderRow />
+			<TableFilterRow messages={FILTER_MESSAGES} cellComponent={renderFilterCell} />
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} />
 		</Grid>
 	);
