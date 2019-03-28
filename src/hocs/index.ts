@@ -1,5 +1,7 @@
-import withProgress from './withProgress';
-import withSnackbar from './withSnackbar';
-import withError from './withError';
+export { default as withProgress } from './withProgress';
 
-export { withProgress, withSnackbar, withError };
+export { default as withSnackbar } from './withSnackbar';
+
+export { default as withError } from './withError';
+
+export { default as withForm } from './withForm';
