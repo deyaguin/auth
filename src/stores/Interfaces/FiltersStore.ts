@@ -1,6 +1,6 @@
 interface IFiltersStore {
-	filters: { [name: string]: number | boolean | string };
-	setFilters: (filters: { [name: string]: number | boolean | string }) => void;
+	filters: { [name: string]: any };
+	setFilters: (filters: { [name: string]: any }) => void;
 	clearFilters: () => void;
 }
 

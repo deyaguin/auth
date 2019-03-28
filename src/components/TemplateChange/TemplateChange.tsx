@@ -10,46 +10,11 @@ import Options from './Options';
 import Tasks from './Tasks';
 import RestrictionsTable from './RestrictionsTable';
 import Review from './Review';
+import { TasksType } from './types';
 
 type SetValue = (key: string, value: any) => void;
 
 type SetError = (key: string, value: boolean) => void;
-
-const STEPS: {
-	[name: string]: {
-		label: string;
-		render: (
-			setValue: SetValue,
-			values: { [name: string]: boolean },
-			errors: { [name: string]: boolean },
-		) => ReactNode;
-	};
-} = {
-	0: {
-		label: 'Укажите параметры шаблона',
-		render: (setValue, values, errors) => (
-			<Options values={values} errors={errors} setValue={setValue} />
-		),
-	},
-	1: {
-		label: 'Выберите задачи',
-		render: (values: any) => <Tasks {...values} />,
-	},
-	2: {
-		label: 'Добавьте ограничения',
-		render: (values: any) => <RestrictionsTable {...values} />,
-	},
-	3: {
-		label: 'review',
-		render: (values: any) => <Review {...values} />,
-	},
-};
-
-const INITIAL_VALUES = {
-	comment: '',
-	name: '',
-	tags: '',
-};
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -76,6 +41,7 @@ const styles = (theme: Theme) =>
 	});
 
 interface ITemplateChangeProps extends WithStyles<typeof styles> {
+	tasks: TasksType;
 	values: { [name: string]: any };
 	errors: { [name: string]: boolean };
 	setError: SetError;
@@ -88,14 +54,24 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	errors,
 	setValue,
 	setError,
+	tasks,
 }) => {
-	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(0);
+	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(1);
+
+	const isFirstStep = activeStep === 0;
+
+	const isSecondStep = activeStep === 1;
+
+	const isThirdStep = activeStep === 2;
+
+	const isFourthStep = activeStep === 3;
 
 	const handleNextStep = () => {
 		switch (activeStep) {
 			case 0: {
 				if (!values.name) {
 					setError('name', true);
+
 					return;
 				}
 			}
@@ -140,19 +116,37 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		);
 	};
 
+	const renderStepper: () => ReactNode = () => (
+		<Stepper activeStep={activeStep}>
+			<Step>
+				<StepLabel>Укажите параметры шаблона</StepLabel>
+			</Step>
+			<Step>
+				<StepLabel>Выберите задачи</StepLabel>
+			</Step>
+			<Step>
+				<StepLabel>Добавьте ограничения</StepLabel>
+			</Step>
+			<Step>
+				<StepLabel>Проверка </StepLabel>
+			</Step>
+		</Stepper>
+	);
+
+	const renderContent: () => ReactNode = () => (
+		<div className={classes.content}>
+			{isFirstStep && <Options values={values} errors={errors} setValue={setValue} />}
+			{isSecondStep && <Tasks values={values} errors={errors} setValue={setValue} tasks={tasks} />}
+			{isThirdStep && <RestrictionsTable />}
+			{isFourthStep && <Review />}
+			{renderActions()}
+		</div>
+	);
+
 	return (
 		<section className={classes.container}>
-			<Stepper activeStep={activeStep}>
-				{Object.keys(STEPS).map((key: string) => (
-					<Step key={key}>
-						<StepLabel>{STEPS[key].label}</StepLabel>
-					</Step>
-				))}
-			</Stepper>
-			<div className={classes.content}>
-				{STEPS[activeStep].render(setValue, values, errors)}
-				{renderActions()}
-			</div>
+			{renderStepper()}
+			{renderContent()}
 		</section>
 	);
 };

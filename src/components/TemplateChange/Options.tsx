@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -27,7 +27,9 @@ interface IOprionsProps extends WithStyles<typeof styles> {
 }
 
 const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
-	const handleSetValue = (key: string) => (e: any) => {
+	const handleSetValue = (key: string) => (
+		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+	) => {
 		setValue(key, e.currentTarget.value);
 	};
 
@@ -39,7 +41,7 @@ const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 				className={classes.field}
 				label="Название"
 				variant="outlined"
-				value={values.name}
+				value={values.name || ''}
 				error={errors.name}
 				helperText={errors.name && 'Введите значение'}
 			/>
@@ -48,7 +50,7 @@ const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 				className={classes.field}
 				label="Теги"
 				variant="outlined"
-				value={values.tags}
+				value={values.tags || ''}
 			/>
 			<TextField
 				onChange={handleSetValue('comment')}
@@ -57,7 +59,7 @@ const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 				label="Комментарий"
 				variant="outlined"
 				rows={6}
-				value={values.comment}
+				value={values.comment || ''}
 			/>
 		</div>
 	);

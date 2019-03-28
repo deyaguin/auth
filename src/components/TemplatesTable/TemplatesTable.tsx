@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	PagingState,
@@ -17,6 +17,7 @@ import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Badge from '@material-ui/core/Badge';
+import Tooltip from '@material-ui/core/Tooltip';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CheckIcon from '@material-ui/icons/Check';
@@ -109,13 +110,17 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	const renderActions = (id: string) => (
 		<div className={classes.actions} key={id}>
 			<Link to={`${TEMPLATES}/${id}`}>
-				<IconButton color="primary">
-					<OpenInNewIcon />
-				</IconButton>
+				<Tooltip title="Открыть шаблон">
+					<IconButton color="primary">
+						<OpenInNewIcon />
+					</IconButton>
+				</Tooltip>
 			</Link>
-			<IconButton color="primary">
-				<EditIcon />
-			</IconButton>
+			<Tooltip title="Редактировать шаблон">
+				<IconButton color="primary">
+					<EditIcon />
+				</IconButton>
+			</Tooltip>
 			<Popover
 				onAgree={handleTemplateDelete(id)}
 				title="Удалить шаблон?"
@@ -123,9 +128,11 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				cancelText="Отмена"
 			>
 				{(setButtonRef: (node: any) => void, onClick) => (
-					<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
-						<DeleteIcon />
-					</IconButton>
+					<Tooltip title="Удалить шаблон">
+						<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
+							<DeleteIcon />
+						</IconButton>
+					</Tooltip>
 				)}
 			</Popover>
 		</div>
@@ -134,24 +141,30 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	const renderHeaderActions = () => (
 		<div className={classes.actions}>
 			{filterIsVisible ? (
-				<IconButton color="primary" onClick={handleClickFilterButton}>
-					<CheckIcon />
-				</IconButton>
+				<Tooltip title="Применить фильтры">
+					<IconButton color="primary" onClick={handleClickFilterButton}>
+						<CheckIcon />
+					</IconButton>
+				</Tooltip>
 			) : (
-				<IconButton color="primary" onClick={handleClickFilterButton}>
-					<Badge badgeContent={filtersCount} color="primary">
-						<FilterListIcon />
-					</Badge>
-				</IconButton>
+				<Tooltip title="Фильтрация">
+					<IconButton color="primary" onClick={handleClickFilterButton}>
+						<Badge badgeContent={filtersCount} color="primary">
+							<FilterListIcon />
+						</Badge>
+					</IconButton>
+				</Tooltip>
 			)}
 		</div>
 	);
 
 	const renderFilterActions = () => (
 		<div className={classes.actions}>
-			<IconButton color="secondary" onClick={handleCloseFilter}>
-				<ClearIcon />
-			</IconButton>
+			<Tooltip title="Очистить фильтры">
+				<IconButton color="secondary" onClick={handleCloseFilter}>
+					<ClearIcon />
+				</IconButton>
+			</Tooltip>
 		</div>
 	);
 

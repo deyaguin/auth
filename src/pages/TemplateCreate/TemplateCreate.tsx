@@ -12,12 +12,17 @@ const styles = (theme: Theme) =>
 
 interface ITemplateCreateProps extends WithStyles<typeof styles> {
 	templateCreate: (values: any) => void;
+	tasks: Array<{ id: string; name: string; operations: Array<{ id: string; name: string }> }>;
 }
 
-const TemplateCreate: FunctionComponent<ITemplateCreateProps> = ({ templateCreate, classes }) => {
+const TemplateCreate: FunctionComponent<ITemplateCreateProps> = ({
+	templateCreate,
+	tasks,
+	classes,
+}) => {
 	return (
 		<Page contentClass={classes.pageContainer} headerTitle="Создание шаблона">
-			<TemplateChange />
+			<TemplateChange tasks={tasks} />
 		</Page>
 	);
 };
