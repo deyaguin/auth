@@ -29,7 +29,7 @@ interface IOprionsProps extends WithStyles<typeof styles> {
 const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 	const handleSetValue = (key: string) => (
 		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-	) => {
+	): void => {
 		setValue(key, e.currentTarget.value);
 	};
 

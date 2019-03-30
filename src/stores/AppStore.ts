@@ -13,7 +13,7 @@ class AppStore extends Store {
 		this.drawerOpen = true;
 	}
 
-	@action public setDrawerOpen = (drawerOpen: boolean) => {
+	@action public setDrawerOpen = (drawerOpen: boolean): void => {
 		this.drawerOpen = drawerOpen;
 	};
 

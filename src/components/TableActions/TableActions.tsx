@@ -19,18 +19,18 @@ const TableActions: FC<ITableActionsProps> = ({
 	actions,
 	width = TABLE_ACTIONS_WIDTH,
 }) => {
-	const getterComputed: any = ({ tableColumns }: Getters) => [
+	const getterComputed: any = ({ tableColumns }: Getters): any => [
 		...tableColumns,
 		{ key: 'actions', type: 'actions', width },
 	];
 
-	const tableBodyPredicate = ({ tableColumn, tableRow }: Getters) =>
+	const tableBodyPredicate = ({ tableColumn, tableRow }: Getters): boolean =>
 		tableColumn.type === 'actions' && tableRow.type === Table.ROW_TYPE;
 
-	const tableFilterPredicate = ({ tableColumn, tableRow }: Getters) =>
+	const tableFilterPredicate = ({ tableColumn, tableRow }: Getters): boolean =>
 		tableColumn.type === 'actions' && tableRow.type === TableFilterRow.ROW_TYPE;
 
-	const tableHeaderPredicate = ({ tableColumn, tableRow }: Getters) =>
+	const tableHeaderPredicate = ({ tableColumn, tableRow }: Getters): boolean =>
 		tableColumn.type === 'actions' && tableRow.type === TableHeaderRow.ROW_TYPE;
 
 	return (
@@ -39,17 +39,17 @@ const TableActions: FC<ITableActionsProps> = ({
 			<Template name="tableCell" predicate={tableBodyPredicate}>
 				{(params: Getters) => (
 					<TemplateConnector>
-						{() => <TableCell>{actions(params.tableRow.row.id)}</TableCell>}
+						{(): ReactNode => <TableCell>{actions(params.tableRow.row.id)}</TableCell>}
 					</TemplateConnector>
 				)}
 			</Template>
 			<Template name="tableCell" predicate={tableFilterPredicate}>
-				{() => (
+				{(): ReactNode => (
 					<TemplateConnector>{() => <TableCell>{filterActions()}</TableCell>}</TemplateConnector>
 				)}
 			</Template>
 			<Template name="tableCell" predicate={tableHeaderPredicate}>
-				{() => (
+				{(): ReactNode => (
 					<TemplateConnector>{() => <TableCell>{headerActions()}</TableCell>}</TemplateConnector>
 				)}
 			</Template>

@@ -56,21 +56,21 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		this.filtersMap = {};
 	}
 
-	@action public setLoading = (loading: boolean) => {
+	@action public setLoading = (loading: boolean): void => {
 		this.loading = loading;
 	};
 
-	@action public setLimit = (limit: number) => {
+	@action public setLimit = (limit: number): void => {
 		this.limit = limit;
 
 		this.offset = 0;
 	};
 
-	@action public setOffset = (offset: number) => {
+	@action public setOffset = (offset: number): void => {
 		this.offset = offset;
 	};
 
-	@action public templateCreate = ({ name, comment }: { name: string; comment: string }) => {
+	@action public templateCreate = ({ name, comment }: { name: string; comment: string }): void => {
 		const id = Object.keys(this.templatesMap).length.toString();
 
 		this.templatesMap = {
@@ -79,15 +79,15 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		};
 	};
 
-	@action public templateDelete = (id: string) => {
+	@action public templateDelete = (id: string): void => {
 		delete this.templatesMap[id];
 	};
 
-	@action public setFilters = (filters: IFilters) => {
+	@action public setFilters = (filters: IFilters): void => {
 		this.filtersMap = { ...this.filtersMap, ...filters };
 	};
 
-	@action public clearFilters = () => {
+	@action public clearFilters = (): void => {
 		this.filtersMap = {};
 	};
 

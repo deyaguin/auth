@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, WithStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -46,7 +46,7 @@ interface IAppDrawerProps extends WithStyles<typeof styles> {
 }
 
 const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
-	const renderHeader = (): ReactElement => (
+	const renderHeader = (): ReactNode => (
 		<div className={classes.drawerHeader}>
 			<IconButton onClick={onMenuClose}>
 				<ChevronLeftIcon />
@@ -54,7 +54,7 @@ const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 		</div>
 	);
 
-	const renderMenuItem = (route: string, name: string): ReactElement => (
+	const renderMenuItem = (route: string, name: string): ReactNode => (
 		<Link className={classes.link} to={route}>
 			<ListItem className={classes.menuItem} button={true}>
 				<Typography variant="button">{name}</Typography>
@@ -62,7 +62,7 @@ const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 		</Link>
 	);
 
-	const renderMenu = (): ReactElement => (
+	const renderMenu = (): ReactNode => (
 		<List className={classes.menu}>
 			{renderMenuItem(routes.USERS, 'Пользователи')}
 			{renderMenuItem(routes.TEMPLATES, 'Шаблоны')}

@@ -66,7 +66,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 
 	const isFourthStep: boolean = activeStep === 3;
 
-	const handleNextStep: () => void = () => {
+	const handleNextStep = (): void => {
 		switch (activeStep) {
 			case 0: {
 				if (!values.name) {
@@ -84,15 +84,15 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		setActiveStep(activeStep + 1);
 	};
 
-	const handlePrevStep: () => void = () => {
+	const handlePrevStep = (): void => {
 		setActiveStep(activeStep - 1);
 	};
 
-	const handleComplete: () => void = () => {
+	const handleComplete = (): void => {
 		console.log('completed');
 	};
 
-	const renderActions: () => ReactNode = () => {
+	const renderActions = (): ReactNode => {
 		const isLastStep = activeStep === 3;
 
 		return (
@@ -116,7 +116,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		);
 	};
 
-	const renderStepper: () => ReactNode = () => (
+	const renderStepper = (): ReactNode => (
 		<Stepper activeStep={activeStep}>
 			<Step>
 				<StepLabel>Укажите параметры шаблона</StepLabel>
@@ -133,7 +133,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		</Stepper>
 	);
 
-	const renderContent: () => ReactNode = () => (
+	const renderContent = (): ReactNode => (
 		<div className={classes.content}>
 			{isFirstStep && <Options values={values} errors={errors} setValue={setValue} />}
 			{isSecondStep && (

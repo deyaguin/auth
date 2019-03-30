@@ -70,15 +70,15 @@ class Popper extends Component<IPopperProps, { open: boolean }> {
 		);
 	}
 
-	private onClose = () => {
+	private onClose = (): void => {
 		this.setState({ open: false });
 	};
 
-	private onOpen = () => {
+	private onOpen = (): void => {
 		this.setState({ open: true });
 	};
 
-	private handleAgree = () => {
+	private handleAgree = (): void => {
 		const { onAgree } = this.props;
 
 		onAgree();
@@ -86,7 +86,7 @@ class Popper extends Component<IPopperProps, { open: boolean }> {
 		this.onClose();
 	};
 
-	private handleCancel = () => {
+	private handleCancel = (): void => {
 		const { onCancel } = this.props;
 
 		if (onCancel) {

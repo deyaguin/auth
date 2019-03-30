@@ -167,11 +167,11 @@ class TasksStore extends Store implements IFiltersStore {
 		this.filtersMap = {};
 	}
 
-	@action public setFilters = (filters: IFilters) => {
+	@action public setFilters = (filters: IFilters): void => {
 		this.filtersMap = { ...this.filtersMap, ...filters };
 	};
 
-	@action public clearFilters = () => {
+	@action public clearFilters = (): void => {
 		this.filtersMap = {};
 	};
 

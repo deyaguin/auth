@@ -43,7 +43,7 @@ interface ITasksProps extends WithStyles<typeof styles> {
 }
 
 const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
-	const handleSelectTask: (result: DropResult) => void = ({ destination, source, draggableId }) => {
+	const handleSelectTask = ({ destination, source, draggableId }: DropResult): void => {
 		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
 			setValue('selectedTasks', {
 				...selectedTasks,

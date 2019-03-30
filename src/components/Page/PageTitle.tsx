@@ -18,7 +18,7 @@ interface IPageTitleProps extends WithStyles<typeof styles> {
 }
 
 const PageTitle: FC<IPageTitleProps> = ({ children, actions, classes }) => {
-	const hasActions = actions && actions.length > 0;
+	const hasActions: boolean | undefined = actions && actions.length > 0;
 
 	return (
 		<div className={classes.container}>

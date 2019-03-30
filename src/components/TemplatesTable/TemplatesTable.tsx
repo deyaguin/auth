@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	PagingState,
@@ -82,32 +82,35 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	setFilters,
 	clearFilters,
 }) => {
-	const [filterIsVisible, setFilterIsVisible] = useState(false);
+	const [filterIsVisible, setFilterIsVisible]: [
+		boolean,
+		(filterIsVisible: boolean) => void
+	] = useState(false);
 
-	const filtersCount = Object.keys(filters).length;
+	const filtersCount: number = Object.keys(filters).length;
 
-	const getFilters: () => Array<{ columnName: string; value: any }> = () => {
+	const getFilters = (): Array<{ columnName: string; value: any }> => {
 		return Object.keys(filters).map((key: string) => ({ columnName: key, value: filters[key] }));
 	};
 
-	const handleClickFilterButton = () => setFilterIsVisible(!filterIsVisible);
+	const handleClickFilterButton = (): void => setFilterIsVisible(!filterIsVisible);
 
-	const handleSetFilter = (values: any) => {
+	const handleSetFilter = (values: any): void => {
 		setFilters({
 			...filters,
 			...values.reduce((acc: any, item: any) => ({ ...acc, [item.columnName]: item.value }), {}),
 		});
 	};
 
-	const handleCloseFilter = () => {
+	const handleCloseFilter = (): void => {
 		clearFilters();
 
 		setFilterIsVisible(false);
 	};
 
-	const handleTemplateDelete = (id: string) => () => templateDelete(id);
+	const handleTemplateDelete = (id: string) => (): void => templateDelete(id);
 
-	const renderActions = (id: string) => (
+	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
 			<Link to={`${TEMPLATES}/${id}`}>
 				<Tooltip title="Открыть шаблон">
@@ -138,7 +141,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 		</div>
 	);
 
-	const renderHeaderActions = () => (
+	const renderHeaderActions = (): ReactNode => (
 		<div className={classes.actions}>
 			{filterIsVisible ? (
 				<Tooltip title="Применить фильтры">
@@ -158,7 +161,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 		</div>
 	);
 
-	const renderFilterActions = () => (
+	const renderFilterActions = (): ReactNode => (
 		<div className={classes.actions}>
 			<Tooltip title="Очистить фильтры">
 				<IconButton color="secondary" onClick={handleCloseFilter}>

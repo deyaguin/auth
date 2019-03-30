@@ -13,11 +13,11 @@ class SnackbarStore {
 		this.action = null;
 	}
 
-	@action public onClose = () => {
+	@action public onClose = (): void => {
 		this.open = false;
 	};
 
-	@action public setSnackbar = (message: string, type?: string) => {
+	@action public setSnackbar = (message: string, type?: string): void => {
 		this.message = message;
 		this.type = type || 'default';
 		this.open = true;
@@ -27,7 +27,7 @@ class SnackbarStore {
 		}, 5000);
 	};
 
-	@action public onAction = async () => {
+	@action public onAction = async (): Promise<void> => {
 		if (this.action) {
 			await this.action();
 		}

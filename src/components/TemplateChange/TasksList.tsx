@@ -121,24 +121,22 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		);
 	}
 
-	private handleFilterTask: (filterValue: string) => (taks: ITask) => void = filterValue => task =>
+	private handleFilterTask = (filterValue: string) => (task: ITask): boolean =>
 		task.name.toLowerCase().includes(filterValue.toLowerCase());
 
-	private handleSetOpen: (id: string) => () => void = id => () => {
+	private handleSetOpen = (id: string) => (): void => {
 		const { collapsedTasks } = this.state;
 
 		this.setState({ collapsedTasks: { ...collapsedTasks, [id]: !collapsedTasks[id] } });
 	};
 
-	private handleSetFilterIsVisible: () => void = () => {
+	private handleSetFilterIsVisible = (): void => {
 		const { filterIsVisible } = this.state;
 
 		this.setState({ filterIsVisible: !filterIsVisible });
 	};
 
-	private handleSetFilterValue: (
-		e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-	) => void = e => {
+	private handleSetFilterValue = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
 		const { tasks } = this.props;
 
 		this.setState({
@@ -147,7 +145,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		});
 	};
 
-	private renderTasks: () => ReactNode = () => {
+	private renderTasks = (): ReactNode => {
 		const { tasks } = this.props;
 		const { filterValue } = this.state;
 
@@ -158,7 +156,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		return renderedTasks;
 	};
 
-	private renderFilterListItem: () => ReactNode = () => {
+	private renderFilterListItem = (): ReactNode => {
 		const { filterValue } = this.state;
 
 		return (
@@ -171,7 +169,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		);
 	};
 
-	private renderListFooter: () => ReactNode = () => {
+	private renderListFooter = (): ReactNode => {
 		const { classes, tasks } = this.props;
 		const { count } = this.state;
 
@@ -182,7 +180,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		);
 	};
 
-	private renderListItem: (task: ITask, i: number) => ReactNode = (task, i) => {
+	private renderListItem = (task: ITask, i: number): ReactNode => {
 		const { classes } = this.props;
 		const { collapsedTasks } = this.state;
 

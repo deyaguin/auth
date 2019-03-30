@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement } from 'react';
 
 type SetValue = (key: string, value: any) => void;
 
 type SetError = (key: string, value: boolean) => void;
 
-const withForm = (Children: any) => (props: any) => {
+const withForm = (Children: any) => (props: any): ReactElement => {
 	const [values, setValues]: [{ [name: string]: any }, (value: any) => void] = useState(
 		props.initialValues || {},
 	);
