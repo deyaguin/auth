@@ -10,11 +10,7 @@ import Options from './Options';
 import Tasks from './Tasks';
 import RestrictionsTable from './RestrictionsTable';
 import Review from './Review';
-import { ITask } from './types';
-
-type SetValue = (key: string, value: any) => void;
-
-type SetError = (key: string, value: boolean) => void;
+import { ITask, IValues, IErrors, SetValue, SetError } from './types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -42,8 +38,8 @@ const styles = (theme: Theme) =>
 
 interface ITemplateChangeProps extends WithStyles<typeof styles> {
 	tasks: ITask[];
-	values: { [name: string]: any };
-	errors: { [name: string]: boolean };
+	values: IValues;
+	errors: IErrors;
 	setError: SetError;
 	setValue: SetValue;
 }
@@ -69,16 +65,23 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	const handleNextStep = (): void => {
 		switch (activeStep) {
 			case 0: {
+				console.log(values);
 				if (!values.name) {
 					setError('name', true);
 
 					return;
 				}
+				break;
 			}
 			case 1:
-				setActiveStep(activeStep + 1);
+				if (!values.selectedTasks || Object.keys(values.selectedTasks).length < 1) {
+					setError('selectedTasks', true);
+
+					return;
+				}
+				break;
 			case 2:
-				setActiveStep(activeStep + 1);
+				break;
 		}
 
 		setActiveStep(activeStep + 1);
@@ -92,29 +95,25 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		console.log('completed');
 	};
 
-	const renderActions = (): ReactNode => {
-		const isLastStep = activeStep === 3;
-
-		return (
-			<div className={classes.actions}>
-				<Button
-					color="primary"
-					variant="contained"
-					disabled={activeStep === 0}
-					onClick={handlePrevStep}
-				>
-					Назад
-				</Button>
-				<Button
-					color="primary"
-					variant="contained"
-					onClick={isLastStep ? handleComplete : handleNextStep}
-				>
-					{isLastStep ? 'Готово' : 'Далее'}
-				</Button>
-			</div>
-		);
-	};
+	const renderActions = (): ReactNode => (
+		<div className={classes.actions}>
+			<Button
+				color="primary"
+				variant="contained"
+				disabled={activeStep === 0}
+				onClick={handlePrevStep}
+			>
+				Назад
+			</Button>
+			<Button
+				color="primary"
+				variant="contained"
+				onClick={isFourthStep ? handleComplete : handleNextStep}
+			>
+				{isFourthStep ? 'Готово' : 'Далее'}
+			</Button>
+		</div>
+	);
 
 	const renderStepper = (): ReactNode => (
 		<Stepper activeStep={activeStep}>

@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
+import { IValues, IErrors, SetValue } from './types';
+
 const styles = (theme: Theme) =>
 	createStyles({
 		commentField: {
@@ -21,9 +23,9 @@ const styles = (theme: Theme) =>
 	});
 
 interface IOprionsProps extends WithStyles<typeof styles> {
-	setValue: (key: string, value: any) => void;
-	errors: { [name: string]: boolean };
-	values: { [name: string]: any };
+	setValue: SetValue;
+	errors: IErrors;
+	values: IValues;
 }
 
 const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {

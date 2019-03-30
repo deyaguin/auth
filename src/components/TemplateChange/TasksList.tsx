@@ -1,4 +1,5 @@
 import React, { Component, ReactNode, ChangeEvent } from 'react';
+import classNames from 'classnames';
 import { Draggable, Droppable, DraggableProvided, DroppableProvided } from 'react-beautiful-dnd';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -11,14 +12,19 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
+import Tooltip from '@material-ui/core/Tooltip';
+import Checkbox from '@material-ui/core/Checkbox';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { ITask } from './types';
+import { ITask, IOperation, SetValue } from './types';
 
 const styles = (theme: Theme) =>
 	createStyles({
+		filterInput: {
+			margin: `${theme.spacing.unit}px 0`,
+		},
 		list: {
 			display: 'flex',
 			flex: 1,
@@ -28,6 +34,20 @@ const styles = (theme: Theme) =>
 		},
 		listFooter: {
 			padding: theme.spacing.unit * 2,
+		},
+		listFooterError: {
+			color: theme.palette.error.main,
+		},
+		listItem: {
+			display: 'flex',
+			flexDirection: 'column',
+		},
+		listItemContent: {
+			display: 'flex',
+			flex: 1,
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			width: '100%',
 		},
 		listSubheading: {
 			backgroundColor: '#FFFFFF',
@@ -44,14 +64,19 @@ const styles = (theme: Theme) =>
 			flex: 1,
 		},
 		nestedListItem: {
+			display: 'flex',
+			justifyContent: 'space-between',
 			paddingLeft: theme.spacing.unit * 3,
+		},
+		operationsListCollapse: {
+			width: '100%',
 		},
 		paper: {
 			display: 'flex',
 			flexDirection: 'column',
+			height: 470,
 			justifyContent: 'space-between',
 			margin: theme.spacing.unit * 5,
-			height: 470,
 			minWidth: 360,
 		},
 	});
@@ -60,6 +85,9 @@ interface ITasksListProps extends WithStyles<typeof styles> {
 	subheader: string;
 	tasks: ITask[];
 	droppableId: string;
+	error?: boolean;
+	setValue?: SetValue;
+	selectedTasks?: { [id: string]: ITask };
 }
 
 interface ITasksListState {
@@ -97,14 +125,16 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 						<ListSubheader className={classes.listSubheading}>
 							<div className={classes.listSubheadingTitle}>
 								{subheader}
-								<IconButton
-									color={filterIsVisible ? 'primary' : 'default'}
-									onClick={this.handleSetFilterIsVisible}
-								>
-									<FilterListIcon />
-								</IconButton>
+								<Tooltip title="Фильтрация">
+									<IconButton
+										color={filterIsVisible ? 'primary' : 'default'}
+										onClick={this.handleSetFilterIsVisible}
+									>
+										<FilterListIcon />
+									</IconButton>
+								</Tooltip>
 							</div>
-							{filterIsVisible && this.renderFilterListItem()}
+							{this.renderFilterListItem()}
 						</ListSubheader>
 					}
 				>
@@ -145,6 +175,15 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		});
 	};
 
+	private handleSetValue = (taskId: string, operationId: string) => (): void => {
+		const { setValue } = this.props;
+
+		if (setValue) {
+			// todo
+			setValue('selectedTasks', {});
+		}
+	};
+
 	private renderTasks = (): ReactNode => {
 		const { tasks } = this.props;
 		const { filterValue } = this.state;
@@ -157,26 +196,70 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 	};
 
 	private renderFilterListItem = (): ReactNode => {
-		const { filterValue } = this.state;
+		const { classes } = this.props;
+		const { filterValue, filterIsVisible } = this.state;
 
-		return (
+		return filterIsVisible ? (
 			<Input
+				className={classes.filterInput}
 				placeholder="Фильтр"
 				fullWidth={true}
 				value={filterValue}
 				onChange={this.handleSetFilterValue}
 			/>
-		);
+		) : null;
 	};
 
 	private renderListFooter = (): ReactNode => {
-		const { classes, tasks } = this.props;
+		const { classes, tasks, error } = this.props;
 		const { count } = this.state;
 
 		return (
-			<Typography className={classes.listFooter} variant="caption">
-				Показано {count} из {tasks.length}
+			<Typography
+				className={classNames(classes.listFooter, { [classes.listFooterError]: error })}
+				variant="caption"
+			>
+				{count > 0 ? `Показано ${count} из ${tasks.length}` : error && 'Необходимо выбрать задачи'}
 			</Typography>
+		);
+	};
+
+	private renderOperationsList = (task: ITask): ReactNode => {
+		const { classes, setValue, selectedTasks } = this.props;
+		const { collapsedTasks } = this.state;
+
+		return (
+			<Collapse
+				className={classes.operationsListCollapse}
+				in={collapsedTasks[task.id]}
+				timeout="auto"
+				unmountOnExit={true}
+			>
+				<List disablePadding={true}>
+					{task.operations.map(operation => (
+						<ListItem
+							onClick={this.handleSetValue(task.id, operation.id)}
+							className={classes.nestedListItem}
+							button={true}
+							key={operation.id}
+						>
+							{setValue && selectedTasks && (
+								<ListItemIcon>
+									<Checkbox
+										checked={
+											selectedTasks[task.id].operations.filter(
+												(item: IOperation) => item.id === operation.id,
+											)[0].selected
+										}
+										onChange={this.handleSetValue(task.id, operation.id)}
+									/>
+								</ListItemIcon>
+							)}
+							<ListItemText>{operation.name}</ListItemText>
+						</ListItem>
+					))}
+				</List>
+			</Collapse>
 		);
 	};
 
@@ -194,21 +277,16 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 							divider={true}
 							button={true}
 							onClick={this.handleSetOpen(task.id)}
+							className={classes.listItem}
 						>
-							<ListItemText>{task.name}</ListItemText>
-							<ListItemIcon>
-								{collapsedTasks[task.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-							</ListItemIcon>
+							<div className={classes.listItemContent}>
+								<ListItemText>{task.name}</ListItemText>
+								<ListItemIcon>
+									{collapsedTasks[task.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+								</ListItemIcon>
+							</div>
+							{this.renderOperationsList(task)}
 						</ListItem>
-						<Collapse in={collapsedTasks[task.id]} timeout="auto" unmountOnExit={true}>
-							<List disablePadding={true}>
-								{task.operations.map(operation => (
-									<ListItem className={classes.nestedListItem} button={true} key={operation.id}>
-										<ListItemText>{operation.name}</ListItemText>
-									</ListItem>
-								))}
-							</List>
-						</Collapse>
 					</div>
 				)}
 			</Draggable>

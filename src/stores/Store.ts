@@ -1,5 +1,3 @@
-import { observable, action } from 'mobx';
-
 import { Services } from '../services';
 
 type SetSnackbarFunction = (message: string, type: string) => void;

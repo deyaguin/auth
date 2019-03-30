@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { omit, without } from 'ramda';
+import { omit } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { ITask } from './types';
+import { ITask, IOperation, IErrors, SetValue } from './types';
 import TasksList from './TasksList';
 
 const LIST = 'list';
@@ -36,18 +36,26 @@ const styles = (theme: Theme) =>
 	});
 
 interface ITasksProps extends WithStyles<typeof styles> {
-	setValue: (key: string, value: any) => void;
-	errors: { [name: string]: boolean };
+	setValue: SetValue;
+	errors: IErrors;
 	selectedTasks: { [name: string]: any };
 	tasks: ITask[];
 }
 
-const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
+const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, errors }) => {
 	const handleSelectTask = ({ destination, source, draggableId }: DropResult): void => {
 		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
+			const filteredTask: ITask = tasks.filter((item: ITask) => item.id === draggableId)[0];
+
 			setValue('selectedTasks', {
 				...selectedTasks,
-				[draggableId]: tasks.filter((item: ITask) => item.id === draggableId)[0],
+				[draggableId]: {
+					...filteredTask,
+					operations: filteredTask.operations.map((item: IOperation) => ({
+						...item,
+						selected: false,
+					})),
+				},
 			});
 		}
 
@@ -65,10 +73,23 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }
 			<div className={classes.container}>
 				<TasksList
 					droppableId={LIST}
-					tasks={without(selectedTasksArray, tasks)}
+					tasks={tasks.reduce((acc: ITask[], item: ITask) => {
+						if (selectedTasks[item.id]) {
+							return acc;
+						}
+
+						return [...acc, item];
+					}, [])}
 					subheader="Список задач:"
 				/>
-				<TasksList droppableId={SELECTED} tasks={selectedTasksArray} subheader="Выбрано:" />;
+				<TasksList
+					droppableId={SELECTED}
+					tasks={selectedTasksArray}
+					subheader="Выбрано:"
+					error={Boolean(errors.selectedTasks)}
+					setValue={setValue}
+					selectedTasks={selectedTasks}
+				/>
 			</div>
 		</DragDropContext>
 	);
