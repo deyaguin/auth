@@ -1,23 +1,18 @@
-import React, { FC, ReactNode, Fragment, useState } from 'react';
+import React, { FC } from 'react';
+import { omit, without } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { TasksType } from './types';
+import { ITask } from './types';
 import TasksList from './TasksList';
+
+const LIST = 'list';
+const SELECTED = 'selected';
 
 const styles = (theme: Theme) =>
 	createStyles({
 		container: {
+			alignItems: 'center',
 			display: 'flex',
 			height: '100%',
 			justifyContent: 'center',
@@ -43,16 +38,39 @@ const styles = (theme: Theme) =>
 interface ITasksProps extends WithStyles<typeof styles> {
 	setValue: (key: string, value: any) => void;
 	errors: { [name: string]: boolean };
-	values: { [name: string]: any };
-	tasks: TasksType;
+	selectedTasks: { [name: string]: any };
+	tasks: ITask[];
 }
 
-const Tasks: FC<ITasksProps> = ({ classes, values, setValue, tasks }) => {
+const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
+	const handleSelectTask: (result: DropResult) => void = ({ destination, source, draggableId }) => {
+		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
+			setValue('selectedTasks', {
+				...selectedTasks,
+				[draggableId]: tasks.filter((item: ITask) => item.id === draggableId)[0],
+			});
+		}
+
+		if (source.droppableId === SELECTED && destination && destination.droppableId === LIST) {
+			setValue('selectedTasks', omit([draggableId], selectedTasks));
+		}
+	};
+
+	const selectedTasksArray: ITask[] = Object.keys(selectedTasks).map(
+		(key: string) => selectedTasks[key],
+	);
+
 	return (
-		<div className={classes.container}>
-			<TasksList tasks={tasks} subheader="Список задач:" />
-			<TasksList tasks={tasks} subheader="Выбрано:" />
-		</div>
+		<DragDropContext onDragEnd={handleSelectTask}>
+			<div className={classes.container}>
+				<TasksList
+					droppableId={LIST}
+					tasks={without(selectedTasksArray, tasks)}
+					subheader="Список задач:"
+				/>
+				<TasksList droppableId={SELECTED} tasks={selectedTasksArray} subheader="Выбрано:" />;
+			</div>
+		</DragDropContext>
 	);
 };
 

@@ -10,7 +10,7 @@ import Options from './Options';
 import Tasks from './Tasks';
 import RestrictionsTable from './RestrictionsTable';
 import Review from './Review';
-import { TasksType } from './types';
+import { ITask } from './types';
 
 type SetValue = (key: string, value: any) => void;
 
@@ -41,7 +41,7 @@ const styles = (theme: Theme) =>
 	});
 
 interface ITemplateChangeProps extends WithStyles<typeof styles> {
-	tasks: TasksType;
+	tasks: ITask[];
 	values: { [name: string]: any };
 	errors: { [name: string]: boolean };
 	setError: SetError;
@@ -58,15 +58,15 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 }) => {
 	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(1);
 
-	const isFirstStep = activeStep === 0;
+	const isFirstStep: boolean = activeStep === 0;
 
-	const isSecondStep = activeStep === 1;
+	const isSecondStep: boolean = activeStep === 1;
 
-	const isThirdStep = activeStep === 2;
+	const isThirdStep: boolean = activeStep === 2;
 
-	const isFourthStep = activeStep === 3;
+	const isFourthStep: boolean = activeStep === 3;
 
-	const handleNextStep = () => {
+	const handleNextStep: () => void = () => {
 		switch (activeStep) {
 			case 0: {
 				if (!values.name) {
@@ -84,11 +84,11 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		setActiveStep(activeStep + 1);
 	};
 
-	const handlePrevStep = () => {
+	const handlePrevStep: () => void = () => {
 		setActiveStep(activeStep - 1);
 	};
 
-	const handleComplete = () => {
+	const handleComplete: () => void = () => {
 		console.log('completed');
 	};
 
@@ -136,7 +136,14 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	const renderContent: () => ReactNode = () => (
 		<div className={classes.content}>
 			{isFirstStep && <Options values={values} errors={errors} setValue={setValue} />}
-			{isSecondStep && <Tasks values={values} errors={errors} setValue={setValue} tasks={tasks} />}
+			{isSecondStep && (
+				<Tasks
+					selectedTasks={values.selectedTasks}
+					errors={errors}
+					setValue={setValue}
+					tasks={tasks}
+				/>
+			)}
 			{isThirdStep && <RestrictionsTable />}
 			{isFourthStep && <Review />}
 			{renderActions()}
