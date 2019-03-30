@@ -64,9 +64,15 @@ const styles = (theme: Theme) =>
 			flex: 1,
 		},
 		nestedListItem: {
+			alignItems: 'center',
 			display: 'flex',
 			justifyContent: 'space-between',
+			marginTop: theme.spacing.unit,
+			minHeight: 48,
 			paddingLeft: theme.spacing.unit * 3,
+		},
+		operationCheckbox: {
+			marginRight: theme.spacing.unit / 2,
 		},
 		operationsListCollapse: {
 			width: '100%',
@@ -235,30 +241,26 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 				timeout="auto"
 				unmountOnExit={true}
 			>
-				<List disablePadding={true}>
-					{task.operations.map(operation => (
-						<ListItem
-							onClick={this.handleSetValue(task.id, operation.id)}
-							className={classes.nestedListItem}
-							button={true}
-							key={operation.id}
-						>
-							{setValue && selectedTasks && (
-								<ListItemIcon>
-									<Checkbox
-										checked={
-											selectedTasks[task.id].operations.filter(
-												(item: IOperation) => item.id === operation.id,
-											)[0].selected
-										}
-										onChange={this.handleSetValue(task.id, operation.id)}
-									/>
-								</ListItemIcon>
-							)}
-							<ListItemText>{operation.name}</ListItemText>
-						</ListItem>
-					))}
-				</List>
+				{task.operations.map(operation => (
+					<div
+						onClick={this.handleSetValue(task.id, operation.id)}
+						className={classes.nestedListItem}
+						key={operation.id}
+					>
+						<ListItemText>{operation.name}</ListItemText>
+						{setValue && selectedTasks && (
+							<Checkbox
+								className={classes.operationCheckbox}
+								checked={
+									selectedTasks[task.id].operations.filter(
+										(item: IOperation) => item.id === operation.id,
+									)[0].selected
+								}
+								onChange={this.handleSetValue(task.id, operation.id)}
+							/>
+						)}
+					</div>
+				))}
 			</Collapse>
 		);
 	};
