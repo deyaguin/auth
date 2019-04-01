@@ -52,7 +52,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	setError,
 	tasks,
 }) => {
-	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(1);
+	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(0);
 
 	const isFirstStep: boolean = activeStep === 0;
 
