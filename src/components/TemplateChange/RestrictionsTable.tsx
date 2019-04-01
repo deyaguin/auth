@@ -44,14 +44,26 @@ const COLUMNS = [
 const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] }) => {
 	const tasksMap = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
-		operations: operations.map(({ attributes, state, ...restOperation }: IOperation) => ({
-			...restOperation,
-			attributes: attributes.map((item: IAttribute) => ({
-				...item,
-				attr: `${item.key} (${item.title})`,
-			})),
-			state: state || OPERATION_STATES.not_set,
-		})),
+		operations: operations.reduce(
+			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) => {
+				if (selected) {
+					return [
+						...acc,
+						{
+							...restOperation,
+							attributes: attributes.map((item: IAttribute) => ({
+								...item,
+								attr: `${item.key} (${item.title})`,
+							})),
+							state: state || OPERATION_STATES.not_set,
+						},
+					];
+				}
+
+				return acc;
+			},
+			[],
+		),
 	});
 
 	const getChildRows = (row: any, rootRows: ITask[]): any[] => {
