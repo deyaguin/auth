@@ -145,21 +145,17 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 
 	const renderHeaderActions = (): ReactNode => (
 		<div className={classes.actions}>
-			{filterIsVisible ? (
-				<Tooltip title="Применить фильтры">
-					<IconButton color="primary" onClick={handleClickFilterButton}>
-						<CheckIcon />
-					</IconButton>
-				</Tooltip>
-			) : (
-				<Tooltip title="Фильтрация">
-					<IconButton color="primary" onClick={handleClickFilterButton}>
+			<Tooltip title="Фильтрация">
+				<IconButton color="primary" onClick={handleClickFilterButton}>
+					{filterIsVisible ? (
+						<FilterListIcon />
+					) : (
 						<Badge badgeContent={filtersCount} color="primary">
 							<FilterListIcon />
 						</Badge>
-					</IconButton>
-				</Tooltip>
-			)}
+					)}
+				</IconButton>
+			</Tooltip>
 		</div>
 	);
 

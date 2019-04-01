@@ -5,11 +5,11 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 
-import Options from './Options';
-import Tasks from './Tasks';
-import RestrictionsTable from './RestrictionsTable';
-import Review from './Review';
-import { ITask, IValues, IErrors, SetValue, SetError } from './types';
+import Options from '../Options';
+import Tasks from '../Tasks';
+import RestrictionsTable from '../RestrictionsTable';
+import Review from '../Review/Review';
+import { ITask, IValues, IErrors, SetValue, SetError } from '../types';
 
 const styles = (theme: Theme) =>
 	createStyles({

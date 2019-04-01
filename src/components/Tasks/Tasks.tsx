@@ -4,7 +4,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import Fade from '@material-ui/core/Fade';
 
-import { ITask, IOperation, IErrors, SetValue } from './types';
+import { ITask, IOperation, IErrors, SetValue } from '../types';
 import TasksList from './TasksList';
 
 const LIST = 'list';

@@ -12,12 +12,16 @@ import {
 	TableHeaderRow,
 	TableFilterRow,
 	TableTreeColumn,
+	Table,
 } from '@devexpress/dx-react-grid-material-ui';
 import Paper from '@material-ui/core/Paper';
 
 import { TABLE_MESSAGES, OPERATION_STATES } from '../../constants/ui';
+import { ITask, IOperation, IAttribute, IErrors, SetValue } from '../types';
 import GridRootComponent from '../GridRootContainer';
-import { ITask, IOperation, IAttribute, IErrors, SetValue } from './types';
+import StatePicker from '../StatePicker';
+
+const { Cell } = Table;
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -42,7 +46,7 @@ const COLUMNS = [
 ];
 
 const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] }) => {
-	const tasksMap = ({ operations, ...restTask }: ITask): ITask => ({
+	const selectTasks = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
 		operations: operations.reduce(
 			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) => {
@@ -51,6 +55,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 						...acc,
 						{
 							...restOperation,
+
 							attributes: attributes.map((item: IAttribute) => ({
 								...item,
 								attr: `${item.key} (${item.title})`,
@@ -74,12 +79,29 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 		return rootRows;
 	};
 
+	const renderCellComponent = (props: any) => {
+		console.log(props);
+		if (props.column.name === 'state' && props.value) {
+			return (
+				<Cell {...props}>
+					<StatePicker value={props.value} setValue={v => console.log(v)} />
+				</Cell>
+			);
+		}
+
+		return (
+			<Cell {...props}>
+				<Paper>{props.value}</Paper>
+			</Cell>
+		);
+	};
+
 	return (
 		<Paper className={classes.container}>
-			<Grid rootComponent={GridRootComponent} rows={tasks.map(tasksMap)} columns={COLUMNS}>
+			<Grid rootComponent={GridRootComponent} rows={tasks.map(selectTasks)} columns={COLUMNS}>
 				<TreeDataState />
 				<CustomTreeData getChildRows={getChildRows} />
-				<VirtualTable messages={TABLE_MESSAGES} />
+				<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
 				<TableHeaderRow />
 				<TableTreeColumn for="name" />
 			</Grid>

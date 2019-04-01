@@ -4,7 +4,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import TextField from '@material-ui/core/TextField';
 import Fade from '@material-ui/core/Fade';
 
-import { IValues, IErrors, SetValue } from './types';
+import { IValues, IErrors, SetValue } from '../types';
 
 const styles = (theme: Theme) =>
 	createStyles({

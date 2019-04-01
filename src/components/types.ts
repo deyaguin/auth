@@ -1,4 +1,4 @@
-import { OPERATION_STATES } from '../../constants/ui';
+import { OPERATION_STATES } from '../constants/ui';
 
 export interface IAttribute {
 	key: string;
