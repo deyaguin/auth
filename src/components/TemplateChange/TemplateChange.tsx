@@ -65,7 +65,6 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	const handleNextStep = (): void => {
 		switch (activeStep) {
 			case 0: {
-				console.log(values);
 				if (!values.name) {
 					setError('name', true);
 

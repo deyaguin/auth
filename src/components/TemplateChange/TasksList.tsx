@@ -1,4 +1,5 @@
-import React, { Component, ReactNode, ChangeEvent } from 'react';
+import React, { Component, ReactNode, ChangeEvent, MouseEvent } from 'react';
+import { clone } from 'ramda';
 import classNames from 'classnames';
 import { Draggable, Droppable, DraggableProvided, DroppableProvided } from 'react-beautiful-dnd';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
@@ -181,12 +182,23 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		});
 	};
 
-	private handleSetValue = (taskId: string, operationId: string) => (): void => {
-		const { setValue } = this.props;
+	private handleSetValue = (taskId: string, operationId: string) => (
+		e: MouseEvent<HTMLDivElement | MouseEvent> | ChangeEvent<HTMLInputElement>,
+	): void => {
+		const { setValue, selectedTasks } = this.props;
 
-		if (setValue) {
-			// todo
-			setValue('selectedTasks', {});
+		e.stopPropagation();
+
+		if (setValue && selectedTasks) {
+			const selectedTask: ITask = clone(selectedTasks[taskId]);
+
+			const filteredOperation: IOperation = selectedTask.operations.filter(
+				item => item.id === operationId,
+			)[0];
+
+			filteredOperation.selected = !filteredOperation.selected;
+
+			setValue('selectedTasks', { ...selectedTasks, [taskId]: selectedTask });
 		}
 	};
 
