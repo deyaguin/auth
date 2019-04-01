@@ -80,7 +80,6 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 	};
 
 	const renderCellComponent = (props: any) => {
-		console.log(props);
 		if (props.column.name === 'state' && props.value) {
 			return (
 				<Cell {...props}>
@@ -89,11 +88,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 			);
 		}
 
-		return (
-			<Cell {...props}>
-				<Paper>{props.value}</Paper>
-			</Cell>
-		);
+		return <Cell {...props} />;
 	};
 
 	return (
