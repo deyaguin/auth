@@ -12,11 +12,11 @@ const TABLE_MESSAGES = {
 	noData: 'Нет данных',
 };
 
-enum OPERATION_STATES {
-	allowed = 'Разрешено',
-	banned = 'Запрещено',
-	not_set = 'Не задано',
-}
+const OPERATION_STATES: { [name: string]: string } = {
+	allowed: 'Разрешено',
+	banned: 'Запрещено',
+	not_set: 'Не задано',
+};
 
 export {
 	DRAWER_WIDTH,

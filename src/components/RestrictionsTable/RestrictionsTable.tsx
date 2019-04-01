@@ -45,8 +45,21 @@ const COLUMNS = [
 	{ name: 'value', title: 'Значение' },
 ];
 
-const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] }) => {
-	const selectTasks = ({ operations, ...restTask }: ITask): ITask => ({
+const RestrictionsTable: FC<IRestrictionsTableProps> = ({
+	classes,
+	tasks = [],
+	setValue,
+	errors,
+}) => {
+	const handleSetState = (value: string): void => {
+		console.log(value);
+	};
+
+	const handleSetCondition = (): void => {};
+
+	const handleSetValue = (): void => {};
+
+	const mapTasks = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
 		operations: operations.reduce(
 			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) => {
@@ -60,7 +73,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 								...item,
 								attr: `${item.key} (${item.title})`,
 							})),
-							state: state || OPERATION_STATES.not_set,
+							state: state || 'not_set',
 						},
 					];
 				}
@@ -83,7 +96,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 		if (props.column.name === 'state' && props.value) {
 			return (
 				<Cell {...props}>
-					<StatePicker value={props.value} setValue={v => console.log(v)} />
+					<StatePicker value={props.value} onChange={handleSetState} />
 				</Cell>
 			);
 		}
@@ -93,7 +106,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes, tasks = [] })
 
 	return (
 		<Paper className={classes.container}>
-			<Grid rootComponent={GridRootComponent} rows={tasks.map(selectTasks)} columns={COLUMNS}>
+			<Grid rootComponent={GridRootComponent} rows={tasks.map(mapTasks)} columns={COLUMNS}>
 				<TreeDataState />
 				<CustomTreeData getChildRows={getChildRows} />
 				<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />

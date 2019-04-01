@@ -1,5 +1,3 @@
-import { OPERATION_STATES } from '../constants/ui';
-
 export interface IAttribute {
 	key: string;
 	name: string;
@@ -13,7 +11,7 @@ export interface IOperation {
 	name: string;
 	taskId: string;
 	selected?: boolean;
-	state?: OPERATION_STATES;
+	state?: string;
 	attributes: IAttribute[];
 }
 

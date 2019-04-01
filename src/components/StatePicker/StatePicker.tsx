@@ -2,27 +2,22 @@ import React, { FC, ReactNode } from 'react';
 import TextField from '@material-ui/core/TextField';
 
 import { OPERATION_STATES } from '../../constants/ui';
-import { SetValue } from '../types';
 
 interface IStatePickerProps {
-	setValue: SetValue;
-	value: OPERATION_STATES;
+	onChange: (value: string) => void;
+	value: string;
 }
 
-const StatePicker: FC<IStatePickerProps> = ({ value, setValue }) => {
-	const handleSetValue = (e: any) => {};
-
-	const renderOptions = (): ReactNode[] => {
-		const options: ReactNode[] = [];
-
-		for (const key in OPERATION_STATES) {
-			if (key) {
-				options.push(<option key={key}>{OPERATION_STATES[key]}</option>);
-			}
-		}
-
-		return options;
+const StatePicker: FC<IStatePickerProps> = ({ value, onChange }) => {
+	const handleSetValue = (e: any) => {
+		onChange(e.currentTarget.value);
 	};
+
+	const options: ReactNode[] = Object.keys(OPERATION_STATES).map((key: string) => (
+		<option key={key} value={key}>
+			{OPERATION_STATES[key]}
+		</option>
+	));
 
 	return (
 		<TextField
@@ -32,7 +27,7 @@ const StatePicker: FC<IStatePickerProps> = ({ value, setValue }) => {
 			fullWidth={true}
 			SelectProps={{ native: true }}
 		>
-			{renderOptions()}
+			{options}
 		</TextField>
 	);
 };
