@@ -12,4 +12,17 @@ const TABLE_MESSAGES = {
 	noData: 'Нет данных',
 };
 
-export { DRAWER_WIDTH, TABLE_PAGE_SIZES, FILTER_MESSAGES, TABLE_MESSAGES, TABLE_ACTIONS_WIDTH };
+enum OPERATION_STATES {
+	allowed = 'Разрешено',
+	banned = 'Запрещено',
+	not_set = 'Не задано',
+}
+
+export {
+	DRAWER_WIDTH,
+	TABLE_PAGE_SIZES,
+	FILTER_MESSAGES,
+	TABLE_MESSAGES,
+	TABLE_ACTIONS_WIDTH,
+	OPERATION_STATES,
+};

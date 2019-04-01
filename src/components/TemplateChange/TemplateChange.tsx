@@ -51,7 +51,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	setError,
 	tasks,
 }) => {
-	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(0);
+	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(2);
 
 	const isFirstStep: boolean = activeStep === 0;
 
@@ -125,7 +125,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 				<StepLabel>Добавьте ограничения</StepLabel>
 			</Step>
 			<Step>
-				<StepLabel>Проверка </StepLabel>
+				<StepLabel>Предварительный просмотр </StepLabel>
 			</Step>
 		</Stepper>
 	);
@@ -141,7 +141,13 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 					tasks={tasks}
 				/>
 			)}
-			{isThirdStep && <RestrictionsTable />}
+			{isThirdStep && (
+				<RestrictionsTable
+					tasks={values.selectedTasks ? Object.values(values.selectedTasks) : []}
+					setValue={setValue}
+					errors={errors}
+				/>
+			)}
 			{isFourthStep && <Review />}
 			{actions}
 		</div>

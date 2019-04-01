@@ -38,7 +38,7 @@ const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 	};
 
 	return (
-		<Fade in={true} timeout={800}>
+		<Fade in={true} timeout={400}>
 			<div className={classes.container}>
 				<TextField
 					onChange={handleSetValue('name')}
