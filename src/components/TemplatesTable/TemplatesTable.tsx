@@ -119,11 +119,13 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 					</IconButton>
 				</Tooltip>
 			</Link>
-			<Tooltip title="Редактировать шаблон">
-				<IconButton color="primary">
-					<EditIcon />
-				</IconButton>
-			</Tooltip>
+			<Link to={`${TEMPLATES}/edit/${id}`}>
+				<Tooltip title="Редактировать шаблон">
+					<IconButton color="primary">
+						<EditIcon />
+					</IconButton>
+				</Tooltip>
+			</Link>
 			<Popover
 				onAgree={handleTemplateDelete(id)}
 				title="Удалить шаблон?"

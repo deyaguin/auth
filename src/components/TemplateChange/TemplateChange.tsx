@@ -5,7 +5,6 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 
-import { withForm } from '../../hocs';
 import Options from './Options';
 import Tasks from './Tasks';
 import RestrictionsTable from './RestrictionsTable';
@@ -91,10 +90,10 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	};
 
 	const handleComplete = (): void => {
-		console.log('completed');
+		console.log(values);
 	};
 
-	const renderActions = (): ReactNode => (
+	const actions: ReactNode = (
 		<div className={classes.actions}>
 			<Button
 				color="primary"
@@ -114,7 +113,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		</div>
 	);
 
-	const renderStepper = (): ReactNode => (
+	const stepper: ReactNode = (
 		<Stepper activeStep={activeStep}>
 			<Step>
 				<StepLabel>Укажите параметры шаблона</StepLabel>
@@ -131,7 +130,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		</Stepper>
 	);
 
-	const renderContent = (): ReactNode => (
+	const content: ReactNode = (
 		<div className={classes.content}>
 			{isFirstStep && <Options values={values} errors={errors} setValue={setValue} />}
 			{isSecondStep && (
@@ -144,16 +143,16 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 			)}
 			{isThirdStep && <RestrictionsTable />}
 			{isFourthStep && <Review />}
-			{renderActions()}
+			{actions}
 		</div>
 	);
 
 	return (
 		<section className={classes.container}>
-			{renderStepper()}
-			{renderContent()}
+			{stepper}
+			{content}
 		</section>
 	);
 };
 
-export default withForm(withStyles(styles)(TemplateChange));
+export default withStyles(styles)(TemplateChange);

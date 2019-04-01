@@ -91,6 +91,10 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		this.filtersMap = {};
 	};
 
+	@action public getTemplate = (id: string): Template => {
+		return toJS(this.templatesMap[id]);
+	};
+
 	@computed public get templates(): Template[] {
 		return Object.values(toJS(this.templatesMap)).slice(this.offset, this.offset + this.limit);
 	}

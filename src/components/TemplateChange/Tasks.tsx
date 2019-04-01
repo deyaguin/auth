@@ -52,7 +52,7 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, 
 					...filteredTask,
 					operations: filteredTask.operations.map((item: IOperation) => ({
 						...item,
-						selected: false,
+						selected: true,
 					})),
 				},
 			});

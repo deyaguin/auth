@@ -46,7 +46,7 @@ interface IAppDrawerProps extends WithStyles<typeof styles> {
 }
 
 const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
-	const renderHeader = (): ReactNode => (
+	const header: ReactNode = (
 		<div className={classes.drawerHeader}>
 			<IconButton onClick={onMenuClose}>
 				<ChevronLeftIcon />
@@ -62,7 +62,7 @@ const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 		</Link>
 	);
 
-	const renderMenu = (): ReactNode => (
+	const menu: ReactNode = (
 		<List className={classes.menu}>
 			{renderMenuItem(routes.USERS, 'Пользователи')}
 			{renderMenuItem(routes.TEMPLATES, 'Шаблоны')}
@@ -77,9 +77,9 @@ const AppDrawer: FC<IAppDrawerProps> = ({ open, onMenuClose, classes }) => {
 			open={open}
 			variant="persistent"
 		>
-			{renderHeader()}
+			{header}
 			<Divider />
-			{renderMenu()}
+			{menu}
 		</Drawer>
 	);
 };

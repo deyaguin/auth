@@ -6,7 +6,7 @@ import Auth from '../Auth';
 import Users from '../Users';
 import Templates from '../Templates';
 import Template from '../Template';
-import TemplateCreate from '../TemplateCreate';
+import TemplateChange from '../TemplateChange';
 import NotFound from '../NotFound';
 import { Layout } from '../../components';
 
@@ -31,7 +31,8 @@ const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) =>
 				<Route path={routes.AUTH} component={Auth} />
 				<Route path={routes.USERS} component={Users} />
 				<Route path={routes.TEMPLATES} component={Templates} exact={true} />
-				<Route path={routes.TEMPLATE_CREATE} component={TemplateCreate} exact={true} />
+				<Route path={routes.TEMPLATE_CREATE} component={TemplateChange} exact={true} />
+				<Route path={routes.TEMPLATE_EDIT} component={TemplateChange} exact={true} />
 				<Route path={routes.TEMPLATE} component={Template} exact={true} />
 				<Route component={NotFound} />
 			</Switch>
