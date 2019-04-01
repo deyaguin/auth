@@ -2,6 +2,7 @@ import React, { FC, ChangeEvent } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Fade from '@material-ui/core/Fade';
 
 import { IValues, IErrors, SetValue } from './types';
 
@@ -37,34 +38,36 @@ const Options: FC<IOprionsProps> = ({ classes, setValue, errors, values }) => {
 	};
 
 	return (
-		<div className={classes.container}>
-			<TextField
-				onChange={handleSetValue('name')}
-				required={true}
-				className={classes.field}
-				label="Название"
-				variant="outlined"
-				value={values.name || ''}
-				error={errors.name}
-				helperText={errors.name && 'Введите значение'}
-			/>
-			<TextField
-				onChange={handleSetValue('tags')}
-				className={classes.field}
-				label="Теги"
-				variant="outlined"
-				value={values.tags || ''}
-			/>
-			<TextField
-				onChange={handleSetValue('comment')}
-				className={classNames(classes.commentField, classes.field)}
-				multiline={true}
-				label="Комментарий"
-				variant="outlined"
-				rows={6}
-				value={values.comment || ''}
-			/>
-		</div>
+		<Fade in={true} timeout={800}>
+			<div className={classes.container}>
+				<TextField
+					onChange={handleSetValue('name')}
+					required={true}
+					className={classes.field}
+					label="Название"
+					variant="outlined"
+					value={values.name || ''}
+					error={errors.name}
+					helperText={errors.name && 'Введите значение'}
+				/>
+				<TextField
+					onChange={handleSetValue('tags')}
+					className={classes.field}
+					label="Теги"
+					variant="outlined"
+					value={values.tags || ''}
+				/>
+				<TextField
+					onChange={handleSetValue('comment')}
+					className={classNames(classes.commentField, classes.field)}
+					multiline={true}
+					label="Комментарий"
+					variant="outlined"
+					rows={6}
+					value={values.comment || ''}
+				/>
+			</div>
+		</Fade>
 	);
 };
 

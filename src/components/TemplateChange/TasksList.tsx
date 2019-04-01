@@ -15,6 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
 import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
+import Fade from '@material-ui/core/Fade';
+import Grow from '@material-ui/core/Grow';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -218,13 +220,15 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		const { filterValue, filterIsVisible } = this.state;
 
 		return filterIsVisible ? (
-			<Input
-				className={classes.filterInput}
-				placeholder="Фильтр"
-				fullWidth={true}
-				value={filterValue}
-				onChange={this.handleSetFilterValue}
-			/>
+			<Fade in={filterIsVisible}>
+				<Input
+					className={classes.filterInput}
+					placeholder="Фильтр"
+					fullWidth={true}
+					value={filterValue}
+					onChange={this.handleSetFilterValue}
+				/>
+			</Fade>
 		) : null;
 	};
 
@@ -285,22 +289,24 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 			<Draggable key={task.id} draggableId={task.id} index={i}>
 				{(provided: DraggableProvided) => (
 					<div ref={provided.innerRef}>
-						<ListItem
-							{...provided.draggableProps}
-							{...provided.dragHandleProps}
-							divider={true}
-							button={true}
-							onClick={this.handleSetOpen(task.id)}
-							className={classes.listItem}
-						>
-							<div className={classes.listItemContent}>
-								<ListItemText>{task.name}</ListItemText>
-								<ListItemIcon>
-									{collapsedTasks[task.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-								</ListItemIcon>
-							</div>
-							{this.renderOperationsList(task)}
-						</ListItem>
+						<Grow in={true} timeout={i * 50}>
+							<ListItem
+								{...provided.draggableProps}
+								{...provided.dragHandleProps}
+								divider={true}
+								button={true}
+								onClick={this.handleSetOpen(task.id)}
+								className={classes.listItem}
+							>
+								<div className={classes.listItemContent}>
+									<ListItemText>{task.name}</ListItemText>
+									<ListItemIcon>
+										{collapsedTasks[task.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+									</ListItemIcon>
+								</div>
+								{this.renderOperationsList(task)}
+							</ListItem>
+						</Grow>
 					</div>
 				)}
 			</Draggable>

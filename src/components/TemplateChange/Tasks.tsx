@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { omit } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import Fade from '@material-ui/core/Fade';
 
 import { ITask, IOperation, IErrors, SetValue } from './types';
 import TasksList from './TasksList';
@@ -69,27 +70,29 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, 
 
 	return (
 		<DragDropContext onDragEnd={handleSelectTask}>
-			<div className={classes.container}>
-				<TasksList
-					droppableId={LIST}
-					tasks={tasks.reduce((acc: ITask[], item: ITask) => {
-						if (selectedTasks[item.id]) {
-							return acc;
-						}
+			<Fade in={true} timeout={400}>
+				<div className={classes.container}>
+					<TasksList
+						droppableId={LIST}
+						tasks={tasks.reduce((acc: ITask[], item: ITask) => {
+							if (selectedTasks[item.id]) {
+								return acc;
+							}
 
-						return [...acc, item];
-					}, [])}
-					subheader="Список задач:"
-				/>
-				<TasksList
-					droppableId={SELECTED}
-					tasks={selectedTasksArray}
-					subheader="Выбрано:"
-					error={Boolean(errors.selectedTasks)}
-					setValue={setValue}
-					selectedTasks={selectedTasks}
-				/>
-			</div>
+							return [...acc, item];
+						}, [])}
+						subheader="Список задач:"
+					/>
+					<TasksList
+						droppableId={SELECTED}
+						tasks={selectedTasksArray}
+						subheader="Выбрано:"
+						error={Boolean(errors.selectedTasks)}
+						setValue={setValue}
+						selectedTasks={selectedTasks}
+					/>
+				</div>
+			</Fade>
 		</DragDropContext>
 	);
 };

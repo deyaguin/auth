@@ -1,12 +1,17 @@
 import React, { FunctionComponent } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 
-import { TEMPLATE_CREATE } from '../../constants/routes';
+import { TEMPLATE_CREATE, TEMPLATES } from '../../constants/routes';
 import { Page, TemplateChange as TemplateChangeComponent } from '../../components';
 
 const styles = (theme: Theme) =>
 	createStyles({
+		link: {
+			textDecoration: 'none',
+		},
 		pageContainer: {
 			padding: theme.spacing.unit * 3,
 		},
@@ -46,7 +51,17 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 		match.path !== TEMPLATE_CREATE ? getTemplate(match.params.id) : {};
 
 	return (
-		<Page contentClass={classes.pageContainer} headerTitle={headerTitle}>
+		<Page
+			actions={[
+				<Link key="cancel" className={classes.link} to={TEMPLATES}>
+					<Button variant="contained" color="primary">
+						Отмена
+					</Button>
+				</Link>,
+			]}
+			contentClass={classes.pageContainer}
+			headerTitle={headerTitle}
+		>
 			<TemplateChangeComponent tasks={tasks} initialValues={initialValues} />
 		</Page>
 	);

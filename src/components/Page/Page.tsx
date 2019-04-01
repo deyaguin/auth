@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Fade from '@material-ui/core/Fade';
 
 import PageTitle from './PageTitle';
 
@@ -28,10 +29,12 @@ interface IPageProps extends WithStyles<typeof styles> {
 }
 
 const Page: FC<IPageProps> = ({ children, headerTitle, actions, contentClass, classes }) => (
-	<div className={classes.container}>
-		<PageTitle actions={actions}>{headerTitle}</PageTitle>
-		<Paper className={classNames(classes.content, contentClass)}>{children}</Paper>
-	</div>
+	<Fade in={true} timeout={400}>
+		<div className={classes.container}>
+			<PageTitle actions={actions}>{headerTitle}</PageTitle>
+			<Paper className={classNames(classes.content, contentClass)}>{children}</Paper>
+		</div>
+	</Fade>
 );
 
 export default withStyles(styles)(Page);

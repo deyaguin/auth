@@ -7,6 +7,8 @@ const styles = createStyles({
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {}
 
-const RestrictionsTable: FC<IRestrictionsTableProps> = () => <div>RestrictionsTable</div>;
+const RestrictionsTable: FC<IRestrictionsTableProps> = ({ classes }) => (
+	<div className={classes.container}>RestrictionsTable</div>
+);
 
 export default withStyles(styles)(RestrictionsTable);
