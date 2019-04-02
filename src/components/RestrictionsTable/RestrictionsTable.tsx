@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent } from 'react';
+import React, { FC, ChangeEvent, useState } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import {
 	FilteringState,
@@ -58,6 +58,11 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	setValue,
 	errors,
 }) => {
+	const [changedValueField, setChangedValueField]: [
+		string,
+		(changedValueField: string) => void
+	] = useState('');
+
 	const handleSetState = (operationId: string, taskId: string) => (value: string): void => {
 		const task: ITask = tasks[taskId];
 
@@ -133,6 +138,8 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				}),
 			},
 		});
+
+		setChangedValueField(`${key}-${operationId}-${taskId}`);
 	};
 
 	const mapTasks = ({ operations, ...restTask }: ITask): ITask => ({
@@ -199,9 +206,12 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		}
 
 		if (props.column.name === 'values' && props.value !== undefined) {
+			const key: string = `${props.row.key}-${props.row.operationId}-${props.row.taskId}`;
+
 			return (
 				<Cell {...props}>
 					<TextField
+						autoFocus={changedValueField === key}
 						fullWidth={true}
 						placeholder="Введите значение"
 						value={props.value}
