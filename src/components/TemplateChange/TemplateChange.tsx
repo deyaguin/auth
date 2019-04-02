@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import Options from '../Options';
 import Tasks from '../Tasks';
 import RestrictionsTable from '../RestrictionsTable';
-import Review from '../Review/Review';
+import Preview from '../Preview';
 import { ITask, IValues, IErrors, SetValue, SetError } from '../types';
 
 const styles = (theme: Theme) =>
@@ -32,6 +32,7 @@ const styles = (theme: Theme) =>
 			flex: 1,
 			flexDirection: 'column',
 			justifyContent: 'space-between',
+			margin: theme.spacing.unit * 2,
 		},
 	});
 
@@ -51,7 +52,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	setError,
 	tasks,
 }) => {
-	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(2);
+	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(0);
 
 	const isFirstStep: boolean = activeStep === 0;
 
@@ -144,8 +145,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 			{isThirdStep && (
 				<RestrictionsTable tasks={values.selectedTasks} setValue={setValue} errors={errors} />
 			)}
-			{isFourthStep && <Review values={values} />}
-			{actions}
+			{isFourthStep && <Preview values={values} />}
 		</div>
 	);
 
@@ -153,6 +153,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		<section className={classes.container}>
 			{stepper}
 			{content}
+			{actions}
 		</section>
 	);
 };

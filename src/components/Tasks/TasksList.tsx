@@ -87,7 +87,6 @@ const styles = (theme: Theme) =>
 			flexDirection: 'column',
 			height: 530,
 			justifyContent: 'space-between',
-			margin: theme.spacing.unit * 5,
 			minWidth: 360,
 		},
 	});

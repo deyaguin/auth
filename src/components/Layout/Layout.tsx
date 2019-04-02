@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
 
 import { ui } from '../../constants';
 import AppBar from './AppBar';
@@ -27,6 +28,7 @@ const styles = (theme: Theme) =>
 			marginLeft: ui.DRAWER_WIDTH,
 		},
 		container: {
+			backgroundColor: grey[100],
 			display: 'flex',
 			flexDirection: 'column',
 			height: '100%',

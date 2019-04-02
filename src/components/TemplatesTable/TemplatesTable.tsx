@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode, ReactElement, ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
 	PagingState,
@@ -18,6 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import CheckIcon from '@material-ui/icons/Check';
@@ -29,6 +30,8 @@ import { TEMPLATES } from '../../constants/routes';
 import Popover from '../Popover';
 import TableActions from '../TableActions';
 import GridRootContainer from '../GridRootContainer';
+
+const { Cell: TableFilterCell } = TableFilterRow;
 
 const styles = createStyles({
 	actions: {
@@ -87,6 +90,16 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 		(filterIsVisible: boolean) => void
 	] = useState(false);
 
+	const [filtersState, setFiltersState]: [
+		{ [propName: string]: boolean | string | number },
+		(filterState: { [propName: string]: boolean | string | number }) => void
+	] = useState(filters);
+
+	const [changedValueField, setChangedValueField]: [
+		string,
+		(changedValueField: string) => void
+	] = useState('');
+
 	const filtersCount: number = Object.keys(filters).length;
 
 	const getFilters = (): Array<{ columnName: string; value: any }> => {
@@ -95,14 +108,22 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 
 	const handleClickFilterButton = (): void => setFilterIsVisible(!filterIsVisible);
 
-	const handleSetFilter = (values: any): void => {
-		setFilters(
-			values.reduce((acc: any, item: any) => ({ ...acc, [item.columnName]: item.value }), {}),
-		);
+	const handleSetFiltersState = (filter: string) => (e: ChangeEvent<HTMLInputElement>): void => {
+		setFiltersState({ ...filtersState, [filter]: e.currentTarget.value });
+
+		setChangedValueField(filter);
+	};
+
+	const handleSetFilters = (): void => {
+		setFilters(filtersState);
 	};
 
 	const handleCloseFilter = (): void => {
 		clearFilters();
+
+		setFiltersState({});
+
+		setChangedValueField('');
 
 		setFilterIsVisible(false);
 	};
@@ -144,17 +165,21 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 
 	const renderHeaderActions = (): ReactNode => (
 		<div className={classes.actions}>
-			<Tooltip title="Фильтрация">
-				<IconButton color="primary" onClick={handleClickFilterButton}>
-					{filterIsVisible ? (
-						<FilterListIcon />
-					) : (
+			{filterIsVisible ? (
+				<Tooltip title="Применить">
+					<IconButton color="primary" onClick={handleSetFilters}>
+						<CheckIcon />
+					</IconButton>
+				</Tooltip>
+			) : (
+				<Tooltip title="Фильтрация">
+					<IconButton color="primary" onClick={handleClickFilterButton}>
 						<Badge badgeContent={filtersCount} color="primary">
 							<FilterListIcon />
 						</Badge>
-					)}
-				</IconButton>
-			</Tooltip>
+					</IconButton>
+				</Tooltip>
+			)}
 		</div>
 	);
 
@@ -168,6 +193,17 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 		</div>
 	);
 
+	const renderFilterCell = (props: any): ReactElement => (
+		<TableFilterCell {...props}>
+			<TextField
+				placeholder={props.getMessage('filterPlaceholder')}
+				autoFocus={props.column.name === changedValueField}
+				value={filtersState[props.column.name]}
+				onChange={handleSetFiltersState(props.column.name)}
+			/>
+		</TableFilterCell>
+	);
+
 	return (
 		<Grid rootComponent={GridRootContainer} rows={templates} columns={COLUMNS}>
 			<PagingState
@@ -177,7 +213,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				onCurrentPageChange={onCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
-			<FilteringState filters={getFilters()} onFiltersChange={handleSetFilter} />
+			<FilteringState filters={getFilters()} />
 			<IntegratedFiltering />
 			<CustomPaging totalCount={total} />
 			<VirtualTable
@@ -190,7 +226,9 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				filterActions={renderFilterActions}
 			/>
 			<TableHeaderRow />
-			{filterIsVisible && <TableFilterRow messages={FILTER_MESSAGES} />}
+			{filterIsVisible && (
+				<TableFilterRow messages={FILTER_MESSAGES} cellComponent={renderFilterCell} />
+			)}
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} />
 		</Grid>
 	);

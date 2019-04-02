@@ -17,7 +17,6 @@ const styles = (theme: Theme) =>
 			},
 			display: 'flex',
 			flexDirection: 'column',
-			margin: theme.spacing.unit * 5,
 		},
 		field: {
 			width: 600,

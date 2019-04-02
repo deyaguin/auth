@@ -1,21 +1,16 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { FC, ChangeEvent, ReactElement, useState } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import {
-	FilteringState,
-	IntegratedFiltering,
-	TreeDataState,
-	CustomTreeData,
-} from '@devexpress/dx-react-grid';
+import { TreeDataState, CustomTreeData } from '@devexpress/dx-react-grid';
 import {
 	Grid,
 	VirtualTable,
 	TableHeaderRow,
-	TableFilterRow,
 	TableTreeColumn,
 	Table,
 } from '@devexpress/dx-react-grid-material-ui';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
+import Chip from '@material-ui/core/Chip';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
 import { ITask, IOperation, IAttribute, IErrors, SetValue } from '../types';
@@ -30,7 +25,7 @@ const styles = (theme: Theme) =>
 			// maxWidth: 50,
 		},
 		container: {
-			marginTop: theme.spacing.unit * 5,
+			height: '100%',
 			width: '100%',
 		},
 		statePicker: {
@@ -119,7 +114,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	const handleSetValue = (key: string, operationId: string, taskId: string) => (
 		e: ChangeEvent<HTMLInputElement>,
 	): void => {
-		const values = e.currentTarget.value;
+		const values: string = e.currentTarget.value;
 		const task: ITask = tasks[taskId];
 
 		if (setValue) {
@@ -186,7 +181,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		return rootRows;
 	};
 
-	const renderCellComponent = (props: any) => {
+	const renderCellComponent = (props: any): ReactElement => {
 		if (props.column.name === 'state' && props.value) {
 			if (editable) {
 				return (
@@ -201,7 +196,11 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				);
 			}
 
-			return <Cell {...props} value={OPERATION_STATES[props.value]} />;
+			return (
+				<Cell {...props}>
+					<Chip label={OPERATION_STATES[props.value]} />
+				</Cell>
+			);
 		}
 
 		if (props.column.name === 'condition' && props.value) {
@@ -218,7 +217,11 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				);
 			}
 
-			return <Cell {...props} value={CONDITIONS[props.value]} />;
+			return (
+				<Cell {...props}>
+					<Chip label={CONDITIONS[props.value]} />
+				</Cell>
+			);
 		}
 
 		if (props.column.name === 'values' && props.value !== undefined) {

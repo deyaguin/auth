@@ -13,6 +13,12 @@ const SELECTED = 'selected';
 const styles = (theme: Theme) =>
 	createStyles({
 		container: {
+			'& > div:nth-child(n + 1)': {
+				marginLeft: theme.spacing.unit * 2.5,
+			},
+			'& > div:nth-child(n)': {
+				marginRight: theme.spacing.unit * 2.5,
+			},
 			display: 'flex',
 			height: '100%',
 			justifyContent: 'center',
@@ -30,7 +36,6 @@ const styles = (theme: Theme) =>
 			paddingLeft: theme.spacing.unit * 3,
 		},
 		paper: {
-			margin: theme.spacing.unit * 5,
 			minWidth: 360,
 		},
 	});
