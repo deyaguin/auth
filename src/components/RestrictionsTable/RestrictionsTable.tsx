@@ -40,8 +40,9 @@ const styles = (theme: Theme) =>
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
 	tasks?: { [id: string]: ITask };
-	setValue: SetValue;
-	errors: IErrors;
+	setValue?: SetValue;
+	errors?: IErrors;
+	editable?: boolean;
 }
 
 const COLUMNS = [
@@ -57,6 +58,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	tasks = {},
 	setValue,
 	errors,
+	editable = true,
 }) => {
 	const [changedValueField, setChangedValueField]: [
 		string,
@@ -66,19 +68,21 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	const handleSetState = (operationId: string, taskId: string) => (value: string): void => {
 		const task: ITask = tasks[taskId];
 
-		setValue('selectedTasks', {
-			...tasks,
-			[taskId]: {
-				...task,
-				operations: task.operations.map((item: IOperation) => {
-					if (item.id === operationId) {
-						return { ...item, state: value };
-					}
+		if (setValue) {
+			setValue('selectedTasks', {
+				...tasks,
+				[taskId]: {
+					...task,
+					operations: task.operations.map((item: IOperation) => {
+						if (item.id === operationId) {
+							return { ...item, state: value };
+						}
 
-					return item;
-				}),
-			},
-		});
+						return item;
+					}),
+				},
+			});
+		}
 	};
 
 	const handleSetCondition = (key: string, operationId: string, taskId: string) => (
@@ -86,28 +90,30 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	): void => {
 		const task: ITask = tasks[taskId];
 
-		setValue('selectedTasks', {
-			...tasks,
-			[taskId]: {
-				...task,
-				operations: task.operations.map((operation: IOperation) => {
-					if (operation.id === operationId) {
-						return {
-							...operation,
-							attributes: operation.attributes.map((attribute: IAttribute) => {
-								if (attribute.key === key) {
-									return { ...attribute, condition: value };
-								}
+		if (setValue) {
+			setValue('selectedTasks', {
+				...tasks,
+				[taskId]: {
+					...task,
+					operations: task.operations.map((operation: IOperation) => {
+						if (operation.id === operationId) {
+							return {
+								...operation,
+								attributes: operation.attributes.map((attribute: IAttribute) => {
+									if (attribute.key === key) {
+										return { ...attribute, condition: value };
+									}
 
-								return attribute;
-							}),
-						};
-					}
+									return attribute;
+								}),
+							};
+						}
 
-					return operation;
-				}),
-			},
-		});
+						return operation;
+					}),
+				},
+			});
+		}
 	};
 
 	const handleSetValue = (key: string, operationId: string, taskId: string) => (
@@ -116,28 +122,30 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		const values = e.currentTarget.value;
 		const task: ITask = tasks[taskId];
 
-		setValue('selectedTasks', {
-			...tasks,
-			[taskId]: {
-				...task,
-				operations: task.operations.map((operation: IOperation) => {
-					if (operation.id === operationId) {
-						return {
-							...operation,
-							attributes: operation.attributes.map((attribute: IAttribute) => {
-								if (attribute.key === key) {
-									return { ...attribute, values };
-								}
+		if (setValue) {
+			setValue('selectedTasks', {
+				...tasks,
+				[taskId]: {
+					...task,
+					operations: task.operations.map((operation: IOperation) => {
+						if (operation.id === operationId) {
+							return {
+								...operation,
+								attributes: operation.attributes.map((attribute: IAttribute) => {
+									if (attribute.key === key) {
+										return { ...attribute, values };
+									}
 
-								return attribute;
-							}),
-						};
-					}
+									return attribute;
+								}),
+							};
+						}
 
-					return operation;
-				}),
-			},
-		});
+						return operation;
+					}),
+				},
+			});
+		}
 
 		setChangedValueField(`${key}-${operationId}-${taskId}`);
 	};
@@ -180,45 +188,57 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 	const renderCellComponent = (props: any) => {
 		if (props.column.name === 'state' && props.value) {
-			return (
-				<Cell {...props}>
-					<ValuePicker
-						className={classes.statePicker}
-						value={props.value}
-						onChange={handleSetState(props.row.id, props.row.taskId)}
-						optionValues={OPERATION_STATES}
-					/>
-				</Cell>
-			);
+			if (editable) {
+				return (
+					<Cell {...props}>
+						<ValuePicker
+							className={classes.statePicker}
+							value={props.value}
+							onChange={handleSetState(props.row.id, props.row.taskId)}
+							optionValues={OPERATION_STATES}
+						/>
+					</Cell>
+				);
+			}
+
+			return <Cell {...props} value={OPERATION_STATES[props.value]} />;
 		}
 
 		if (props.column.name === 'condition' && props.value) {
-			return (
-				<Cell {...props}>
-					<ValuePicker
-						className={classes.conditionPicker}
-						value={props.value}
-						onChange={handleSetCondition(props.row.key, props.row.operationId, props.row.taskId)}
-						optionValues={CONDITIONS}
-					/>
-				</Cell>
-			);
+			if (editable) {
+				return (
+					<Cell {...props}>
+						<ValuePicker
+							className={classes.conditionPicker}
+							value={props.value}
+							onChange={handleSetCondition(props.row.key, props.row.operationId, props.row.taskId)}
+							optionValues={CONDITIONS}
+						/>
+					</Cell>
+				);
+			}
+
+			return <Cell {...props} value={CONDITIONS[props.value]} />;
 		}
 
 		if (props.column.name === 'values' && props.value !== undefined) {
-			const key: string = `${props.row.key}-${props.row.operationId}-${props.row.taskId}`;
+			if (editable) {
+				const key: string = `${props.row.key}-${props.row.operationId}-${props.row.taskId}`;
 
-			return (
-				<Cell {...props}>
-					<TextField
-						autoFocus={changedValueField === key}
-						fullWidth={true}
-						placeholder="Введите значение"
-						value={props.value}
-						onChange={handleSetValue(props.row.key, props.row.operationId, props.row.taskId)}
-					/>
-				</Cell>
-			);
+				return (
+					<Cell {...props}>
+						<TextField
+							autoFocus={changedValueField === key}
+							fullWidth={true}
+							placeholder="Введите значение"
+							value={props.value}
+							onChange={handleSetValue(props.row.key, props.row.operationId, props.row.taskId)}
+						/>
+					</Cell>
+				);
+			}
+
+			return <Cell {...props} />;
 		}
 
 		return <Cell {...props} />;

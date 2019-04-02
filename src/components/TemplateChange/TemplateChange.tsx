@@ -144,7 +144,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 			{isThirdStep && (
 				<RestrictionsTable tasks={values.selectedTasks} setValue={setValue} errors={errors} />
 			)}
-			{isFourthStep && <Review />}
+			{isFourthStep && <Review values={values} />}
 			{actions}
 		</div>
 	);
