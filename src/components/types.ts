@@ -4,15 +4,17 @@ export interface IAttribute {
 	title: string;
 	condition?: string;
 	values?: string;
+	operationId?: string;
+	taskId?: string;
 }
 
 export interface IOperation {
+	attributes: IAttribute[];
 	id: string;
 	name: string;
 	taskId: string;
 	selected?: boolean;
 	state?: string;
-	attributes: IAttribute[];
 }
 
 export interface ITask {

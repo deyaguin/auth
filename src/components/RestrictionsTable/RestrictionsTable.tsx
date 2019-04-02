@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import {
 	FilteringState,
@@ -15,24 +15,31 @@ import {
 	Table,
 } from '@devexpress/dx-react-grid-material-ui';
 import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
 
-import { TABLE_MESSAGES, OPERATION_STATES } from '../../constants/ui';
+import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
 import { ITask, IOperation, IAttribute, IErrors, SetValue } from '../types';
 import GridRootComponent from '../GridRootContainer';
-import StatePicker from '../StatePicker';
+import ValuePicker from '../ValuePicker';
 
 const { Cell } = Table;
 
 const styles = (theme: Theme) =>
 	createStyles({
+		conditionPicker: {
+			// maxWidth: 50,
+		},
 		container: {
 			marginTop: theme.spacing.unit * 5,
 			width: '100%',
 		},
+		statePicker: {
+			// maxWidth: 120,
+		},
 	});
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
-	tasks?: ITask[];
+	tasks?: { [id: string]: ITask };
 	setValue: SetValue;
 	errors: IErrors;
 }
@@ -42,22 +49,91 @@ const COLUMNS = [
 	{ name: 'state', title: 'Состояние' },
 	{ name: 'attr', title: 'Атрибут' },
 	{ name: 'condition', title: 'Условие' },
-	{ name: 'value', title: 'Значение' },
+	{ name: 'values', title: 'Значение' },
 ];
 
 const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	classes,
-	tasks = [],
+	tasks = {},
 	setValue,
 	errors,
 }) => {
-	const handleSetState = (value: string): void => {
-		console.log(value);
+	const handleSetState = (operationId: string, taskId: string) => (value: string): void => {
+		const task: ITask = tasks[taskId];
+
+		setValue('selectedTasks', {
+			...tasks,
+			[taskId]: {
+				...task,
+				operations: task.operations.map((item: IOperation) => {
+					if (item.id === operationId) {
+						return { ...item, state: value };
+					}
+
+					return item;
+				}),
+			},
+		});
 	};
 
-	const handleSetCondition = (): void => {};
+	const handleSetCondition = (key: string, operationId: string, taskId: string) => (
+		value: string,
+	): void => {
+		const task: ITask = tasks[taskId];
 
-	const handleSetValue = (): void => {};
+		setValue('selectedTasks', {
+			...tasks,
+			[taskId]: {
+				...task,
+				operations: task.operations.map((operation: IOperation) => {
+					if (operation.id === operationId) {
+						return {
+							...operation,
+							attributes: operation.attributes.map((attribute: IAttribute) => {
+								if (attribute.key === key) {
+									return { ...attribute, condition: value };
+								}
+
+								return attribute;
+							}),
+						};
+					}
+
+					return operation;
+				}),
+			},
+		});
+	};
+
+	const handleSetValue = (key: string, operationId: string, taskId: string) => (
+		e: ChangeEvent<HTMLInputElement>,
+	): void => {
+		const values = e.currentTarget.value;
+		const task: ITask = tasks[taskId];
+
+		setValue('selectedTasks', {
+			...tasks,
+			[taskId]: {
+				...task,
+				operations: task.operations.map((operation: IOperation) => {
+					if (operation.id === operationId) {
+						return {
+							...operation,
+							attributes: operation.attributes.map((attribute: IAttribute) => {
+								if (attribute.key === key) {
+									return { ...attribute, values };
+								}
+
+								return attribute;
+							}),
+						};
+					}
+
+					return operation;
+				}),
+			},
+		});
+	};
 
 	const mapTasks = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
@@ -68,10 +144,13 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 						...acc,
 						{
 							...restOperation,
-
 							attributes: attributes.map((item: IAttribute) => ({
 								...item,
 								attr: `${item.key} (${item.title})`,
+								condition: item.condition || 'equal',
+								operationId: restOperation.id,
+								taskId: restTask.id,
+								values: item.values || '',
 							})),
 							state: state || 'not_set',
 						},
@@ -86,7 +165,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 	const getChildRows = (row: any, rootRows: ITask[]): any[] => {
 		if (row) {
-			return row.operations ? row.operations : row.attributes;
+			return row.attributes ? row.attributes : row.operations;
 		}
 
 		return rootRows;
@@ -96,7 +175,38 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		if (props.column.name === 'state' && props.value) {
 			return (
 				<Cell {...props}>
-					<StatePicker value={props.value} onChange={handleSetState} />
+					<ValuePicker
+						className={classes.statePicker}
+						value={props.value}
+						onChange={handleSetState(props.row.id, props.row.taskId)}
+						optionValues={OPERATION_STATES}
+					/>
+				</Cell>
+			);
+		}
+
+		if (props.column.name === 'condition' && props.value) {
+			return (
+				<Cell {...props}>
+					<ValuePicker
+						className={classes.conditionPicker}
+						value={props.value}
+						onChange={handleSetCondition(props.row.key, props.row.operationId, props.row.taskId)}
+						optionValues={CONDITIONS}
+					/>
+				</Cell>
+			);
+		}
+
+		if (props.column.name === 'values' && props.value !== undefined) {
+			return (
+				<Cell {...props}>
+					<TextField
+						fullWidth={true}
+						placeholder="Введите значение"
+						value={props.value}
+						onChange={handleSetValue(props.row.key, props.row.operationId, props.row.taskId)}
+					/>
 				</Cell>
 			);
 		}
@@ -106,7 +216,11 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 	return (
 		<Paper className={classes.container}>
-			<Grid rootComponent={GridRootComponent} rows={tasks.map(mapTasks)} columns={COLUMNS}>
+			<Grid
+				rootComponent={GridRootComponent}
+				rows={Object.values(tasks).map(mapTasks)}
+				columns={COLUMNS}
+			>
 				<TreeDataState />
 				<CustomTreeData getChildRows={getChildRows} />
 				<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />

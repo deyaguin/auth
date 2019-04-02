@@ -18,6 +18,15 @@ const OPERATION_STATES: { [name: string]: string } = {
 	not_set: 'Не задано',
 };
 
+const CONDITIONS: { [name: string]: string } = {
+	equal: '=',
+	less: '<',
+	less_or_equal: '<=',
+	more: '>',
+	more_or_equal: '>=',
+	not_equal: '!=',
+};
+
 export {
 	DRAWER_WIDTH,
 	TABLE_PAGE_SIZES,
@@ -25,4 +34,5 @@ export {
 	TABLE_MESSAGES,
 	TABLE_ACTIONS_WIDTH,
 	OPERATION_STATES,
+	CONDITIONS,
 };

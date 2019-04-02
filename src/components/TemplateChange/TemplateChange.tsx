@@ -142,11 +142,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 				/>
 			)}
 			{isThirdStep && (
-				<RestrictionsTable
-					tasks={values.selectedTasks ? Object.values(values.selectedTasks) : []}
-					setValue={setValue}
-					errors={errors}
-				/>
+				<RestrictionsTable tasks={values.selectedTasks} setValue={setValue} errors={errors} />
 			)}
 			{isFourthStep && <Review />}
 			{actions}
