@@ -84,7 +84,7 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 	};
 
 	@action public setFilters = (filters: IFilters): void => {
-		this.filtersMap = { ...this.filtersMap, ...filters };
+		this.filtersMap = filters;
 	};
 
 	@action public clearFilters = (): void => {

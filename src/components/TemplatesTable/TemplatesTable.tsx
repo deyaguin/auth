@@ -96,10 +96,9 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	const handleClickFilterButton = (): void => setFilterIsVisible(!filterIsVisible);
 
 	const handleSetFilter = (values: any): void => {
-		setFilters({
-			...filters,
-			...values.reduce((acc: any, item: any) => ({ ...acc, [item.columnName]: item.value }), {}),
-		});
+		setFilters(
+			values.reduce((acc: any, item: any) => ({ ...acc, [item.columnName]: item.value }), {}),
+		);
 	};
 
 	const handleCloseFilter = (): void => {
