@@ -17,6 +17,10 @@ const styles = (theme: Theme) =>
 		content: {
 			display: 'flex',
 			flex: 1,
+			flexDirection: 'column',
+			marginTop: theme.spacing.unit * 3,
+		},
+		filters: {
 			marginTop: theme.spacing.unit * 3,
 		},
 	});
@@ -26,12 +30,21 @@ interface IPageProps extends WithStyles<typeof styles> {
 	children: ReactNode | string;
 	headerTitle: string;
 	actions?: ReactNode[];
+	filters?: ReactNode;
 }
 
-const Page: FC<IPageProps> = ({ children, headerTitle, actions, contentClass, classes }) => (
+const Page: FC<IPageProps> = ({
+	children,
+	filters,
+	headerTitle,
+	actions,
+	contentClass,
+	classes,
+}) => (
 	<Fade in={true} timeout={400}>
 		<div className={classes.container}>
 			<PageTitle actions={actions}>{headerTitle}</PageTitle>
+			<div className={classes.filters}>{filters}</div>
 			<Paper className={classNames(classes.content, contentClass)}>{children}</Paper>
 		</div>
 	</Fade>

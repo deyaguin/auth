@@ -4,7 +4,7 @@ import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import { TEMPLATE_CREATE } from '../../constants/routes';
-import { Page, TemplatesTable } from '../../components';
+import { Page, TemplatesTable, TemplatesFilter } from '../../components';
 
 const styles = createStyles({
 	link: {
@@ -42,6 +42,7 @@ const Templates: FC<ITemplateProps> = ({
 	setFilters,
 	clearFilters,
 }) => {
+	console.log(templates);
 	const handleDelete = (id: string) => {
 		templateDelete(id);
 
@@ -66,6 +67,9 @@ const Templates: FC<ITemplateProps> = ({
 				</Link>,
 			]}
 			headerTitle="Шаблоны"
+			filters={
+				<TemplatesFilter clearFilters={clearFilters} setFilters={setFilters} filters={filters} />
+			}
 		>
 			<TemplatesTable
 				pageSize={limit}
@@ -75,9 +79,6 @@ const Templates: FC<ITemplateProps> = ({
 				onCurrentPageChange={handleCurrentPageChange}
 				templates={templates}
 				templateDelete={handleDelete}
-				clearFilters={clearFilters}
-				setFilters={setFilters}
-				filters={filters}
 			/>
 		</Page>
 	);
