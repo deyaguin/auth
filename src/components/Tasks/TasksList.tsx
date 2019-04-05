@@ -84,8 +84,9 @@ const styles = (theme: Theme) =>
 		},
 		paper: {
 			display: 'flex',
+			flexGrow: 1,
+			height: '100%',
 			flexDirection: 'column',
-			height: 530,
 			justifyContent: 'space-between',
 			minWidth: 360,
 		},

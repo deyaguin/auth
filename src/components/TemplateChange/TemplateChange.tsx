@@ -38,6 +38,9 @@ const styles = (theme: Theme) =>
 		tableWrapper: {
 			flexGrow: 1,
 		},
+		tasksWrapper: {
+			flexGrow: 1,
+		},
 	});
 
 interface ITemplateChangeProps extends WithStyles<typeof styles> {
@@ -56,7 +59,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	setError,
 	tasks,
 }) => {
-	const [activeStep, setActiveStep]: [number, (key: number) => void] = useState(2);
+	const [activeStep, setActiveStep]: [number, (activeStep: number) => void] = useState(0);
 
 	const isFirstStep: boolean = activeStep === 0;
 
@@ -158,7 +161,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 				</Grid>
 			)}
 			{isSecondStep && (
-				<Grid item={true}>
+				<Grid className={classes.tasksWrapper} container={true} item={true}>
 					<Tasks
 						selectedTasks={values.selectedTasks}
 						errors={errors}

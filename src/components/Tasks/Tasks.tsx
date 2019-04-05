@@ -3,6 +3,7 @@ import { omit } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 
 import { ITask, IOperation, IErrors, SetValue } from '../types';
 import TasksList from './TasksList';
@@ -13,16 +14,7 @@ const SELECTED = 'selected';
 const styles = (theme: Theme) =>
 	createStyles({
 		container: {
-			'& > div:nth-child(n + 1)': {
-				marginLeft: theme.spacing.unit * 2.5,
-			},
-			'& > div:nth-child(n)': {
-				marginRight: theme.spacing.unit * 2.5,
-			},
-			display: 'flex',
-			height: '100%',
-			justifyContent: 'center',
-			width: '100%',
+			flexGrow: 1,
 		},
 		list: {
 			width: '100%',
@@ -76,27 +68,31 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, 
 	return (
 		<DragDropContext onDragEnd={handleSelectTask}>
 			<Fade in={true} timeout={400}>
-				<div className={classes.container}>
-					<TasksList
-						droppableId={LIST}
-						tasks={tasks.reduce((acc: ITask[], item: ITask) => {
-							if (selectedTasks[item.id]) {
-								return acc;
-							}
+				<Grid className={classes.container} container={true} spacing={24} wrap="nowrap">
+					<Grid container={true} item={true}>
+						<TasksList
+							droppableId={LIST}
+							tasks={tasks.reduce((acc: ITask[], item: ITask) => {
+								if (selectedTasks[item.id]) {
+									return acc;
+								}
 
-							return [...acc, item];
-						}, [])}
-						subheader="Список задач:"
-					/>
-					<TasksList
-						droppableId={SELECTED}
-						tasks={selectedTasksArray}
-						subheader="Выбрано:"
-						error={Boolean(errors.selectedTasks)}
-						setValue={setValue}
-						selectedTasks={selectedTasks}
-					/>
-				</div>
+								return [...acc, item];
+							}, [])}
+							subheader="Список задач:"
+						/>
+					</Grid>
+					<Grid container={true} item={true}>
+						<TasksList
+							droppableId={SELECTED}
+							tasks={selectedTasksArray}
+							subheader="Выбрано:"
+							error={Boolean(errors.selectedTasks)}
+							setValue={setValue}
+							selectedTasks={selectedTasks}
+						/>
+					</Grid>
+				</Grid>
 			</Fade>
 		</DragDropContext>
 	);
