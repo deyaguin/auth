@@ -11,7 +11,9 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import { OPERATION_STATES, CONDITIONS } from '../../constants/ui';
 import { IFilters } from '../types';
+import ValuePicker from '../ValuePicker';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -44,8 +46,14 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 
 	const handleSetExpanded = (): void => setExpanded(!expanded);
 
-	const handleSetFiltersState = (filterName: string) => (e: ChangeEvent<HTMLInputElement>): void =>
-		setFiltersState({ ...filtersState, [filterName]: e.currentTarget.value });
+	const handleSetFiltersState = (filterName: string): any => {
+		if (filterName === 'state' || filterName === 'condition') {
+			return (value: string): void => setFiltersState({ ...filtersState, [filterName]: value });
+		}
+
+		return (e: ChangeEvent<HTMLInputElement>): void =>
+			setFiltersState({ ...filtersState, [filterName]: e.currentTarget.value });
+	};
 
 	const handleSetFilter = (): void => {
 		setFilters(filtersState);
@@ -73,16 +81,62 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 					<Grid container={true} spacing={32}>
 						<Grid item={true}>
 							<TextField
-								value={filtersState.name || ''}
-								onChange={handleSetFiltersState('name')}
-								label="Название"
+								value={filtersState.task || ''}
+								onChange={handleSetFiltersState('task')}
+								label="Задача"
+								InputLabelProps={{
+									shrink: true,
+								}}
 							/>
 						</Grid>
 						<Grid item={true}>
 							<TextField
-								value={filtersState.comment || ''}
-								onChange={handleSetFiltersState('comment')}
-								label="Комментарий"
+								value={filtersState.operation || ''}
+								onChange={handleSetFiltersState('operation')}
+								label="Операция"
+								InputLabelProps={{
+									shrink: true,
+								}}
+							/>
+						</Grid>
+						<Grid item={true}>
+							<ValuePicker
+								value={filtersState.state || 'not_selected'}
+								onChange={handleSetFiltersState('state')}
+								optionValues={{ ...OPERATION_STATES, not_selected: 'Не выбрано' }}
+								textFieldProps={{
+									label: 'Состояние',
+								}}
+							/>
+						</Grid>
+						<Grid item={true}>
+							<TextField
+								value={filtersState.attribute || ''}
+								onChange={handleSetFiltersState('attribute')}
+								label="Атрибут"
+								InputLabelProps={{
+									shrink: true,
+								}}
+							/>
+						</Grid>
+						<Grid item={true}>
+							<ValuePicker
+								value={filtersState.condition || 'not_selected'}
+								onChange={handleSetFiltersState('condition')}
+								optionValues={{ ...CONDITIONS, not_selected: 'Не выбрано' }}
+								textFieldProps={{
+									label: 'Условие',
+								}}
+							/>
+						</Grid>
+						<Grid item={true}>
+							<TextField
+								value={filtersState.value || ''}
+								onChange={handleSetFiltersState('value')}
+								label="Значение"
+								InputLabelProps={{
+									shrink: true,
+								}}
 							/>
 						</Grid>
 					</Grid>

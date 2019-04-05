@@ -1,6 +1,6 @@
 interface IFiltersStore {
-	filters: { [name: string]: any };
-	setFilters: (filters: { [name: string]: any }) => void;
+	filters: { [name: string]: string };
+	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
 }
 

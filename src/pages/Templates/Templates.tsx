@@ -18,12 +18,12 @@ interface ITemplateProps extends WithStyles<typeof styles> {
 	limit: number;
 	offset: number;
 	total: number;
-	filters: { [name: string]: boolean | number | string };
+	filters: { [name: string]: string };
 	templateDelete: (id: string) => void;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
 	setSnackbar: (message: string, type?: string) => void;
-	setFilters: (filters: { [name: string]: boolean | number | string }) => void;
+	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
 }
 
@@ -42,18 +42,17 @@ const Templates: FC<ITemplateProps> = ({
 	setFilters,
 	clearFilters,
 }) => {
-	console.log(templates);
-	const handleDelete = (id: string) => {
+	const handleDelete = (id: string): void => {
 		templateDelete(id);
 
 		setSnackbar('Шаблон успешно удален', 'success');
 	};
 
-	const handlePageSizeChange = (pageSize: number) => {
+	const handlePageSizeChange = (pageSize: number): void => {
 		setLimit(pageSize);
 	};
 
-	const handleCurrentPageChange = (currentPage: number) => {
+	const handleCurrentPageChange = (currentPage: number): void => {
 		setOffset(currentPage * limit);
 	};
 

@@ -3,35 +3,28 @@ import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 
-import { ui } from '../../constants';
+import { DRAWER_WIDTH } from '../../constants/ui';
 import AppBar from './AppBar';
 import AppDrawer from './AppDrawer';
 import AppBody from './AppBody';
 
 const styles = (theme: Theme) =>
 	createStyles({
-		appContent: {
-			'@media (min-width:0px) and (orientation: landscape)': {
-				marginTop: 48,
-			},
-			'@media (min-width:600px)': {
-				marginTop: 64,
-				padding: theme.spacing.unit * 3,
-			},
-			boxSizing: 'border-box',
-			flexGrow: 1,
-			height: 'calc(100% - 64px)',
-			marginTop: 56,
-			padding: theme.spacing.unit * 2,
-		},
-		appContentShift: {
-			marginLeft: ui.DRAWER_WIDTH,
-		},
 		container: {
 			backgroundColor: grey[100],
+			flexGrow: 1,
+		},
+		content: {
+			boxSizing: 'border-box',
 			display: 'flex',
-			flexDirection: 'column',
-			height: '100%',
+			height: 'calc(100% - 64px)',
+			padding: theme.spacing.unit * 2,
+			position: 'relative',
+			top: 64,
+		},
+		contentShift: {
+			left: DRAWER_WIDTH,
+			width: `calc(100% - ${DRAWER_WIDTH}px)`,
 		},
 	});
 
@@ -47,15 +40,13 @@ const Layout: FC<ILayoutProps> = ({ children, classes, drawerOpen, setDrawerOpen
 	};
 
 	return (
-		<div className={classes.container}>
+		<section className={classes.container}>
 			<AppBar onMenuClick={handleMenuClick} open={drawerOpen} />
 			<AppDrawer onMenuClose={handleMenuClick} open={drawerOpen} />
-			<AppBody
-				className={classNames(classes.appContent, { [classes.appContentShift]: drawerOpen })}
-			>
+			<AppBody className={classNames(classes.content, { [classes.contentShift]: drawerOpen })}>
 				{children}
 			</AppBody>
-		</div>
+		</section>
 	);
 };
 

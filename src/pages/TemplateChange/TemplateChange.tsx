@@ -12,9 +12,6 @@ const styles = (theme: Theme) =>
 		link: {
 			textDecoration: 'none',
 		},
-		pageContainer: {
-			padding: theme.spacing.unit * 3,
-		},
 	});
 
 interface ITask {
@@ -59,7 +56,6 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 					</Button>
 				</Link>,
 			]}
-			contentClass={classes.pageContainer}
 			headerTitle={headerTitle}
 		>
 			<TemplateChangeComponent tasks={tasks} initialValues={initialValues} />

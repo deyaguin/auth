@@ -13,7 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
-import { ITask, IOperation, IAttribute, IErrors, SetValue } from '../types';
+import { ITask, IOperation, IAttribute, SetValue } from '../types';
 import GridRootComponent from '../GridRootContainer';
 import ValuePicker from '../ValuePicker';
 
@@ -25,6 +25,8 @@ const styles = (theme: Theme) =>
 			// maxWidth: 50,
 		},
 		container: {
+			display: 'flex',
+			flexGrow: 1,
 			height: '100%',
 			width: '100%',
 		},
@@ -36,7 +38,6 @@ const styles = (theme: Theme) =>
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
 	tasks?: { [id: string]: ITask };
 	setValue?: SetValue;
-	errors?: IErrors;
 	editable?: boolean;
 }
 
@@ -52,7 +53,6 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	classes,
 	tasks = {},
 	setValue,
-	errors,
 	editable = true,
 }) => {
 	const [changedValueField, setChangedValueField]: [
@@ -162,7 +162,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 								taskId: restTask.id,
 								values: item.values || '',
 							})),
-							state: state || 'not_set',
+							state: state || 'allowed',
 						},
 					];
 				}

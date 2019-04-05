@@ -15,7 +15,6 @@ const TABLE_MESSAGES = {
 const OPERATION_STATES: { [name: string]: string } = {
 	allowed: 'Разрешено',
 	denied: 'Запрещено',
-	not_set: 'Не задано',
 };
 
 const CONDITIONS: { [name: string]: string } = {

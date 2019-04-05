@@ -24,6 +24,7 @@ const styles = (theme: Theme) =>
 			justifyContent: 'flex-end',
 		},
 		drawerPaper: {
+			boxSizing: 'border-box',
 			width: ui.DRAWER_WIDTH,
 		},
 		link: {

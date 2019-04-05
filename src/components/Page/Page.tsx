@@ -1,52 +1,53 @@
 import React, { FC, ReactNode } from 'react';
-import classNames from 'classnames';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
+import Grid from '@material-ui/core/Grid';
 
 import PageTitle from './PageTitle';
 
 const styles = (theme: Theme) =>
 	createStyles({
 		container: {
-			display: 'flex',
-			flexDirection: 'column',
-			height: '100%',
-			minWidth: 900,
+			flexGrow: 1,
 		},
 		content: {
-			display: 'flex',
-			flex: 1,
-			flexDirection: 'column',
-			marginTop: theme.spacing.unit * 3,
+			flexGrow: 1,
 		},
-		filters: {
-			marginTop: theme.spacing.unit * 3,
+		paper: {
+			display: 'flex',
+			flexGrow: 1,
+			height: '100%',
+			width: '100%',
 		},
 	});
 
 interface IPageProps extends WithStyles<typeof styles> {
-	contentClass?: string;
 	children: ReactNode | string;
 	headerTitle: string;
 	actions?: ReactNode[];
 	filters?: ReactNode;
 }
 
-const Page: FC<IPageProps> = ({
-	children,
-	filters,
-	headerTitle,
-	actions,
-	contentClass,
-	classes,
-}) => (
+const Page: FC<IPageProps> = ({ children, filters, headerTitle, actions, classes }) => (
 	<Fade in={true} timeout={400}>
-		<div className={classes.container}>
+		<Grid
+			container={true}
+			direction="column"
+			className={classes.container}
+			spacing={16}
+			wrap="nowrap"
+		>
 			<PageTitle actions={actions}>{headerTitle}</PageTitle>
-			<div className={classes.filters}>{filters}</div>
-			<Paper className={classNames(classes.content, contentClass)}>{children}</Paper>
-		</div>
+			{filters && (
+				<Grid item={true} container={true}>
+					{filters}
+				</Grid>
+			)}
+			<Grid className={classes.content} item={true} container={true}>
+				<Paper className={classes.paper}>{children}</Paper>
+			</Grid>
+		</Grid>
 	</Fade>
 );
 

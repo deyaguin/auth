@@ -15,7 +15,7 @@ const styles = createStyles({
 	},
 	appBarShift: {
 		left: ui.DRAWER_WIDTH,
-		maxWidth: `calc(100% - ${ui.DRAWER_WIDTH}px)`,
+		width: `calc(100% - ${ui.DRAWER_WIDTH}px)`,
 	},
 	menuButtonShift: {
 		display: 'none',

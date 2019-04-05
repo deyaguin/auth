@@ -35,7 +35,7 @@ const TEMPLATES = {
 };
 
 interface IFilters {
-	[name: string]: number | boolean | string;
+	[name: string]: string;
 }
 
 class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, IFiltersStore {

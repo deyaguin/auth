@@ -31,6 +31,10 @@ export interface IErrors {
 	[name: string]: boolean;
 }
 
+export interface IFilters {
+	[name: string]: string;
+}
+
 export type SetValue = (key: string, value: any) => void;
 
 export type SetError = (key: string, value: boolean) => void;
