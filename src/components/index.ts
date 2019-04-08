@@ -11,3 +11,5 @@ export { default as TemplatesTable } from './TemplatesTable';
 export { default as TemplatesFilter } from './TemplatesFilter';
 
 export { default as TemplateChange } from './TemplateChange';
+
+export { default as TemplateView } from './TemplateView';

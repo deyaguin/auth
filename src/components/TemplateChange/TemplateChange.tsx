@@ -4,9 +4,9 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
+import TemplateView from '../TemplateView';
 import Options from '../Options';
 import Tasks from '../Tasks';
 import RestrictionsTable from '../RestrictionsTable';
@@ -185,42 +185,12 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 				</Fragment>
 			)}
 			{isFourthStep && (
-				<Fragment>
-					<Grid container={true} item={true} spacing={24}>
-						<Grid item={true}>
-							<Grid item={true}>
-								<Typography variant="subheading">Название:</Typography>
-							</Grid>
-							<Grid item={true}>
-								<Typography variant="subheading">Теги:</Typography>
-							</Grid>
-							<Grid item={true}>
-								<Typography variant="subheading">Комментарий: </Typography>
-							</Grid>
-						</Grid>
-						<Grid item={true}>
-							<Grid item={true}>
-								<Typography variant="subheading">{values.name}</Typography>
-							</Grid>
-							<Grid item={true}>
-								<Typography variant="subheading">{values.tags}</Typography>
-							</Grid>
-							<Grid item={true}>
-								<Typography variant="subheading">{values.comment}</Typography>
-							</Grid>
-						</Grid>
-					</Grid>
-					<Grid item={true}>
-						<RestrictionsFilter
-							filters={{}}
-							setFilters={(filters: any) => {}}
-							clearFilters={() => {}}
-						/>
-					</Grid>
-					<Grid className={classes.tableWrapper} container={true} item={true}>
-						<RestrictionsTable editable={false} tasks={values.selectedTasks} />
-					</Grid>
-				</Fragment>
+				<TemplateView
+					name={values.name}
+					tags={values.tags}
+					comment={values.comment}
+					tasks={values.selectedTasks}
+				/>
 			)}
 		</Grid>
 	);

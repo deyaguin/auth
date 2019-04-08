@@ -23,6 +23,10 @@ export interface ITask {
 	operations: IOperation[];
 }
 
+export interface ITasks {
+	[id: string]: ITask;
+}
+
 export interface IValues {
 	[name: string]: any;
 }

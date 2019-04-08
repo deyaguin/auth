@@ -3,4 +3,6 @@ import { inject } from 'mobx-react';
 
 import Template from './Template';
 
-export default withRouter(Template);
+export default inject(({ templatesStore: { getTemplate } }) => ({ getTemplate }))(
+	withRouter(Template),
+);
