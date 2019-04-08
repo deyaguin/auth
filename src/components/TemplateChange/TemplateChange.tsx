@@ -1,4 +1,5 @@
 import React, { FC, ReactNode, useState, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -6,12 +7,21 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
+import { TEMPLATES } from '../../constants/routes';
 import TemplateView from '../TemplateView';
 import Options from '../Options';
 import Tasks from '../Tasks';
 import RestrictionsTable from '../RestrictionsTable';
 import RestrictionsFilter from '../RestrictionsFilter';
-import { ITask, IValues, IErrors, SetValue, SetError } from '../types';
+import {
+	ITask,
+	IValues,
+	IErrors,
+	SetValue,
+	SetError,
+	TemplateCreate,
+	TemplateUpdate,
+} from '../types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -35,6 +45,9 @@ const styles = (theme: Theme) =>
 			flexGrow: 1,
 			padding: `0 ${theme.spacing.unit * 2}`,
 		},
+		link: {
+			textDecoration: 'none',
+		},
 		tableWrapper: {
 			flexGrow: 1,
 		},
@@ -49,6 +62,7 @@ interface ITemplateChangeProps extends WithStyles<typeof styles> {
 	errors: IErrors;
 	setError: SetError;
 	setValue: SetValue;
+	action: TemplateCreate | TemplateUpdate;
 }
 
 const TemplateChange: FC<ITemplateChangeProps> = ({
@@ -58,6 +72,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	setValue,
 	setError,
 	tasks,
+	action,
 }) => {
 	const [activeStep, setActiveStep]: [number, (activeStep: number) => void] = useState(0);
 
@@ -98,7 +113,8 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	};
 
 	const handleComplete = (): void => {
-		console.log(values);
+		const { name, comment, tags, id, selectedTasks } = values;
+		action({ id, name, comment, tags, tasks: selectedTasks });
 	};
 
 	const actions: ReactNode = (
@@ -114,16 +130,31 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 					Назад
 				</Button>
 			</Grid>
-			<Grid item={true}>
-				<Button
-					className={classes.button}
-					color="primary"
-					variant="contained"
-					onClick={isFourthStep ? handleComplete : handleNextStep}
-				>
-					{isFourthStep ? 'Готово' : 'Далее'}
-				</Button>
-			</Grid>
+			{isFourthStep ? (
+				<Grid item={true}>
+					<Link to={TEMPLATES} className={classes.link}>
+						<Button
+							className={classes.button}
+							color="primary"
+							variant="contained"
+							onClick={handleComplete}
+						>
+							Готово
+						</Button>
+					</Link>
+				</Grid>
+			) : (
+				<Grid item={true}>
+					<Button
+						className={classes.button}
+						color="primary"
+						variant="contained"
+						onClick={handleNextStep}
+					>
+						Далее
+					</Button>
+				</Grid>
+			)}
 		</Grid>
 	);
 

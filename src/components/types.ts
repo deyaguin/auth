@@ -23,6 +23,14 @@ export interface ITask {
 	operations: IOperation[];
 }
 
+export interface ITemplate {
+	id: string;
+	name: string;
+	tags?: string;
+	comment?: string;
+	tasks: ITask[];
+}
+
 export interface ITasks {
 	[id: string]: ITask;
 }
@@ -42,3 +50,20 @@ export interface IFilters {
 export type SetValue = (key: string, value: any) => void;
 
 export type SetError = (key: string, value: boolean) => void;
+
+export type TemplateCreate = (template: {
+	name: string;
+	tags: string;
+	comment: string;
+	tasks: ITasks;
+}) => void;
+
+export type TemplateUpdate = (template: {
+	id: string;
+	name: string;
+	tags: string;
+	comment: string;
+	tasks: ITasks;
+}) => void;
+
+export type TemplateAction = (template: ITemplate) => void;

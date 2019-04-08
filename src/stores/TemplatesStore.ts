@@ -6,6 +6,7 @@ import Template from './Models/Template';
 import ILoadingStore from './Interfaces/LoadingStore';
 import IPagintaionStore from './Interfaces/PaginationStore';
 import IFiltersStore from './Interfaces/FiltersStore';
+import ITask from './Interfaces/Task';
 
 const TEMPLATES = {
 	'1': new Template({ template_id: '1', name: 'Диспетчер УК1', comment: 'test' }),
@@ -70,12 +71,41 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		this.offset = offset;
 	};
 
-	@action public templateCreate = ({ name, comment }: { name: string; comment: string }): void => {
+	@action public templateCreate = ({
+		name,
+		comment,
+		tags,
+		tasks,
+	}: {
+		name: string;
+		comment?: string;
+		tags?: string;
+		tasks: { [id: string]: ITask };
+	}): void => {
 		const id = Object.keys(this.templatesMap).length.toString();
 
 		this.templatesMap = {
 			...this.templatesMap,
-			[id]: new Template({ template_id: id, name, comment }),
+			[id]: new Template({ template_id: id, name, comment, tags }),
+		};
+	};
+
+	@action public templateEdit = ({
+		id,
+		name,
+		comment,
+		tags,
+		tasks,
+	}: {
+		id: string;
+		name: string;
+		comment?: string;
+		tags?: string;
+		tasks: { [id: string]: ITask };
+	}): void => {
+		this.templatesMap = {
+			...this.templatesMap,
+			[id]: new Template({ template_id: id, name, comment, tags }),
 		};
 	};
 

@@ -29,23 +29,28 @@ interface ITemplate {
 interface ITemplateCreateProps
 	extends RouteComponentProps<{ id: string }>,
 		WithStyles<typeof styles> {
-	templateCreate: (values: any) => void;
+	templateCreate: (values: ITemplate) => void;
+	templateEdit: (values: ITemplate) => void;
 	getTemplate: (id: string) => {};
+	setSnackbar: (message: string, type?: string) => void;
 	tasks: ITask[];
 }
 
 const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 	templateCreate,
+	templateEdit,
 	getTemplate,
 	tasks,
 	classes,
 	match,
 }) => {
-	const headerTitle: string =
-		match.path === TEMPLATE_CREATE ? 'Создание шаблона' : 'Редактирование шаблона';
+	const isCreatePage: boolean = match.path === TEMPLATE_CREATE;
 
-	const initialValues: ITemplate | {} =
-		match.path !== TEMPLATE_CREATE ? getTemplate(match.params.id) : {};
+	const headerTitle: string = isCreatePage ? 'Создание шаблона' : 'Редактирование шаблона';
+
+	const initialValues: ITemplate | {} = isCreatePage ? {} : getTemplate(match.params.id);
+
+	const action: (values: ITemplate) => void = isCreatePage ? templateCreate : templateEdit;
 
 	return (
 		<Page
@@ -58,7 +63,7 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 			]}
 			headerTitle={headerTitle}
 		>
-			<TemplateChangeComponent tasks={tasks} initialValues={initialValues} />
+			<TemplateChangeComponent tasks={tasks} initialValues={initialValues} action={action} />
 		</Page>
 	);
 };
