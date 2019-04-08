@@ -1,11 +1,13 @@
+import { observable } from 'mobx';
+
 import ITask from '../Interfaces/Task';
 import IOperation from '../Interfaces/Operation';
 import Operation from './Operation';
 
 class Task {
-	public id: string;
-	public name: string;
-	public operations: Operation[];
+	@observable public id: string;
+	@observable public name: string;
+	@observable public operations: Operation[];
 
 	public constructor(task: ITask) {
 		this.id = task.task_id;

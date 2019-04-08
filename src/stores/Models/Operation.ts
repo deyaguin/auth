@@ -1,11 +1,13 @@
+import { observable } from 'mobx';
+
 import IOpertaion from '../Interfaces/Operation';
 import IAttribute from '../Interfaces/Attribute';
 
 class Operation {
-	public id: string;
-	public name: string;
-	public taskId: string;
-	public attributes: IAttribute[];
+	@observable public id: string;
+	@observable public name: string;
+	@observable public taskId: string;
+	@observable public attributes: IAttribute[];
 
 	public constructor(operation: IOpertaion, taskId: string) {
 		this.id = operation.operation_id;

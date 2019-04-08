@@ -23,9 +23,6 @@ interface ITemplateProps extends RouteComponentProps<{ id: string }>, WithStyles
 
 const Template: FC<ITemplateProps> = ({ match: { params }, getTemplate, classes }) => {
 	const template: ITemplate = getTemplate(params.id);
-	const tasks: ITasks = template.tasks
-		? template.tasks.reduce((acc: ITasks, item: ITask) => ({ ...acc, [item.id]: item }), {})
-		: {};
 
 	return (
 		<Page headerTitle={template.name}>
@@ -34,7 +31,7 @@ const Template: FC<ITemplateProps> = ({ match: { params }, getTemplate, classes 
 				name={template.name}
 				tags={template.tags}
 				comment={template.comment}
-				tasks={tasks}
+				tasks={template.tasksObject}
 			/>
 		</Page>
 	);
