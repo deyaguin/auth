@@ -1,14 +1,17 @@
 import { observable } from 'mobx';
 
 import IUser from '../Interfaces/User';
+import IProfile from '../Interfaces/Profile';
 
 class User {
+	@observable public profile?: IProfile;
 	@observable private login: string;
 	@observable private id: string;
 
-	public constructor(user: IUser) {
+	public constructor(user: IUser, profile?: IProfile) {
 		this.login = user.login;
 		this.id = user.user_id;
+		this.profile = profile;
 	}
 }
 
