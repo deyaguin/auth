@@ -1,5 +1,5 @@
-import IProfileSchema from '../../../profileSchema';
-
-interface IProfile extends IProfileSchema {}
+interface IProfile {
+	[propName: string]: any;
+}
 
 export default IProfile;

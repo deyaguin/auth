@@ -5,8 +5,8 @@ import IProfile from '../Interfaces/Profile';
 
 class User {
 	@observable public profile?: IProfile;
-	@observable private login: string;
-	@observable private id: string;
+	@observable public login: string;
+	@observable public id: string;
 
 	public constructor(user: IUser, profile?: IProfile) {
 		this.login = user.login;

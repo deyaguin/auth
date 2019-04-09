@@ -13,3 +13,7 @@ export { default as TemplatesFilter } from './TemplatesFilter';
 export { default as TemplateChange } from './TemplateChange';
 
 export { default as TemplateView } from './TemplateView';
+
+export { default as UsersTable } from './UsersTable';
+
+export { default as UsersFilter } from './UsersFilter';

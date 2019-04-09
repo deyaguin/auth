@@ -23,18 +23,13 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface ITemplatesFilterProps extends WithStyles<typeof styles> {
+interface IUsersFilterProps extends WithStyles<typeof styles> {
 	filters: IFilters;
 	setFilters: (filters: IFilters) => void;
 	clearFilters: () => void;
 }
 
-const TemplatesFilter: FC<ITemplatesFilterProps> = ({
-	classes,
-	filters,
-	setFilters,
-	clearFilters,
-}) => {
+const UsersFilter: FC<IUsersFilterProps> = ({ classes, filters, setFilters, clearFilters }) => {
 	const [expanded, setExpanded]: [boolean, (expanded: boolean) => void] = useState(false);
 	const [filtersState, setFiltersState]: [IFilters, (filtersState: IFilters) => void] = useState(
 		{},
@@ -75,17 +70,7 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 							<TextField
 								value={filtersState.name || ''}
 								onChange={handleSetFiltersState('name')}
-								label="Название"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.comment || ''}
-								onChange={handleSetFiltersState('comment')}
-								label="Комментарий"
+								label="Логин"
 								InputLabelProps={{
 									shrink: true,
 								}}
@@ -108,4 +93,4 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 	);
 };
 
-export default withStyles(styles)(TemplatesFilter);
+export default withStyles(styles)(UsersFilter);

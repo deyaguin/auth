@@ -3,9 +3,28 @@ import { inject } from 'mobx-react';
 import Users from './Users';
 
 export default inject(
-	({ snackbarStore: { onError }, usersStore: { users, loading, usersList } }) => ({
+	({
+		snackbarStore: { setSnackbar },
+		usersStore: {
+			users,
+			loading,
+			usersList,
+			limit,
+			offset,
+			total,
+			filters,
+			clearFilters,
+			userDelete,
+		},
+	}) => ({
+		clearFilters,
+		filters,
+		limit,
 		loading,
-		onError,
+		offset,
+		setSnackbar,
+		total,
+		userDelete,
 		users,
 		usersList,
 	}),

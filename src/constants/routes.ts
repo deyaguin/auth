@@ -4,7 +4,7 @@ const TEMPLATES = '/templates';
 const TEMPLATE_CREATE = `${TEMPLATES}/create`;
 const TEMPLATE_EDIT = `${TEMPLATES}/edit/:id(\\d+)`;
 const USER_CREATE = `${USERS}/create`;
-const USER_EDIT = `${USERS}/edit`;
+const USER_EDIT = `${USERS}/edit/:id(\\d+)`;
 const TEMPLATE = `${TEMPLATES}/:id(\\d+)`;
 const USER = `${USERS}/:id`;
 

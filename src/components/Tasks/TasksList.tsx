@@ -1,5 +1,3 @@
-// todo split component to smaller chunks
-
 import React, { Component, ReactNode, ChangeEvent, MouseEvent } from 'react';
 import { clone } from 'ramda';
 import classNames from 'classnames';
@@ -84,11 +82,10 @@ const styles = (theme: Theme) =>
 		},
 		paper: {
 			display: 'flex',
+			flexDirection: 'column',
 			flexGrow: 1,
 			height: '100%',
-			flexDirection: 'column',
 			justifyContent: 'space-between',
-			minWidth: 360,
 		},
 	});
 

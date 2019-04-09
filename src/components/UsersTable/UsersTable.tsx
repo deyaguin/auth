@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PagingState, CustomPaging } from '@devexpress/dx-react-grid';
 import {
@@ -15,7 +15,8 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import EditIcon from '@material-ui/icons/Edit';
 
 import { TABLE_PAGE_SIZES, TABLE_MESSAGES, TABLE_PAGINATION_MESSAGES } from '../../constants/ui';
-import { TEMPLATES } from '../../constants/routes';
+import { USERS } from '../../constants/routes';
+import { PROFILE_SCHEMA } from '../../constants';
 import Popover from '../Popover';
 import TableActions from '../TableActions';
 import GridRootContainer from '../GridRootContainer';
@@ -34,60 +35,59 @@ const styles = createStyles({
 	},
 });
 
-interface ITemplate {
+interface IUser {
 	id: string;
-	name: string;
-	comment: string;
+	login: string;
 }
 
-interface ITemplatesTableProps extends WithStyles<typeof styles> {
-	templates: ITemplate[];
+interface IUsersTableProps extends WithStyles<typeof styles> {
+	users: IUser[];
 	pageSize: number;
 	currentPage: number;
 	total: number;
-	templateDelete: (id: string) => void;
+	userDelete: (id: string) => void;
 	onPageSizeChange: (pageSize: number) => void;
 	onCurrentPageChange: (currentPage: number) => void;
 }
 
-const COLUMNS = [{ name: 'name', title: 'Шаблон' }, { name: 'comment', title: 'Комментарий' }];
+const COLUMNS = [{ name: 'login', title: 'Логин' }, ...PROFILE_SCHEMA];
 
-const TemplatesTable: FC<ITemplatesTableProps> = ({
+const UsersTable: FC<IUsersTableProps> = ({
 	classes,
-	templates,
+	users,
 	pageSize,
 	total,
 	currentPage,
 	onPageSizeChange,
 	onCurrentPageChange,
-	templateDelete,
+	userDelete,
 }) => {
-	const handleTemplateDelete = (id: string) => (): void => templateDelete(id);
+	const handleUserDelete = (id: string) => (): void => userDelete(id);
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
-			<Link to={`${TEMPLATES}/${id}`}>
-				<Tooltip title="Открыть шаблон">
+			<Link to={`${USERS}/${id}`}>
+				<Tooltip title="Открыть пользователя">
 					<IconButton color="primary">
 						<OpenInNewIcon />
 					</IconButton>
 				</Tooltip>
 			</Link>
-			<Link to={`${TEMPLATES}/edit/${id}`}>
-				<Tooltip title="Редактировать шаблон">
+			<Link to={`${USERS}/edit/${id}`}>
+				<Tooltip title="Редактировать пользователя">
 					<IconButton color="primary">
 						<EditIcon />
 					</IconButton>
 				</Tooltip>
 			</Link>
 			<Popover
-				onAgree={handleTemplateDelete(id)}
-				title="Удалить шаблон?"
+				onAgree={handleUserDelete(id)}
+				title="Удалить пользователя?"
 				agreeText="Удалить"
 				cancelText="Отмена"
 			>
 				{(setButtonRef: (node: any) => void, onClick) => (
-					<Tooltip title="Удалить шаблон">
+					<Tooltip title="Удалить пользователя">
 						<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
 							<DeleteIcon />
 						</IconButton>
@@ -98,7 +98,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	);
 
 	return (
-		<Grid rootComponent={GridRootContainer} rows={templates} columns={COLUMNS}>
+		<Grid rootComponent={GridRootContainer} rows={users} columns={COLUMNS}>
 			<PagingState
 				pageSize={pageSize}
 				defaultCurrentPage={0}
@@ -118,4 +118,4 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	);
 };
 
-export default withStyles(styles)(TemplatesTable);
+export default withStyles(styles)(UsersTable);

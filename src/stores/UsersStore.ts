@@ -6,20 +6,34 @@ import User from './Models/User';
 import IUser from './Interfaces/User';
 import ILoadingStore from './Interfaces/LoadingStore';
 import IPagintaionStore from './Interfaces/PaginationStore';
+import IFiltersStore from './Interfaces/FiltersStore';
 
-class UsersStore extends Store implements ILoadingStore, IPagintaionStore {
+const USERS = {
+	'1': new User(
+		{ user_id: '1', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+};
+
+interface IFilters {
+	[name: string]: string;
+}
+
+class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFiltersStore {
 	@observable public loading: boolean;
 	@observable public limit: number;
 	@observable public offset: number;
+	@observable public filtersMap: IFilters;
 	@observable private usersMap: { [id: string]: User };
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
-		this.usersMap = {};
+		this.usersMap = USERS;
 		this.loading = false;
 		this.limit = 10;
 		this.offset = 0;
+		this.filtersMap = {};
 
 		// this.services.authentication.subscriptions.usersList.subscribe({
 		// 	next: async (response: any) => {
@@ -63,8 +77,32 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore {
 		// todo
 	};
 
+	@action public userDelete = (id: string) => {};
+
+	@action public setFilters = (filters: IFilters): void => {
+		this.filtersMap = filters;
+	};
+
+	@action public clearFilters = (): void => {
+		this.filtersMap = {};
+	};
+
+	@computed public get filters(): IFilters {
+		return toJS(this.filtersMap);
+	}
+
 	@computed public get users() {
-		return Object.values(toJS(this.usersMap));
+		return Object.values(toJS(this.usersMap)).map((item: User) => {
+			if (item.profile) {
+				return {
+					id: item.id,
+					login: item.login,
+					...item.profile,
+				};
+			}
+
+			return item;
+		});
 	}
 }
 

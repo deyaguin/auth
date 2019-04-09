@@ -1,0 +1,16 @@
+[{
+	"name": "name",
+	"title": "ФИО"
+}, {
+	"name": "address",
+	"title": "Адрес"
+}, {
+	"name": "personalAccount",
+	"title": "Лицевой счет"
+}, {
+	"name": "organization",
+	"title": "Организация"
+}, {
+	"name": "email",
+	"title": "E mail"
+}]

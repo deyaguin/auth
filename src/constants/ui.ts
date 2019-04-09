@@ -12,6 +12,10 @@ const TABLE_MESSAGES = {
 	noData: 'Нет данных',
 };
 
+const TABLE_PAGINATION_MESSAGES = {
+	rowsPerPage: 'Строк на странице',
+};
+
 const OPERATION_STATES: { [name: string]: string } = {
 	allowed: 'Разрешено',
 	denied: 'Запрещено',
@@ -31,6 +35,7 @@ export {
 	TABLE_PAGE_SIZES,
 	FILTER_MESSAGES,
 	TABLE_MESSAGES,
+	TABLE_PAGINATION_MESSAGES,
 	TABLE_ACTIONS_WIDTH,
 	OPERATION_STATES,
 	CONDITIONS,
