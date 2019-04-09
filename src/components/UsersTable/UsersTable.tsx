@@ -1,11 +1,13 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, ReactNode } from 'react';
+import { without } from 'ramda';
 import { Link } from 'react-router-dom';
-import { PagingState, CustomPaging } from '@devexpress/dx-react-grid';
+import { PagingState, CustomPaging, SelectionState } from '@devexpress/dx-react-grid';
 import {
 	Grid,
 	VirtualTable,
 	TableHeaderRow,
 	PagingPanel,
+	TableSelection,
 } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -45,9 +47,11 @@ interface IUsersTableProps extends WithStyles<typeof styles> {
 	pageSize: number;
 	currentPage: number;
 	total: number;
+	selectedUsers: Array<string | number>;
 	userDelete: (id: string) => void;
 	onPageSizeChange: (pageSize: number) => void;
 	onCurrentPageChange: (currentPage: number) => void;
+	onSelectUsers: (selecetedUser: any) => void;
 }
 
 const COLUMNS = [{ name: 'login', title: 'Логин' }, ...PROFILE_SCHEMA];
@@ -58,11 +62,17 @@ const UsersTable: FC<IUsersTableProps> = ({
 	pageSize,
 	total,
 	currentPage,
+	selectedUsers,
 	onPageSizeChange,
 	onCurrentPageChange,
 	userDelete,
+	onSelectUsers: onSelectUser,
 }) => {
 	const handleUserDelete = (id: string) => (): void => userDelete(id);
+
+	const handleSelectUser = (selection: Array<string | number>): void => {
+		onSelectUser(without(selectedUsers, selection));
+	};
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
@@ -106,11 +116,13 @@ const UsersTable: FC<IUsersTableProps> = ({
 				onCurrentPageChange={onCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
+			<SelectionState selection={selectedUsers} onSelectionChange={handleSelectUser} />
 			<CustomPaging totalCount={total} />
 			<VirtualTable
 				messages={TABLE_MESSAGES}
 				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
 			/>
+			<TableSelection />
 			<TableActions actions={renderActions} />
 			<TableHeaderRow />
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} messages={TABLE_PAGINATION_MESSAGES} />

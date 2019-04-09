@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -43,7 +43,8 @@ const Users: FC<IUsersProps> = ({
 	setFilters,
 	filters,
 }) => {
-	console.log(users);
+	const [selectedUsers, setSelecetedUsers] = useState([]);
+
 	const handleDelete = (id: string): void => {
 		userDelete(id);
 
@@ -52,16 +53,25 @@ const Users: FC<IUsersProps> = ({
 
 	const handlePageSizeChange = (pageSize: number): void => {
 		setLimit(pageSize);
+
+		setSelecetedUsers([]);
 	};
 
 	const handleCurrentPageChange = (currentPage: number): void => {
 		setOffset(currentPage * limit);
+
+		setSelecetedUsers([]);
 	};
 
 	return (
 		<Page
 			actions={[
-				<Link key="new-template" className={classes.link} to={USER_CREATE}>
+				<Link key="assign-template" className={classes.link} to={USER_CREATE}>
+					<Button variant="contained" color="primary" disabled={selectedUsers.length < 1}>
+						Применить шаблон
+					</Button>
+				</Link>,
+				<Link key="new-user" className={classes.link} to={USER_CREATE}>
 					<Button variant="contained" color="primary">
 						Создать нового пользователя
 					</Button>
@@ -80,6 +90,8 @@ const Users: FC<IUsersProps> = ({
 				onCurrentPageChange={handleCurrentPageChange}
 				users={users}
 				userDelete={handleDelete}
+				onSelectUsers={setSelecetedUsers}
+				selectedUsers={selectedUsers}
 			/>
 		</Page>
 	);

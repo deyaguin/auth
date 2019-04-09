@@ -15,6 +15,8 @@ export default inject(
 			filters,
 			clearFilters,
 			userDelete,
+			setLimit,
+			setOffset,
 		},
 	}) => ({
 		clearFilters,
@@ -27,5 +29,7 @@ export default inject(
 		userDelete,
 		users,
 		usersList,
+		setLimit,
+		setOffset,
 	}),
 )(Users);

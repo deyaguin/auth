@@ -5,7 +5,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 const styles = (theme: Theme) =>
 	createStyles({
 		container: {
-			'& > button:nth-child(n + 2)': {
+			'& > a:nth-child(n + 2)': {
 				marginLeft: theme.spacing.unit * 3,
 			},
 			display: 'flex',

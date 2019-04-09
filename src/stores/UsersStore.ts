@@ -13,6 +13,74 @@ const USERS = {
 		{ user_id: '1', login: 'TEST' },
 		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
 	),
+	'2': new User(
+		{ user_id: '2', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'3': new User(
+		{ user_id: '3', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'4': new User(
+		{ user_id: '4', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'5': new User(
+		{ user_id: '5', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'6': new User(
+		{ user_id: '6', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'7': new User(
+		{ user_id: '7', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'8': new User(
+		{ user_id: '8', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'9': new User(
+		{ user_id: '9', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'10': new User(
+		{ user_id: '10', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'11': new User(
+		{ user_id: '11', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'12': new User(
+		{ user_id: '12', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'13': new User(
+		{ user_id: '13', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'14': new User(
+		{ user_id: '14', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'15': new User(
+		{ user_id: '15', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'16': new User(
+		{ user_id: '16', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'17': new User(
+		{ user_id: '17', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
+	'18': new User(
+		{ user_id: '18', login: 'TEST' },
+		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
+	),
 };
 
 interface IFilters {
@@ -87,22 +155,28 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 		this.filtersMap = {};
 	};
 
+	@computed public get users() {
+		return Object.values(toJS(this.usersMap))
+			.map((item: User) => {
+				if (item.profile) {
+					return {
+						id: item.id,
+						login: item.login,
+						...item.profile,
+					};
+				}
+
+				return item;
+			})
+			.slice(this.offset, this.offset + this.limit);
+	}
+
 	@computed public get filters(): IFilters {
 		return toJS(this.filtersMap);
 	}
 
-	@computed public get users() {
-		return Object.values(toJS(this.usersMap)).map((item: User) => {
-			if (item.profile) {
-				return {
-					id: item.id,
-					login: item.login,
-					...item.profile,
-				};
-			}
-
-			return item;
-		});
+	@computed public get total(): number {
+		return Object.keys(USERS).length;
 	}
 }
 
