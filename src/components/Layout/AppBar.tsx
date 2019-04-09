@@ -4,7 +4,7 @@ import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import BaseAppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import { ui } from '../../constants';
@@ -46,7 +46,7 @@ const AppBar: FC<IAppBarProps> = ({ open, classes, onMenuClick }) => {
 					<MenuIcon />
 				</IconButton>
 				<IconButton color="inherit">
-					<AccountCircleIcon />
+					<ExitToAppIcon />
 				</IconButton>
 			</Toolbar>
 		</BaseAppBar>
