@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { FC, ChangeEvent, useState, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -11,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import { PROFILE_SCHEMA } from '../../constants';
 import { IFilters } from '../types';
 
 const styles = (theme: Theme) =>
@@ -52,6 +53,19 @@ const UsersFilter: FC<IUsersFilterProps> = ({ classes, filters, setFilters, clea
 		setFiltersState({});
 	};
 
+	const renderField = (label: string, propName: string): ReactNode => (
+		<Grid item={true} key={propName}>
+			<TextField
+				value={filtersState[propName] || ''}
+				onChange={handleSetFiltersState(propName)}
+				label={label}
+				InputLabelProps={{
+					shrink: true,
+				}}
+			/>
+		</Grid>
+	);
+
 	return (
 		<div className={classes.root}>
 			<ExpansionPanel expanded={expanded} onChange={handleSetExpanded}>
@@ -66,16 +80,11 @@ const UsersFilter: FC<IUsersFilterProps> = ({ classes, filters, setFilters, clea
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
 					<Grid container={true} spacing={32}>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.name || ''}
-								onChange={handleSetFiltersState('name')}
-								label="Логин"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
+						{renderField('Логин', 'name')}
+						{renderField('Хештег', 'tag')}
+						{PROFILE_SCHEMA.map((item: { name: string; title: string }) =>
+							renderField(item.title, item.name),
+						)}
 					</Grid>
 				</ExpansionPanelDetails>
 				<ExpansionPanelActions>
