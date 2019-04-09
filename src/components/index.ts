@@ -17,3 +17,5 @@ export { default as TemplateView } from './TemplateView';
 export { default as UsersTable } from './UsersTable';
 
 export { default as UsersFilter } from './UsersFilter';
+
+export { default as UserChange } from './UserChange';

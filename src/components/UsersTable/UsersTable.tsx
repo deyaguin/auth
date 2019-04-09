@@ -80,13 +80,6 @@ const UsersTable: FC<IUsersTableProps> = ({
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
-			<Link to={`${USERS}/${id}`}>
-				<Tooltip title="Открыть пользователя">
-					<IconButton color="primary">
-						<OpenInNewIcon />
-					</IconButton>
-				</Tooltip>
-			</Link>
 			<Link to={`${USERS}/edit/${id}`}>
 				<Tooltip title="Редактировать пользователя">
 					<IconButton color="primary">

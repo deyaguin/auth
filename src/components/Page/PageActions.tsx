@@ -6,7 +6,7 @@ const styles = (theme: Theme) =>
 	createStyles({
 		container: {
 			'& > a:nth-child(n + 2)': {
-				marginLeft: theme.spacing.unit * 3,
+				marginLeft: theme.spacing.unit * 2,
 			},
 			display: 'flex',
 		},

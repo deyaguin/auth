@@ -53,14 +53,10 @@ const Users: FC<IUsersProps> = ({
 
 	const handlePageSizeChange = (pageSize: number): void => {
 		setLimit(pageSize);
-
-		setSelecetedUsers([]);
 	};
 
 	const handleCurrentPageChange = (currentPage: number): void => {
 		setOffset(currentPage * limit);
-
-		setSelecetedUsers([]);
 	};
 
 	return (
