@@ -1,7 +1,11 @@
 import React, { FC, ReactNode } from 'react';
-import { without } from 'ramda';
 import { Link } from 'react-router-dom';
-import { PagingState, CustomPaging, SelectionState } from '@devexpress/dx-react-grid';
+import {
+	PagingState,
+	CustomPaging,
+	SelectionState,
+	IntegratedSelection,
+} from '@devexpress/dx-react-grid';
 import {
 	Grid,
 	VirtualTable,
@@ -71,7 +75,7 @@ const UsersTable: FC<IUsersTableProps> = ({
 	const handleUserDelete = (id: string) => (): void => userDelete(id);
 
 	const handleSelectUser = (selection: Array<string | number>): void => {
-		onSelectUser(without(selectedUsers, selection));
+		onSelectUser(selection);
 	};
 
 	const renderActions = (id: string): ReactNode => (
@@ -118,11 +122,12 @@ const UsersTable: FC<IUsersTableProps> = ({
 			/>
 			<SelectionState selection={selectedUsers} onSelectionChange={handleSelectUser} />
 			<CustomPaging totalCount={total} />
+			<IntegratedSelection />
 			<VirtualTable
 				messages={TABLE_MESSAGES}
 				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
 			/>
-			<TableSelection />
+			<TableSelection showSelectAll={true} />
 			<TableActions actions={renderActions} />
 			<TableHeaderRow />
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} messages={TABLE_PAGINATION_MESSAGES} />

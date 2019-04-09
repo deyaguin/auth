@@ -99,7 +99,7 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 
 		this.usersMap = USERS;
 		this.loading = false;
-		this.limit = 10;
+		this.limit = 20;
 		this.offset = 0;
 		this.filtersMap = {};
 
