@@ -18,4 +18,6 @@ export { default as UsersTable } from './UsersTable';
 
 export { default as UsersFilter } from './UsersFilter';
 
-export { default as UserChange } from './UserChange';
+export { default as ProfileForm } from './ProfileForm';
+
+export { default as UserAccessRights } from './UserAccessRights';

@@ -1,11 +1,12 @@
 import React, { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { PagingState, CustomPaging } from '@devexpress/dx-react-grid';
+import { PagingState, CustomPaging, SelectionState } from '@devexpress/dx-react-grid';
 import {
 	Grid,
 	VirtualTable,
 	TableHeaderRow,
 	PagingPanel,
+	TableSelection,
 } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -50,6 +51,9 @@ interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	onCurrentPageChange: (currentPage: number) => void;
 	removable?: boolean;
 	editable?: boolean;
+	selectable?: boolean;
+	selectedTemplates?: Array<string | number>;
+	onSelectTemplate?: (selectedTemplate: any) => void;
 }
 
 const COLUMNS = [{ name: 'name', title: 'Шаблон' }, { name: 'comment', title: 'Комментарий' }];
@@ -65,8 +69,14 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	templateDelete,
 	removable = false,
 	editable = false,
+	selectable = false,
+	selectedTemplates,
+	onSelectTemplate,
 }) => {
 	const handleTemplateDelete = (id: string) => (): void => templateDelete && templateDelete(id);
+
+	const handleSelectTemplate = (selection: Array<string | number>): void =>
+		onSelectTemplate && onSelectTemplate(selection);
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
@@ -114,11 +124,15 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				onCurrentPageChange={onCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
+			{selectable && (
+				<SelectionState selection={selectedTemplates} onSelectionChange={handleSelectTemplate} />
+			)}
 			<CustomPaging totalCount={total} />
 			<VirtualTable
 				messages={TABLE_MESSAGES}
 				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
 			/>
+			{selectable && <TableSelection />}
 			<TableActions actions={renderActions} />
 			<TableHeaderRow />
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} messages={TABLE_PAGINATION_MESSAGES} />

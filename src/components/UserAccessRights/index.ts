@@ -1,3 +1,4 @@
+import { withForm } from '../../hocs';
 import UserAccessRights from './UserAccessRights';
 
-export default UserAccessRights;
+export default withForm(UserAccessRights);
