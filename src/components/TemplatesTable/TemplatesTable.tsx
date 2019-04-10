@@ -45,9 +45,11 @@ interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	pageSize: number;
 	currentPage: number;
 	total: number;
-	templateDelete: (id: string) => void;
+	templateDelete?: (id: string) => void;
 	onPageSizeChange: (pageSize: number) => void;
 	onCurrentPageChange: (currentPage: number) => void;
+	removable?: boolean;
+	editable?: boolean;
 }
 
 const COLUMNS = [{ name: 'name', title: 'Шаблон' }, { name: 'comment', title: 'Комментарий' }];
@@ -61,8 +63,10 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	onPageSizeChange,
 	onCurrentPageChange,
 	templateDelete,
+	removable = false,
+	editable = false,
 }) => {
-	const handleTemplateDelete = (id: string) => (): void => templateDelete(id);
+	const handleTemplateDelete = (id: string) => (): void => templateDelete && templateDelete(id);
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
@@ -73,27 +77,31 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 					</IconButton>
 				</Tooltip>
 			</Link>
-			<Link to={`${TEMPLATES}/edit/${id}`}>
-				<Tooltip title="Редактировать шаблон">
-					<IconButton color="primary">
-						<EditIcon />
-					</IconButton>
-				</Tooltip>
-			</Link>
-			<Popover
-				onAgree={handleTemplateDelete(id)}
-				title="Удалить шаблон?"
-				agreeText="Удалить"
-				cancelText="Отмена"
-			>
-				{(setButtonRef: (node: any) => void, onClick) => (
-					<Tooltip title="Удалить шаблон">
-						<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
-							<DeleteIcon />
+			{editable && (
+				<Link to={`${TEMPLATES}/edit/${id}`}>
+					<Tooltip title="Редактировать шаблон">
+						<IconButton color="primary">
+							<EditIcon />
 						</IconButton>
 					</Tooltip>
-				)}
-			</Popover>
+				</Link>
+			)}
+			{removable && (
+				<Popover
+					onAgree={handleTemplateDelete(id)}
+					title="Удалить шаблон?"
+					agreeText="Удалить"
+					cancelText="Отмена"
+				>
+					{(setButtonRef: (node: any) => void, onClick) => (
+						<Tooltip title="Удалить шаблон">
+							<IconButton color="secondary" buttonRef={setButtonRef} onClick={onClick}>
+								<DeleteIcon />
+							</IconButton>
+						</Tooltip>
+					)}
+				</Popover>
+			)}
 		</div>
 	);
 

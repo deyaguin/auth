@@ -3,10 +3,10 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
 
-import { PROFILE_SCHEMA } from '../../constants';
-import { SetValue, SetError, IValues, IErrors } from '../types';
+import { SetValue, SetError, IValues, IErrors, SetLimit, SetOffset } from '../types';
+import ProfileForm from '../ProfileForm';
+import UserAccessRights from '../UserAccessRights';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -24,6 +24,15 @@ interface IUserChangeProps extends WithStyles<typeof styles> {
 	errors: IErrors;
 	setValue: SetValue;
 	setError: SetError;
+	templates: Array<{ id: string; name: string; comment: string }>;
+	filters: { [name: string]: string };
+	limit: number;
+	offset: number;
+	total: number;
+	setLimit: SetLimit;
+	setOffset: SetOffset;
+	setFilters: (filters: { [name: string]: string }) => void;
+	clearFilters: () => void;
 }
 
 enum TABS {
@@ -31,44 +40,32 @@ enum TABS {
 	restrictions,
 }
 
-const UserChange: FC<IUserChangeProps> = ({ classes, values, errors, setValue, setError }) => {
+const UserChange: FC<IUserChangeProps> = ({
+	classes,
+	values,
+	errors,
+	setValue,
+	setError,
+	templates,
+	filters,
+	limit,
+	offset,
+	total,
+	setLimit,
+	setOffset,
+	setFilters,
+	clearFilters,
+}) => {
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 	console.log(values);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
 
-	const handleSetValue = (fieldName: string) => (e: ChangeEvent<HTMLInputElement>): void =>
-		setValue(fieldName, e.currentTarget.value);
-
-	const renderField = (label: string, propName: string): ReactNode => (
-		<Grid item={true} key={propName}>
-			<TextField
-				className={classes.textField}
-				fullWidth={true}
-				value={values[propName] || ''}
-				onChange={handleSetValue(propName)}
-				label={label}
-				InputLabelProps={{
-					shrink: true,
-				}}
-				variant="outlined"
-			/>
-		</Grid>
-	);
-
-	const renderProfile = (): ReactNode =>
-		selectedTab === TABS.profile && (
-			<Fragment>
-				{renderField('Логин', 'login')}
-				{PROFILE_SCHEMA.map(item => renderField(item.title, item.name))}
-			</Fragment>
-		);
-
 	const renderRestrictions = (): ReactNode =>
 		selectedTab === TABS.restrictions && <Fragment>restrictions</Fragment>;
 
 	return (
-		<Grid container={true} direction="column">
+		<Grid container={true} direction="column" wrap="nowrap">
 			<Tabs
 				value={selectedTab}
 				onChange={handleSelectTab}
@@ -86,9 +83,24 @@ const UserChange: FC<IUserChangeProps> = ({ classes, values, errors, setValue, s
 				spacing={24}
 				direction="column"
 				alignItems="center"
+				wrap="nowrap"
 			>
-				{renderProfile()}
-				{renderRestrictions()}
+				{selectedTab === TABS.profile && (
+					<ProfileForm values={values} errors={errors} setValue={setValue} setError={setError} />
+				)}
+				{selectedTab === TABS.restrictions && (
+					<UserAccessRights
+						templates={templates}
+						filters={filters}
+						setFilters={setFilters}
+						clearFilters={clearFilters}
+						limit={limit}
+						offset={offset}
+						total={total}
+						setLimit={setLimit}
+						setOffset={setOffset}
+					/>
+				)}
 			</Grid>
 		</Grid>
 	);

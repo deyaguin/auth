@@ -51,6 +51,10 @@ export type SetValue = (key: string, value: any) => void;
 
 export type SetError = (key: string, value: boolean) => void;
 
+export type SetLimit = (limit: number) => void;
+
+export type SetOffset = (offset: number) => void;
+
 export type TemplateCreate = (template: {
 	name: string;
 	tags: string;

@@ -1,16 +1,21 @@
 [{
 	"name": "name",
-	"title": "ФИО"
+	"title": "ФИО",
+	"required": true
 }, {
 	"name": "address",
-	"title": "Адрес"
+	"title": "Адрес",
+	"required": true
 }, {
 	"name": "personalAccount",
-	"title": "Лицевой счет"
+	"title": "Лицевой счет",
+	"required": true
 }, {
 	"name": "organization",
-	"title": "Организация"
+	"title": "Организация",
+	"required": false
 }, {
 	"name": "email",
-	"title": "E mail"
+	"title": "E mail",
+	"required": true
 }]

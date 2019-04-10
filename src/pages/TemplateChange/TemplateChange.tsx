@@ -7,12 +7,11 @@ import Button from '@material-ui/core/Button';
 import { TEMPLATE_CREATE, TEMPLATES } from '../../constants/routes';
 import { Page, TemplateChange as TemplateChangeComponent } from '../../components';
 
-const styles = (theme: Theme) =>
-	createStyles({
-		link: {
-			textDecoration: 'none',
-		},
-	});
+const styles = createStyles({
+	link: {
+		textDecoration: 'none',
+	},
+});
 
 interface ITask {
 	id: string;

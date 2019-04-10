@@ -78,6 +78,8 @@ const Templates: FC<ITemplateProps> = ({
 				onCurrentPageChange={handleCurrentPageChange}
 				templates={templates}
 				templateDelete={handleDelete}
+				editable={true}
+				removable={true}
 			/>
 		</Page>
 	);
