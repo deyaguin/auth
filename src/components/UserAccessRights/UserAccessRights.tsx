@@ -1,17 +1,20 @@
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { without } from 'ramda';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Fade from '@material-ui/core/Fade';
+import Button from '@material-ui/core/Button';
 
 import { SetLimit, SetOffset } from '../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 
 const styles = createStyles({
+	actionsWrapper: {
+		flexGrow: 1,
+	},
 	container: {
-		height: '100%',
-		width: '100%',
+		flexGrow: 1,
 	},
 	tableWrapper: {
 		flexGrow: 1,
@@ -57,24 +60,45 @@ const UserAccessRights: FC<IUserRestrictionsProps> = ({
 	};
 
 	return (
-		<Fragment>
-			<Grid item={true} container={true}>
-				<TemplateFilter filters={filters} setFilters={setFilters} clearFilters={clearFilters} />
+		<Fade in={true}>
+			<Grid
+				className={classes.container}
+				container={true}
+				item={true}
+				direction="column"
+				spacing={24}
+				alignItems="center"
+				wrap="nowrap"
+			>
+				<Grid item={true} container={true}>
+					<TemplateFilter filters={filters} setFilters={setFilters} clearFilters={clearFilters} />
+				</Grid>
+				<Grid className={classes.tableWrapper} item={true} container={true}>
+					<TemplatesTable
+						selectable={true}
+						currentPage={offset / limit}
+						pageSize={limit}
+						templates={templates}
+						total={total}
+						onPageSizeChange={handlePageSizeChange}
+						onCurrentPageChange={handleCurrentPageChange}
+						onSelectTemplate={handleSetSelelectedTemplates}
+						selectedTemplates={selectedTemplates}
+					/>
+				</Grid>
+				<Grid
+					className={classes.actionsWrapper}
+					item={true}
+					container={true}
+					justify="center"
+					alignItems="flex-end"
+				>
+					<Button color="primary" variant="outlined">
+						Сохранить
+					</Button>
+				</Grid>
 			</Grid>
-			<Grid className={classes.tableWrapper} item={true} container={true}>
-				<TemplatesTable
-					selectable={true}
-					currentPage={offset / limit}
-					pageSize={limit}
-					templates={templates}
-					total={total}
-					onPageSizeChange={handlePageSizeChange}
-					onCurrentPageChange={handleCurrentPageChange}
-					onSelectTemplate={handleSetSelelectedTemplates}
-					selectedTemplates={selectedTemplates}
-				/>
-			</Grid>
-		</Fragment>
+		</Fade>
 	);
 };
 

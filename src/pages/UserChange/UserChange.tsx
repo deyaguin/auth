@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-
 import { USERS } from '../../constants/routes';
 import { Page, ProfileForm, UserAccessRights } from '../../components';
 

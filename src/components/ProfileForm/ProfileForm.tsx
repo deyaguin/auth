@@ -1,12 +1,20 @@
-import React, { FC, ChangeEvent, ReactNode, Fragment } from 'react';
+import React, { FC, ChangeEvent, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import Fade from '@material-ui/core/Fade';
+import Button from '@material-ui/core/Button';
 
 import { PROFILE_SCHEMA } from '../../constants';
 import { SetValue, SetError, IValues, IErrors } from '../types';
 
 const styles = createStyles({
+	actionsWrapper: {
+		flexGrow: 1,
+	},
+	container: {
+		flexGrow: 1,
+	},
 	textField: {
 		width: 500,
 	},
@@ -41,10 +49,30 @@ const ProfileForm: FC<IProfileFormProps> = ({ classes, setValue, setError, value
 	);
 
 	return (
-		<Fragment>
-			{renderField('Логин', 'login', true)}
-			{PROFILE_SCHEMA.map(item => renderField(item.title, item.name, item.required))}
-		</Fragment>
+		<Fade in={true}>
+			<Grid
+				className={classes.container}
+				container={true}
+				item={true}
+				direction="column"
+				spacing={24}
+				alignItems="center"
+			>
+				{renderField('Логин', 'login', true)}
+				{PROFILE_SCHEMA.map(item => renderField(item.title, item.name, item.required))}
+				<Grid
+					className={classes.actionsWrapper}
+					item={true}
+					container={true}
+					justify="center"
+					alignItems="flex-end"
+				>
+					<Button color="primary" variant="outlined">
+						Сохранить
+					</Button>
+				</Grid>
+			</Grid>
+		</Fade>
 	);
 };
 
