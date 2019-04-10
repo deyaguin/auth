@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { USERS } from '../../constants/routes';
-import { Page, ProfileForm, UserAccessRights } from '../../components';
+import { Page, ProfileForm, UserTemplates } from '../../components';
 
 enum TABS {
 	profile,
@@ -25,7 +25,7 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface IUserChangeProps extends RouteComponentProps, WithStyles<typeof styles> {
+interface IUserCreateProps extends RouteComponentProps, WithStyles<typeof styles> {
 	templates: Array<{ id: string; name: string; comment: string }>;
 	filters: { [name: string]: string };
 	limit: number;
@@ -37,7 +37,7 @@ interface IUserChangeProps extends RouteComponentProps, WithStyles<typeof styles
 	clearFilters: () => void;
 }
 
-const UserChange: FC<IUserChangeProps> = ({
+const UserCreate: FC<IUserCreateProps> = ({
 	classes,
 	match,
 	templates,
@@ -58,19 +58,14 @@ const UserChange: FC<IUserChangeProps> = ({
 		},
 		[],
 	);
+
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
-
-	const headerTitle: string = 'Добавление пользователя';
-
-	console.log(match);
-	// console.log(values);
-	console.log(filters);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
 
 	return (
 		<Page
-			headerTitle={headerTitle}
+			headerTitle="Добавление пользователя"
 			actions={[
 				<Link key="cancel" className={classes.link} to={USERS}>
 					<Button variant="contained" color="primary">
@@ -101,7 +96,7 @@ const UserChange: FC<IUserChangeProps> = ({
 				>
 					{selectedTab === TABS.profile && <ProfileForm />}
 					{selectedTab === TABS.restrictions && (
-						<UserAccessRights
+						<UserTemplates
 							templates={templates}
 							filters={filters}
 							setFilters={setFilters}
@@ -119,4 +114,4 @@ const UserChange: FC<IUserChangeProps> = ({
 	);
 };
 
-export default withStyles(styles)(UserChange);
+export default withStyles(styles)(UserCreate);

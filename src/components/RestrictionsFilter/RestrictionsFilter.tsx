@@ -25,21 +25,21 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface ITemplatesFilterProps extends WithStyles<typeof styles> {
-	filters: IFilters;
+interface IRestrictionsFilterProps extends WithStyles<typeof styles> {
+	filters?: IFilters;
 	setFilters: (filters: IFilters) => void;
 	clearFilters: () => void;
 }
 
-const TemplatesFilter: FC<ITemplatesFilterProps> = ({
+const RestrictionsFilter: FC<IRestrictionsFilterProps> = ({
 	classes,
-	filters,
+	filters = {},
 	setFilters,
 	clearFilters,
 }) => {
 	const [expanded, setExpanded]: [boolean, (expanded: boolean) => void] = useState(false);
 	const [filtersState, setFiltersState]: [IFilters, (filtersState: IFilters) => void] = useState(
-		{},
+		filters,
 	);
 
 	const filtersLength: number = Object.keys(filters).length;
@@ -156,4 +156,4 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 	);
 };
 
-export default withStyles(styles)(TemplatesFilter);
+export default withStyles(styles)(RestrictionsFilter);

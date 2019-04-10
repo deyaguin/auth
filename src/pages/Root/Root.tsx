@@ -4,7 +4,8 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { routes } from '../../constants';
 import Auth from '../Auth';
 import Users from '../Users';
-import UserChange from '../UserChange';
+import UserCreate from '../UserCreate';
+import UserEdit from '../UserEdit';
 import Templates from '../Templates';
 import Template from '../Template';
 import TemplateChange from '../TemplateChange';
@@ -31,7 +32,8 @@ const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) =>
 			<Switch>
 				<Route path={routes.AUTH} component={Auth} />
 				<Route path={routes.USERS} component={Users} exact={true} />
-				<Route path={routes.USER_CREATE} component={UserChange} exact={true} />
+				<Route path={routes.USER_CREATE} component={UserCreate} exact={true} />
+				<Route path={routes.USER_EDIT} component={UserEdit} exact={true} />
 				<Route path={routes.TEMPLATES} component={Templates} exact={true} />
 				<Route path={routes.TEMPLATE_CREATE} component={TemplateChange} exact={true} />
 				<Route path={routes.TEMPLATE_EDIT} component={TemplateChange} exact={true} />

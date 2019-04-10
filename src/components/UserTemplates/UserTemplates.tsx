@@ -4,24 +4,25 @@ import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
 
 import { SetLimit, SetOffset } from '../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 
 const styles = createStyles({
-	actionsWrapper: {
-		flexGrow: 1,
-	},
 	container: {
 		flexGrow: 1,
+	},
+	paper: {
+		height: '100%',
 	},
 	tableWrapper: {
 		flexGrow: 1,
 	},
 });
 
-interface IUserRestrictionsProps extends WithStyles<typeof styles> {
+interface IUserTemplatesProps extends WithStyles<typeof styles> {
 	templates: Array<{ id: string; name: string; comment: string }>;
 	filters: { [name: string]: string };
 	limit: number;
@@ -33,7 +34,7 @@ interface IUserRestrictionsProps extends WithStyles<typeof styles> {
 	clearFilters: () => void;
 }
 
-const UserAccessRights: FC<IUserRestrictionsProps> = ({
+const UserTemplates: FC<IUserTemplatesProps> = ({
 	classes,
 	templates,
 	filters,
@@ -74,25 +75,21 @@ const UserAccessRights: FC<IUserRestrictionsProps> = ({
 					<TemplateFilter filters={filters} setFilters={setFilters} clearFilters={clearFilters} />
 				</Grid>
 				<Grid className={classes.tableWrapper} item={true} container={true}>
-					<TemplatesTable
-						selectable={true}
-						currentPage={offset / limit}
-						pageSize={limit}
-						templates={templates}
-						total={total}
-						onPageSizeChange={handlePageSizeChange}
-						onCurrentPageChange={handleCurrentPageChange}
-						onSelectTemplate={handleSetSelelectedTemplates}
-						selectedTemplates={selectedTemplates}
-					/>
+					<Paper className={classes.paper}>
+						<TemplatesTable
+							selectable={true}
+							currentPage={offset / limit}
+							pageSize={limit}
+							templates={templates}
+							total={total}
+							onPageSizeChange={handlePageSizeChange}
+							onCurrentPageChange={handleCurrentPageChange}
+							onSelectTemplate={handleSetSelelectedTemplates}
+							selectedTemplates={selectedTemplates}
+						/>
+					</Paper>
 				</Grid>
-				<Grid
-					className={classes.actionsWrapper}
-					item={true}
-					container={true}
-					justify="center"
-					alignItems="flex-end"
-				>
+				<Grid item={true} container={true} justify="center" alignItems="flex-end">
 					<Button color="primary" variant="outlined">
 						Сохранить
 					</Button>
@@ -102,4 +99,4 @@ const UserAccessRights: FC<IUserRestrictionsProps> = ({
 	);
 };
 
-export default withStyles(styles)(UserAccessRights);
+export default withStyles(styles)(UserTemplates);

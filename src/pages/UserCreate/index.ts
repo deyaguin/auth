@@ -1,7 +1,7 @@
 import { inject } from 'mobx-react';
 import { withRouter } from 'react-router';
 
-import UserChange from './UserChange';
+import UserCreate from './UserCreate';
 
 export default inject(
 	({
@@ -27,4 +27,4 @@ export default inject(
 		templates,
 		total,
 	}),
-)(withRouter(UserChange));
+)(withRouter(UserCreate));

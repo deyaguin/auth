@@ -155,6 +155,10 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 		this.filtersMap = {};
 	};
 
+	@action public getUser = (id: string): User => {
+		return toJS(this.usersMap[id]);
+	};
+
 	@computed public get users() {
 		return Object.values(toJS(this.usersMap))
 			.map((item: User) => {
