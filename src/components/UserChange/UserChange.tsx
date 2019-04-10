@@ -58,11 +58,9 @@ const UserChange: FC<IUserChangeProps> = ({
 }) => {
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 	console.log(values);
+	console.log(filters);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
-
-	const renderRestrictions = (): ReactNode =>
-		selectedTab === TABS.restrictions && <Fragment>restrictions</Fragment>;
 
 	return (
 		<Grid container={true} direction="column" wrap="nowrap">

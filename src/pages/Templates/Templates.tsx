@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -42,6 +42,15 @@ const Templates: FC<ITemplateProps> = ({
 	setFilters,
 	clearFilters,
 }) => {
+	useEffect(
+		() => () => {
+			clearFilters();
+			setOffset(0);
+			setLimit(20);
+		},
+		[],
+	);
+
 	const handleDelete = (id: string): void => {
 		templateDelete(id);
 

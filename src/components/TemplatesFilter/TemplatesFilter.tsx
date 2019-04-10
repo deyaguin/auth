@@ -37,7 +37,7 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 }) => {
 	const [expanded, setExpanded]: [boolean, (expanded: boolean) => void] = useState(false);
 	const [filtersState, setFiltersState]: [IFilters, (filtersState: IFilters) => void] = useState(
-		{},
+		filters,
 	);
 
 	const filtersLength: number = Object.keys(filters).length;

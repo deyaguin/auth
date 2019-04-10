@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
@@ -38,6 +38,15 @@ const UserChange: FC<IUserChangeProps> = ({
 	setFilters,
 	clearFilters,
 }) => {
+	useEffect(
+		() => () => {
+			clearFilters();
+			setOffset(0);
+			setLimit(20);
+		},
+		[],
+	);
+
 	console.log(match);
 	const headerTitle: string = 'Добавление пользователя';
 
