@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
-import { SetLimit, SetOffset } from '../types';
+import { SetLimit, SetOffset } from '../../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 

@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
-import { ITasks } from '../types';
+import { ITasks } from '../../types';
 import RestrictionsTable from '../RestrictionsTable';
 import RestrictionsFilter from '../RestrictionsFilter';
 

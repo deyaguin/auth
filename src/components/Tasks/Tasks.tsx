@@ -5,7 +5,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 
-import { ITask, IOperation, IErrors, SetValue } from '../types';
+import { ITask, IOperation, IErrors, SetValue } from '../../types';
 import TasksList from './TasksList';
 
 const LIST = 'list';

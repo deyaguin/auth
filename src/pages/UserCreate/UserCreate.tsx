@@ -49,11 +49,12 @@ interface IUserCreateProps extends RouteComponentProps, WithStyles<typeof styles
 	setOffset: (offset: number) => void;
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
+	setSnackbar: (message: string, type?: string) => void;
 }
 
 const UserCreate: FC<IUserCreateProps> = ({
 	classes,
-	match,
+	history,
 	templates,
 	filters,
 	limit,
@@ -63,6 +64,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 	setOffset,
 	setFilters,
 	clearFilters,
+	setSnackbar,
 }) => {
 	useEffect(
 		() => () => {
@@ -77,9 +79,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 		...PROFILE_SCHEMA.reduce((acc, item) => ({ ...acc, [item.name]: '' }), {}),
 	});
 
-	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(
-		TABS.templates,
-	);
+	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 
 	const [selectedTemplates, setSelectedTemplates]: [
 		string[],
@@ -102,6 +102,10 @@ const UserCreate: FC<IUserCreateProps> = ({
 
 	const handleSave = (): void => {
 		console.log({ ...profileValues, templates: selectedTemplates });
+
+		setSnackbar('Пользователь успешно создан', 'success');
+
+		history.replace(USERS);
 	};
 
 	return (
@@ -133,9 +137,11 @@ const UserCreate: FC<IUserCreateProps> = ({
 						initialValues={profileValues}
 						onSubmit={handleSetProfileValues}
 						formActions={
-							<Button className={classes.button} type="submit" color="primary" variant="outlined">
-								Далее
-							</Button>
+							<Grid item={true}>
+								<Button className={classes.button} type="submit" color="primary" variant="outlined">
+									Далее
+								</Button>
+							</Grid>
 						}
 					/>
 				)}

@@ -8,7 +8,7 @@ import Fade from '@material-ui/core/Fade';
 import Button from '@material-ui/core/Button';
 
 import { PROFILE_SCHEMA } from '../../constants';
-import { IValues } from '../types';
+import { IValues } from '../../types';
 
 const styles = createStyles({
 	actionsWrapper: {
@@ -62,7 +62,7 @@ const ProfileForm: FC<IProfileFormProps> = ({ classes, initialValues, onSubmit, 
 		form,
 	}: FieldProps<IValues>): ReactNode => (
 		<TextField
-			inputProps={field}
+			{...field}
 			required={required}
 			className={classes.textField}
 			fullWidth={true}

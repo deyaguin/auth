@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { OPERATION_STATES, CONDITIONS } from '../../constants/ui';
-import { IFilters } from '../types';
+import { IFilters } from '../../types';
 import ValuePicker from '../ValuePicker';
 
 const styles = (theme: Theme) =>

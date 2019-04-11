@@ -1,3 +1,11 @@
+export interface IUser {
+	id: string;
+	login: string;
+	tag?: string;
+	profile?: { [propName: string]: string };
+	tasks?: ITask[];
+}
+
 export interface IAttribute {
 	key: string;
 	name: string;

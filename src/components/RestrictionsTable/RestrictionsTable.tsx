@@ -13,7 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
-import { ITask, IOperation, IAttribute, SetValue } from '../types';
+import { ITask, IOperation, IAttribute, SetValue } from '../../types';
 import GridRootComponent from '../GridRootContainer';
 import ValuePicker from '../ValuePicker';
 

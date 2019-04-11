@@ -16,6 +16,7 @@ export default inject(
 			offset,
 			total,
 		},
+		snackbarStore: { setSnackbar },
 	}) => ({
 		clearFilters,
 		filters,
@@ -24,6 +25,7 @@ export default inject(
 		setFilters,
 		setLimit,
 		setOffset,
+		setSnackbar,
 		templates,
 		total,
 	}),

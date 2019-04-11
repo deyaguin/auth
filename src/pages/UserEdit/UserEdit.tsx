@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import { ITask, ITasks, IUser } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, ProfileForm, UserRestrictions } from '../../components';
 
@@ -17,6 +18,9 @@ enum TABS {
 
 const styles = (theme: Theme) =>
 	createStyles({
+		button: {
+			minWidth: 140,
+		},
 		container: {
 			paddingBottom: theme.spacing.unit * 2,
 			paddingLeft: theme.spacing.unit * 2,
@@ -31,42 +35,35 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface ITask {
-	id: string;
-	name: string;
-	operations: Array<{ id: string; name: string }>;
-}
-
-interface IUser {
-	id: string;
-	login: string;
-	tag?: string;
-	profile?: { [propName: string]: string };
-	tasks?: ITask[];
-}
-
 interface IValues {
 	[fieldName: string]: string;
 }
 
 interface IUserEditProps extends RouteComponentProps<{ id: string }>, WithStyles<typeof styles> {
 	getUser: (id: string) => IUser;
+	setSnackbar: (message: string, type?: string) => void;
 }
 
-const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser }) => {
+const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) => {
 	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
 
 	const profileInitialValues: IValues = { ...rest, ...profile };
 
-	const [profileValues, setProfileValues]: [IValues, (profileValues: IValues) => void] = useState(
-		profileInitialValues,
+	const restricrionsInitialValues: ITasks = tasks.reduce(
+		(acc: { [id: string]: ITask }, item: ITask) => ({ ...acc, [item.id]: item }),
+		{},
 	);
 
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
 
-	const handleSetProfileValues = (values: IValues): void => setProfileValues(values);
+	const handleSaveProfile = (values: IValues): void => {
+		console.log(values);
+		setSnackbar('Профиль сохранен', 'success');
+	};
+
+	const handleSaveRestrictions = (values: IValues): void => {};
 
 	return (
 		<Page
@@ -108,14 +105,41 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser }) => {
 					wrap="nowrap"
 				>
 					{selectedTab === TABS.profile && (
-						<ProfileForm initialValues={profileValues} onSubmit={handleSetProfileValues} />
+						<ProfileForm
+							initialValues={profileInitialValues}
+							onSubmit={handleSaveProfile}
+							formActions={
+								<Grid item={true}>
+									<Button
+										className={classes.button}
+										type="submit"
+										color="primary"
+										variant="outlined"
+									>
+										Сохранить
+									</Button>
+								</Grid>
+							}
+						/>
 					)}
 					{selectedTab === TABS.restrictions && (
 						<UserRestrictions
-							tasks={tasks.reduce(
-								(acc: { [id: string]: ITask }, item: ITask) => ({ ...acc, [item.id]: item }),
-								{},
-							)}
+							initialValues={restricrionsInitialValues}
+							filters={{}}
+							clearFilters={() => {}}
+							setFilters={(filters: any) => {}}
+							actions={
+								<Grid item={true}>
+									<Button
+										className={classes.button}
+										type="submit"
+										color="primary"
+										variant="outlined"
+									>
+										Сохранить
+									</Button>
+								</Grid>
+							}
 						/>
 					)}
 				</Grid>

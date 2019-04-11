@@ -21,7 +21,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { ITask, IOperation, SetValue } from '../types';
+import { ITask, IOperation, SetValue } from '../../types';
 
 const styles = (theme: Theme) =>
 	createStyles({

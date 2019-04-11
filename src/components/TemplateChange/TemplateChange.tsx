@@ -21,7 +21,7 @@ import {
 	SetError,
 	TemplateCreate,
 	TemplateUpdate,
-} from '../types';
+} from '../../types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -33,7 +33,7 @@ const styles = (theme: Theme) =>
 			justifyContent: 'center',
 		},
 		button: {
-			minWidth: 100,
+			minWidth: 140,
 		},
 		container: {
 			flexGrow: 1,
@@ -123,7 +123,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 				<Button
 					className={classes.button}
 					color="primary"
-					variant="contained"
+					variant="outlined"
 					disabled={activeStep === 0}
 					onClick={handlePrevStep}
 				>
@@ -136,7 +136,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 						<Button
 							className={classes.button}
 							color="primary"
-							variant="contained"
+							variant="outlined"
 							onClick={handleComplete}
 						>
 							Готово
@@ -148,7 +148,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 					<Button
 						className={classes.button}
 						color="primary"
-						variant="contained"
+						variant="outlined"
 						onClick={handleNextStep}
 					>
 						Далее

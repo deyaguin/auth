@@ -1,4 +1,3 @@
-import { withForm } from '../../hocs';
 import UserRestrictions from './UserRestrictions';
 
-export default withForm(UserRestrictions);
+export default UserRestrictions;
