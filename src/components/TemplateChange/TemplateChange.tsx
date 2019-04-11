@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 
 import { TEMPLATES } from '../../constants/routes';
 import TemplateView from '../TemplateView';
-import Options from '../Options';
+import OptionsForm from '../OptionsForm';
 import Tasks from '../Tasks';
 import RestrictionsTable from '../RestrictionsTable';
 import RestrictionsFilter from '../RestrictionsFilter';
@@ -48,6 +48,9 @@ const styles = (theme: Theme) =>
 		link: {
 			textDecoration: 'none',
 		},
+		optionsFormWrapper: {
+			flexGrow: 1,
+		},
 		tableWrapper: {
 			flexGrow: 1,
 		},
@@ -75,6 +78,12 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	action,
 }) => {
 	const [activeStep, setActiveStep]: [number, (activeStep: number) => void] = useState(0);
+
+	const [optionsValues, setOptionsValues]: [IValues, (optionsValues: IValues) => void] = useState({
+		comment: '',
+		name: '',
+		tags: '',
+	} as IValues);
 
 	const isFirstStep: boolean = activeStep === 0;
 
@@ -108,6 +117,12 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		setActiveStep(activeStep + 1);
 	};
 
+	const handleSetOptions = (optionsValues: IValues): void => {
+		console.log(optionsValues);
+		setOptionsValues(optionsValues);
+		setActiveStep(activeStep + 1);
+	};
+
 	const handlePrevStep = (): void => {
 		setActiveStep(activeStep - 1);
 	};
@@ -116,6 +131,27 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		const { name, comment, tags, id, selectedTasks } = values;
 		action({ id, name, comment, tags, tasks: selectedTasks });
 	};
+
+	const renderOptionsActions = (): ReactNode => (
+		<Grid item={true} container={true} spacing={16} justify="center">
+			<Grid item={true}>
+				<Button
+					className={classes.button}
+					color="primary"
+					variant="outlined"
+					disabled={activeStep === 0}
+					onClick={handlePrevStep}
+				>
+					Назад
+				</Button>
+			</Grid>
+			<Grid item={true}>
+				<Button className={classes.button} color="primary" variant="outlined" type="submit">
+					Далее
+				</Button>
+			</Grid>
+		</Grid>
+	);
 
 	const actions: ReactNode = (
 		<Grid item={true} container={true} spacing={16} justify="center">
@@ -138,6 +174,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 							color="primary"
 							variant="outlined"
 							onClick={handleComplete}
+							type="submit"
 						>
 							Готово
 						</Button>
@@ -150,6 +187,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 						color="primary"
 						variant="outlined"
 						onClick={handleNextStep}
+						type="submit"
 					>
 						Далее
 					</Button>
@@ -187,8 +225,12 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 			spacing={16}
 		>
 			{isFirstStep && (
-				<Grid item={true}>
-					<Options values={values} errors={errors} setValue={setValue} />
+				<Grid item={true} container={true} className={classes.optionsFormWrapper}>
+					<OptionsForm
+						initialValues={optionsValues}
+						formActions={renderOptionsActions()}
+						onSubmit={handleSetOptions}
+					/>
 				</Grid>
 			)}
 			{isSecondStep && (
@@ -236,7 +278,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		>
 			{stepper}
 			{content}
-			{actions}
+			{/* {actions} */}
 		</Grid>
 	);
 };
