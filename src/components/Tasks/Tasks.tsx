@@ -5,7 +5,7 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 
-import { ITask, IOperation, IErrors, SetValue } from '../../types';
+import { ITask, IOperation, IValues } from '../../types';
 import TasksList from './TasksList';
 
 const LIST = 'list';
@@ -33,18 +33,17 @@ const styles = (theme: Theme) =>
 	});
 
 interface ITasksProps extends WithStyles<typeof styles> {
-	setValue: SetValue;
-	errors: IErrors;
+	setValue: (tasksValues: IValues) => void;
 	selectedTasks: { [name: string]: any };
 	tasks: ITask[];
 }
 
-const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, errors }) => {
+const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
 	const handleSelectTask = ({ destination, source, draggableId }: DropResult): void => {
 		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
 			const filteredTask: ITask = tasks.filter((item: ITask) => item.id === draggableId)[0];
 
-			setValue('selectedTasks', {
+			setValue({
 				...selectedTasks,
 				[draggableId]: {
 					...filteredTask,
@@ -57,7 +56,7 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, 
 		}
 
 		if (source.droppableId === SELECTED && destination && destination.droppableId === LIST) {
-			setValue('selectedTasks', omit([draggableId], selectedTasks));
+			setValue(omit([draggableId], selectedTasks));
 		}
 	};
 
@@ -87,7 +86,6 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks, 
 							droppableId={SELECTED}
 							tasks={selectedTasksArray}
 							subheader="Выбрано:"
-							error={Boolean(errors.selectedTasks)}
 							setValue={setValue}
 							selectedTasks={selectedTasks}
 						/>

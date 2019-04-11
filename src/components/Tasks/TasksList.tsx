@@ -1,6 +1,5 @@
 import React, { Component, ReactNode, ChangeEvent, MouseEvent } from 'react';
 import { clone } from 'ramda';
-import classNames from 'classnames';
 import { Draggable, Droppable, DraggableProvided, DroppableProvided } from 'react-beautiful-dnd';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -21,7 +20,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { ITask, IOperation, SetValue } from '../../types';
+import { ITask, IOperation, IValues } from '../../types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -37,9 +36,6 @@ const styles = (theme: Theme) =>
 		},
 		listFooter: {
 			padding: theme.spacing.unit * 2,
-		},
-		listFooterError: {
-			color: theme.palette.error.main,
 		},
 		listItem: {
 			display: 'flex',
@@ -93,8 +89,7 @@ interface ITasksListProps extends WithStyles<typeof styles> {
 	subheader: string;
 	tasks: ITask[];
 	droppableId: string;
-	error?: boolean;
-	setValue?: SetValue;
+	setValue?: (values: IValues) => void;
 	selectedTasks?: { [id: string]: ITask };
 }
 
@@ -199,7 +194,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 
 			filteredOperation.selected = !filteredOperation.selected;
 
-			setValue('selectedTasks', { ...selectedTasks, [taskId]: selectedTask });
+			setValue({ ...selectedTasks, [taskId]: selectedTask });
 		}
 	};
 
@@ -232,15 +227,12 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 	};
 
 	private renderListFooter = (): ReactNode => {
-		const { classes, tasks, error } = this.props;
+		const { classes, tasks } = this.props;
 		const { count } = this.state;
 
 		return (
-			<Typography
-				className={classNames(classes.listFooter, { [classes.listFooterError]: error })}
-				variant="caption"
-			>
-				{count > 0 ? `Показано ${count} из ${tasks.length}` : error && 'Необходимо выбрать задачи'}
+			<Typography className={classes.listFooter} variant="caption">
+				{`Показано ${count} из ${tasks.length}`}
 			</Typography>
 		);
 	};

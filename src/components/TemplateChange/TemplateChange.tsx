@@ -85,6 +85,10 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		tags: '',
 	} as IValues);
 
+	const [tasksValues, setTasksValues]: [IValues, (tasksValues: IValues) => void] = useState(
+		{} as IValues,
+	);
+
 	const isFirstStep: boolean = activeStep === 0;
 
 	const isSecondStep: boolean = activeStep === 1;
@@ -95,14 +99,6 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 
 	const handleNextStep = (): void => {
 		switch (activeStep) {
-			case 0: {
-				if (!values.name) {
-					setError('name', true);
-
-					return;
-				}
-				break;
-			}
 			case 1:
 				if (!values.selectedTasks || Object.keys(values.selectedTasks).length < 1) {
 					setError('selectedTasks', true);
@@ -118,7 +114,6 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	};
 
 	const handleSetOptions = (optionsValues: IValues): void => {
-		console.log(optionsValues);
 		setOptionsValues(optionsValues);
 		setActiveStep(activeStep + 1);
 	};
@@ -153,7 +148,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		</Grid>
 	);
 
-	const actions: ReactNode = (
+	const actions: ReactNode = !isFirstStep && (
 		<Grid item={true} container={true} spacing={16} justify="center">
 			<Grid item={true}>
 				<Button
@@ -235,12 +230,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 			)}
 			{isSecondStep && (
 				<Grid className={classes.tasksWrapper} container={true} item={true}>
-					<Tasks
-						selectedTasks={values.selectedTasks}
-						errors={errors}
-						setValue={setValue}
-						tasks={tasks}
-					/>
+					<Tasks selectedTasks={tasksValues} setValue={setTasksValues} tasks={tasks} />
 				</Grid>
 			)}
 			{isThirdStep && (
@@ -278,7 +268,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 		>
 			{stepper}
 			{content}
-			{/* {actions} */}
+			{actions}
 		</Grid>
 	);
 };
