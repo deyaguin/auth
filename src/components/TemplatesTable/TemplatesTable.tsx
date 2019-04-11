@@ -1,4 +1,7 @@
-import React, { FC, ReactNode } from 'react';
+// todo multiple selection
+
+import React, { FC, ReactNode, useState, useEffect } from 'react';
+import { without } from 'ramda';
 import { Link } from 'react-router-dom';
 import { PagingState, CustomPaging, SelectionState } from '@devexpress/dx-react-grid';
 import {
@@ -52,8 +55,8 @@ interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	removable?: boolean;
 	editable?: boolean;
 	selectable?: boolean;
-	selectedTemplates?: Array<string | number>;
-	onSelectTemplate?: (selectedTemplate: any) => void;
+	onSelectTemplate?: (selectedTemplate: string[]) => void;
+	multipleSelect?: boolean;
 }
 
 const COLUMNS = [{ name: 'name', title: 'Шаблон' }, { name: 'comment', title: 'Комментарий' }];
@@ -70,13 +73,41 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 	removable = false,
 	editable = false,
 	selectable = false,
-	selectedTemplates,
+	multipleSelect = false,
 	onSelectTemplate,
 }) => {
+	const [selectedTemplates, setSelectedTemplates]: [
+		Array<string | number>,
+		(selectedTemplates: Array<string | number>) => void
+	] = useState(new Array<number | string>());
+
+	useEffect(() => {
+		if (onSelectTemplate && selectedTemplates.length > 0) {
+			const template: ITemplate = templates[Number(selectedTemplates[0])];
+
+			onSelectTemplate([template.id]);
+		}
+	}, [selectedTemplates]);
+
 	const handleTemplateDelete = (id: string) => (): void => templateDelete && templateDelete(id);
 
-	const handleSelectTemplate = (selection: Array<string | number>): void =>
-		onSelectTemplate && onSelectTemplate(selection);
+	const handleCurrentPageChange = (pageNumber: number): void => {
+		onCurrentPageChange(pageNumber);
+
+		setSelectedTemplates([]);
+
+		if (onSelectTemplate) {
+			onSelectTemplate([]);
+		}
+	};
+
+	const handleSelectTemplate = (selection: Array<string | number>): void => {
+		if (multipleSelect) {
+			setSelectedTemplates(selection);
+		} else {
+			setSelectedTemplates(without(selectedTemplates, selection));
+		}
+	};
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
@@ -121,7 +152,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				pageSize={pageSize}
 				defaultCurrentPage={0}
 				currentPage={currentPage}
-				onCurrentPageChange={onCurrentPageChange}
+				onCurrentPageChange={handleCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
 			{selectable && (
@@ -132,7 +163,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 				messages={TABLE_MESSAGES}
 				columnExtensions={[{ columnName: 'actions', align: 'right' }]}
 			/>
-			{selectable && <TableSelection />}
+			{selectable && <TableSelection showSelectAll={multipleSelect} />}
 			<TableActions actions={renderActions} />
 			<TableHeaderRow />
 			<PagingPanel pageSizes={TABLE_PAGE_SIZES} messages={TABLE_PAGINATION_MESSAGES} />

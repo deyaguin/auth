@@ -1,4 +1,8 @@
 [{
+	"name": "login",
+	"title": "Логин",
+	"required": true
+},  {
 	"name": "name",
 	"title": "ФИО",
 	"required": true

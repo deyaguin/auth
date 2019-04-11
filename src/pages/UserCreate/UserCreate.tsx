@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, ChangeEvent } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
@@ -6,16 +6,26 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
 import { USERS } from '../../constants/routes';
+import { PROFILE_SCHEMA } from '../../constants';
 import { Page, ProfileForm, UserTemplates } from '../../components';
 
 enum TABS {
 	profile,
-	restrictions,
+	templates,
 }
 
 const styles = (theme: Theme) =>
 	createStyles({
+		button: {
+			minWidth: 140,
+		},
+		container: {
+			paddingBottom: theme.spacing.unit * 2,
+			paddingLeft: theme.spacing.unit * 2,
+			paddingRight: theme.spacing.unit * 2,
+		},
 		content: {
 			flexGrow: 1,
 			padding: theme.spacing.unit * 3,
@@ -24,6 +34,10 @@ const styles = (theme: Theme) =>
 			textDecoration: 'none',
 		},
 	});
+
+interface IValues {
+	[fieldName: string]: string;
+}
 
 interface IUserCreateProps extends RouteComponentProps, WithStyles<typeof styles> {
 	templates: Array<{ id: string; name: string; comment: string }>;
@@ -59,13 +73,40 @@ const UserCreate: FC<IUserCreateProps> = ({
 		[],
 	);
 
-	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
+	const [profileValues, setProfileValues]: [IValues, (profileValues: IValues) => void] = useState({
+		...PROFILE_SCHEMA.reduce((acc, item) => ({ ...acc, [item.name]: '' }), {}),
+	});
 
-	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
+	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(
+		TABS.templates,
+	);
+
+	const [selectedTemplates, setSelectedTemplates]: [
+		string[],
+		(selectedTempates: string[]) => void
+	] = useState([] as string[]);
+
+	const handleSetSelelectedTemplates = (values: any) => {
+		setSelectedTemplates(values);
+	};
+
+	const handleSetProfileValues = (values: IValues): void => {
+		setProfileValues(values);
+
+		setSelectedTab(TABS.templates);
+	};
+
+	const handleProfile = (): void => {
+		setSelectedTab(TABS.profile);
+	};
+
+	const handleSave = (): void => {
+		console.log({ ...profileValues, templates: selectedTemplates });
+	};
 
 	return (
 		<Page
-			headerTitle="Добавление пользователя"
+			headerTitle="Создание пользователя"
 			actions={[
 				<Link key="cancel" className={classes.link} to={USERS}>
 					<Button variant="contained" color="primary">
@@ -74,41 +115,68 @@ const UserCreate: FC<IUserCreateProps> = ({
 				</Link>,
 			]}
 		>
-			<Grid container={true} direction="column" wrap="nowrap">
-				<Tabs
-					value={selectedTab}
-					onChange={handleSelectTab}
-					textColor="primary"
-					indicatorColor="primary"
-					centered={true}
-				>
-					<Tab label="Профиль" />
-					<Tab label="Права доступа" />
-				</Tabs>
-				<Grid
-					className={classes.content}
-					container={true}
-					item={true}
-					spacing={24}
-					direction="column"
-					alignItems="center"
-					wrap="nowrap"
-				>
-					{selectedTab === TABS.profile && <ProfileForm />}
-					{selectedTab === TABS.restrictions && (
-						<UserTemplates
-							templates={templates}
-							filters={filters}
-							setFilters={setFilters}
-							clearFilters={clearFilters}
-							limit={limit}
-							offset={offset}
-							total={total}
-							setLimit={setLimit}
-							setOffset={setOffset}
-						/>
-					)}
+			<Grid
+				className={classes.container}
+				container={true}
+				direction="column"
+				wrap="nowrap"
+				spacing={24}
+			>
+				<Grid item={true}>
+					<Tabs value={selectedTab} textColor="primary" indicatorColor="primary" centered={true}>
+						<Tab disabled={true} label="Профиль" />
+						<Tab disabled={true} label="Права доступа" />
+					</Tabs>
 				</Grid>
+				{selectedTab === TABS.profile && (
+					<ProfileForm
+						initialValues={profileValues}
+						onSubmit={handleSetProfileValues}
+						formActions={
+							<Button className={classes.button} type="submit" color="primary" variant="outlined">
+								Далее
+							</Button>
+						}
+					/>
+				)}
+				{selectedTab === TABS.templates && (
+					<UserTemplates
+						onSelectTemplate={handleSetSelelectedTemplates}
+						templates={templates}
+						filters={filters}
+						setFilters={setFilters}
+						clearFilters={clearFilters}
+						limit={limit}
+						offset={offset}
+						total={total}
+						setLimit={setLimit}
+						setOffset={setOffset}
+						actions={
+							<Fragment>
+								<Grid item={true}>
+									<Button
+										onClick={handleProfile}
+										className={classes.button}
+										color="primary"
+										variant="outlined"
+									>
+										Назад
+									</Button>
+								</Grid>
+								<Grid item={true}>
+									<Button
+										onClick={handleSave}
+										className={classes.button}
+										color="primary"
+										variant="outlined"
+									>
+										Сохранить
+									</Button>
+								</Grid>
+							</Fragment>
+						}
+					/>
+				)}
 			</Grid>
 		</Page>
 	);

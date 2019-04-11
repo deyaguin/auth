@@ -58,7 +58,7 @@ interface IUsersTableProps extends WithStyles<typeof styles> {
 	onSelectUsers: (selecetedUser: any) => void;
 }
 
-const COLUMNS = [{ name: 'login', title: 'Логин' }, ...PROFILE_SCHEMA];
+const COLUMNS = [...PROFILE_SCHEMA];
 
 const UsersTable: FC<IUsersTableProps> = ({
 	classes,

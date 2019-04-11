@@ -1,9 +1,7 @@
-import React, { FC, useState } from 'react';
-import { without } from 'ramda';
+import React, { FC, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
 import { SetLimit, SetOffset } from '../types';
@@ -16,6 +14,7 @@ const styles = createStyles({
 	},
 	paper: {
 		height: '100%',
+		width: '100%',
 	},
 	tableWrapper: {
 		flexGrow: 1,
@@ -32,6 +31,8 @@ interface IUserTemplatesProps extends WithStyles<typeof styles> {
 	setOffset: SetOffset;
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
+	actions?: ReactNode;
+	onSelectTemplate: (values: string[]) => void;
 }
 
 const UserTemplates: FC<IUserTemplatesProps> = ({
@@ -45,19 +46,15 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 	setOffset,
 	setFilters,
 	clearFilters,
+	actions,
+	onSelectTemplate,
 }) => {
-	const [selectedTemplates, setSelectedTemplates] = useState([]);
-
 	const handlePageSizeChange = (pageSize: number): void => {
 		setLimit(pageSize);
 	};
 
 	const handleCurrentPageChange = (currentPage: number): void => {
 		setOffset(currentPage * limit);
-	};
-
-	const handleSetSelelectedTemplates = (values: any) => {
-		setSelectedTemplates(without(selectedTemplates, values));
 	};
 
 	return (
@@ -67,7 +64,7 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 				container={true}
 				item={true}
 				direction="column"
-				spacing={24}
+				spacing={16}
 				alignItems="center"
 				wrap="nowrap"
 			>
@@ -84,16 +81,15 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 							total={total}
 							onPageSizeChange={handlePageSizeChange}
 							onCurrentPageChange={handleCurrentPageChange}
-							onSelectTemplate={handleSetSelelectedTemplates}
-							selectedTemplates={selectedTemplates}
+							onSelectTemplate={onSelectTemplate}
 						/>
 					</Paper>
 				</Grid>
-				<Grid item={true} container={true} justify="center" alignItems="flex-end">
-					<Button color="primary" variant="outlined">
-						Сохранить
-					</Button>
-				</Grid>
+				{actions && (
+					<Grid item={true} container={true} justify="center" alignItems="flex-end" spacing={16}>
+						{actions}
+					</Grid>
+				)}
 			</Grid>
 		</Fade>
 	);

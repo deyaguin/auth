@@ -17,6 +17,11 @@ enum TABS {
 
 const styles = (theme: Theme) =>
 	createStyles({
+		container: {
+			paddingBottom: theme.spacing.unit * 2,
+			paddingLeft: theme.spacing.unit * 2,
+			paddingRight: theme.spacing.unit * 2,
+		},
 		content: {
 			flexGrow: 1,
 			padding: theme.spacing.unit * 3,
@@ -40,16 +45,28 @@ interface IUser {
 	tasks?: ITask[];
 }
 
+interface IValues {
+	[fieldName: string]: string;
+}
+
 interface IUserEditProps extends RouteComponentProps<{ id: string }>, WithStyles<typeof styles> {
 	getUser: (id: string) => IUser;
 }
 
 const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser }) => {
-	const { tasks = [], profile, ...rest }: IUser = getUser(match.params.id);
+	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
+
+	const profileInitialValues: IValues = { ...rest, ...profile };
+
+	const [profileValues, setProfileValues]: [IValues, (profileValues: IValues) => void] = useState(
+		profileInitialValues,
+	);
 
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
+
+	const handleSetProfileValues = (values: IValues): void => setProfileValues(values);
 
 	return (
 		<Page
@@ -62,17 +79,25 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser }) => {
 				</Link>,
 			]}
 		>
-			<Grid container={true} direction="column" wrap="nowrap">
-				<Tabs
-					value={selectedTab}
-					onChange={handleSelectTab}
-					textColor="primary"
-					indicatorColor="primary"
-					centered={true}
-				>
-					<Tab label="Профиль" />
-					<Tab label="Права доступа" />
-				</Tabs>
+			<Grid
+				className={classes.container}
+				container={true}
+				direction="column"
+				wrap="nowrap"
+				spacing={24}
+			>
+				<Grid item={true}>
+					<Tabs
+						value={selectedTab}
+						onChange={handleSelectTab}
+						textColor="primary"
+						indicatorColor="primary"
+						centered={true}
+					>
+						<Tab label="Профиль" />
+						<Tab label="Права доступа" />
+					</Tabs>
+				</Grid>
 				<Grid
 					className={classes.content}
 					container={true}
@@ -82,7 +107,9 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser }) => {
 					alignItems="center"
 					wrap="nowrap"
 				>
-					{selectedTab === TABS.profile && <ProfileForm initialValues={{ ...rest, ...profile }} />}
+					{selectedTab === TABS.profile && (
+						<ProfileForm initialValues={profileValues} onSubmit={handleSetProfileValues} />
+					)}
 					{selectedTab === TABS.restrictions && (
 						<UserRestrictions
 							tasks={tasks.reduce(
