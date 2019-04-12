@@ -45,21 +45,24 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 
 	const profileInitialValues: IValues = { ...rest, ...profile };
 
-	const restricrionsInitialValues: ITasks = tasks.reduce(
-		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
-			...acc,
-			[id]: {
-				...restTask,
-				id,
-				operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
-			},
-		}),
-		{} as IValues,
-	);
+	const restricrionsInitialValues: IValues = {
+		tag: tag || '',
+		tasks: tasks.reduce(
+			(acc: IValues, { id, operations, ...restTask }: IValues) => ({
+				...acc,
+				[id]: {
+					...restTask,
+					id,
+					operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
+				},
+			}),
+			{} as IValues,
+		),
+	};
 
 	const [restrictionsValues, setRestrictionsValues]: [
-		IValues,
-		(restrictionsValues: IValues) => void
+		{ tasks?: ITasks; tag?: string },
+		(restrictionsValues: { tasks?: IValues; tag?: string }) => void
 	] = useState(restricrionsInitialValues);
 
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
@@ -77,7 +80,7 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 		setSnackbar('Профиль сохранен', 'success');
 	};
 
-	const handleSaveRestrictions = (values: IValues): void => {
+	const handleSaveRestrictions = (): void => {
 		console.log(restrictionsValues);
 		setSnackbar('Права доступа сохранены', 'success');
 	};
@@ -141,7 +144,7 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 					)}
 					{selectedTab === TABS.restrictions && (
 						<UserRestrictions
-							initialValues={restrictionsValues}
+							values={restrictionsValues}
 							setRestritionsValues={setRestrictionsValues}
 							filters={{}}
 							clearFilters={() => {}}
