@@ -15,6 +15,10 @@ const styles = createStyles({
 	},
 	container: {
 		flexGrow: 1,
+		height: '100%',
+	},
+	form: {
+		height: '100%',
 	},
 	textField: {
 		width: 500,
@@ -85,7 +89,7 @@ const ProfileForm: FC<IProfileFormProps> = ({ classes, initialValues, onSubmit, 
 	);
 
 	const renderForm = (form: FormikProps<IValues>): ReactNode => (
-		<Form noValidate={true}>
+		<Form className={classes.form} noValidate={true}>
 			<Grid
 				className={classes.container}
 				container={true}

@@ -25,7 +25,7 @@ const styles = (theme: Theme) =>
 			justifyContent: 'center',
 		},
 		button: {
-			minWidth: 140,
+			minWidth: 260,
 		},
 		container: {
 			flexGrow: 1,

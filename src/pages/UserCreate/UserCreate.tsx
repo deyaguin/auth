@@ -20,7 +20,7 @@ enum TABS {
 const styles = (theme: Theme) =>
 	createStyles({
 		button: {
-			minWidth: 140,
+			minWidth: 260,
 		},
 		container: {
 			paddingBottom: theme.spacing.unit * 2,

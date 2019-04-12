@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent } from 'react';
+import React, { FC, useState, ChangeEvent, Fragment } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
@@ -19,7 +19,7 @@ enum TABS {
 const styles = (theme: Theme) =>
 	createStyles({
 		button: {
-			minWidth: 140,
+			minWidth: 260,
 		},
 		container: {
 			paddingBottom: theme.spacing.unit * 2,
@@ -150,17 +150,23 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 							clearFilters={() => {}}
 							setFilters={(filters: any) => {}}
 							actions={
-								<Grid item={true}>
-									<Button
-										className={classes.button}
-										type="submit"
-										color="primary"
-										variant="outlined"
-										onClick={handleSaveRestrictions}
-									>
-										Сохранить
-									</Button>
-								</Grid>
+								<Fragment>
+									<Grid item={true}>
+										<Button className={classes.button} color="primary" variant="outlined">
+											Перейти в конструктор прав
+										</Button>
+									</Grid>
+									<Grid item={true}>
+										<Button
+											className={classes.button}
+											color="primary"
+											variant="outlined"
+											onClick={handleSaveRestrictions}
+										>
+											Сохранить
+										</Button>
+									</Grid>
+								</Fragment>
 							}
 						/>
 					)}
