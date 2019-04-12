@@ -2,9 +2,8 @@ import React, { FC, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
 
-import { ITasks } from '../../types';
+import { ITasks, IValues } from '../../types';
 import RestrictionsFilter from '../RestrictionsFilter';
 import RestrictionsTable from '../RestrictionsTable';
 
@@ -23,6 +22,7 @@ interface IUserRestrictionsProps extends WithStyles<typeof styles> {
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
 	actions?: ReactNode;
+	setRestritionsValues: (values: IValues) => void;
 }
 
 const UserRestrictions: FC<IUserRestrictionsProps> = ({
@@ -32,6 +32,7 @@ const UserRestrictions: FC<IUserRestrictionsProps> = ({
 	setFilters,
 	clearFilters,
 	actions,
+	setRestritionsValues,
 }) => (
 	<Fade in={true}>
 		<Grid
@@ -47,7 +48,7 @@ const UserRestrictions: FC<IUserRestrictionsProps> = ({
 				<RestrictionsFilter filters={filters} setFilters={setFilters} clearFilters={clearFilters} />
 			</Grid>
 			<Grid className={classes.tableWrapper} item={true} container={true}>
-				<RestrictionsTable tasks={initialValues} editable={true} />
+				<RestrictionsTable tasks={initialValues} editable={true} setValue={setRestritionsValues} />
 			</Grid>
 			{actions && (
 				<Grid item={true} container={true} justify="center" alignItems="flex-end" spacing={16}>

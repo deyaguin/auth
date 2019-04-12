@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { ITask, ITasks, IUser, IValues } from '../../types';
+import { IOperation, ITasks, IUser, IValues } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, ProfileForm, UserRestrictions } from '../../components';
 
@@ -46,20 +46,41 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 	const profileInitialValues: IValues = { ...rest, ...profile };
 
 	const restricrionsInitialValues: ITasks = tasks.reduce(
-		(acc: { [id: string]: ITask }, item: ITask) => ({ ...acc, [item.id]: item }),
-		{},
+		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
+			...acc,
+			[id]: {
+				...restTask,
+				id,
+				operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
+			},
+		}),
+		{} as IValues,
 	);
+
+	const [restrictionsValues, setRestrictionsValues]: [
+		IValues,
+		(restrictionsValues: IValues) => void
+	] = useState(restricrionsInitialValues);
 
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 
-	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => setSelectedTab(value);
+	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => {
+		if (value === TABS.profile) {
+			setRestrictionsValues(restricrionsInitialValues);
+		}
+
+		setSelectedTab(value);
+	};
 
 	const handleSaveProfile = (values: IValues): void => {
 		console.log(values);
 		setSnackbar('Профиль сохранен', 'success');
 	};
 
-	const handleSaveRestrictions = (values: IValues): void => {};
+	const handleSaveRestrictions = (values: IValues): void => {
+		console.log(restrictionsValues);
+		setSnackbar('Права доступа сохранены', 'success');
+	};
 
 	return (
 		<Page
@@ -120,7 +141,8 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 					)}
 					{selectedTab === TABS.restrictions && (
 						<UserRestrictions
-							initialValues={restricrionsInitialValues}
+							initialValues={restrictionsValues}
+							setRestritionsValues={setRestrictionsValues}
 							filters={{}}
 							clearFilters={() => {}}
 							setFilters={(filters: any) => {}}
@@ -131,6 +153,7 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 										type="submit"
 										color="primary"
 										variant="outlined"
+										onClick={handleSaveRestrictions}
 									>
 										Сохранить
 									</Button>

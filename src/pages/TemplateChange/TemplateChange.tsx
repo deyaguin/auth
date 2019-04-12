@@ -43,7 +43,7 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 
 		initialValues = {
 			...rest,
-			tasks: Object.values(tasksValues).reduce(
+			tasks: tasksValues.reduce(
 				(acc: IValues, { id, operations, ...restTask }: IValues) => ({
 					...acc,
 					[id]: {

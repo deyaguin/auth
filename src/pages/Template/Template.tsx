@@ -19,7 +19,7 @@ interface ITemplateProps extends RouteComponentProps<{ id: string }>, WithStyles
 const Template: FC<ITemplateProps> = ({ match: { params }, getTemplate, classes }) => {
 	const { tasks: tasksValues, ...rest }: ITemplate = getTemplate(params.id);
 
-	const tasks: IValues = Object.values(tasksValues).reduce(
+	const tasks: IValues = tasksValues.reduce(
 		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
 			...acc,
 			[id]: {

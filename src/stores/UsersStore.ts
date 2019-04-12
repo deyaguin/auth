@@ -10,7 +10,37 @@ import IFiltersStore from './Interfaces/FiltersStore';
 
 const USERS = {
 	'1': new User(
-		{ user_id: '1', login: 'TEST' },
+		{
+			user_id: '1',
+			login: 'TEST',
+			tasks: [
+				{
+					name: 'Работа с заявками',
+					operations: [
+						{
+							attributes: [
+								{ key: 'organitzation_id', title: 'Организация', name: '' },
+								{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+								{ key: 'district_id', title: 'Район', name: '' },
+							],
+							name: 'Обновление заявки',
+							operation_id: '1',
+						},
+						{
+							attributes: [
+								{ key: 'organitzation_id', title: 'Организация', name: '' },
+								{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+								{ key: 'district_id', title: 'Район', name: '' },
+							],
+							name: 'Создание заявки',
+							operation_id: '2',
+						},
+						{ operation_id: '3', name: 'Список заявок', attributes: [] },
+					],
+					task_id: '2',
+				},
+			],
+		},
 		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
 	),
 	'2': new User(
