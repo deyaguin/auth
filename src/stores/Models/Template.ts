@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx';
+import { observable } from 'mobx';
 
 import ITemplate from '../Interfaces/Template';
 import ITask from '../Interfaces/Task';
@@ -17,15 +17,6 @@ class Template {
 		this.comment = template.comment;
 		this.tags = template.tags;
 		this.tasks = template.tasks ? template.tasks.map((item: ITask) => new Task(item)) : [];
-	}
-
-	@computed public get tasksObject(): { [id: string]: Task } {
-		return this.tasks
-			? this.tasks.reduce(
-					(acc: { [id: string]: Task }, item: Task) => ({ ...acc, [item.id]: item }),
-					{},
-			  )
-			: {};
 	}
 }
 

@@ -246,6 +246,8 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 		return <Cell {...props} />;
 	};
+	console.log(tasks);
+	console.log(Object.values(tasks).map(mapTasks));
 
 	return (
 		<Paper className={classes.container}>

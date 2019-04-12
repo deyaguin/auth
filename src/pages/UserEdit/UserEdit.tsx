@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { ITask, ITasks, IUser } from '../../types';
+import { ITask, ITasks, IUser, IValues } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, ProfileForm, UserRestrictions } from '../../components';
 
@@ -34,10 +34,6 @@ const styles = (theme: Theme) =>
 			textDecoration: 'none',
 		},
 	});
-
-interface IValues {
-	[fieldName: string]: string;
-}
 
 interface IUserEditProps extends RouteComponentProps<{ id: string }>, WithStyles<typeof styles> {
 	getUser: (id: string) => IUser;
