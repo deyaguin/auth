@@ -13,7 +13,7 @@ import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
-import { ITask, IOperation, IAttribute, SetValue } from '../../types';
+import { ITask, IOperation, IAttribute, IValues } from '../../types';
 import GridRootComponent from '../GridRootContainer';
 import ValuePicker from '../ValuePicker';
 
@@ -37,7 +37,7 @@ const styles = (theme: Theme) =>
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
 	tasks?: { [id: string]: ITask };
-	setValue?: SetValue;
+	setValue?: (tasksValues: IValues) => void;
 	editable?: boolean;
 }
 
@@ -64,7 +64,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		const task: ITask = tasks[taskId];
 
 		if (setValue) {
-			setValue('selectedTasks', {
+			setValue({
 				...tasks,
 				[taskId]: {
 					...task,
@@ -86,7 +86,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		const task: ITask = tasks[taskId];
 
 		if (setValue) {
-			setValue('selectedTasks', {
+			setValue({
 				...tasks,
 				[taskId]: {
 					...task,
@@ -118,7 +118,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		const task: ITask = tasks[taskId];
 
 		if (setValue) {
-			setValue('selectedTasks', {
+			setValue({
 				...tasks,
 				[taskId]: {
 					...task,

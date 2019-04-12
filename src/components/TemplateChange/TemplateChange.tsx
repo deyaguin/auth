@@ -98,16 +98,10 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	const isFourthStep: boolean = activeStep === 3;
 
 	const handleNextStep = (): void => {
-		switch (activeStep) {
-			case 1:
-				if (!values.selectedTasks || Object.keys(values.selectedTasks).length < 1) {
-					setError('selectedTasks', true);
-
-					return;
-				}
-				break;
-			case 2:
-				break;
+		if (activeStep === 1) {
+			if (Object.keys(tasksValues).length < 1) {
+				return;
+			}
 		}
 
 		setActiveStep(activeStep + 1);
@@ -243,16 +237,16 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 						/>
 					</Grid>
 					<Grid className={classes.tableWrapper} container={true} item={true}>
-						<RestrictionsTable tasks={values.selectedTasks} setValue={setValue} />
+						<RestrictionsTable tasks={tasksValues} setValue={setTasksValues} />
 					</Grid>
 				</Fragment>
 			)}
 			{isFourthStep && (
 				<TemplateView
-					name={values.name}
-					tags={values.tags}
-					comment={values.comment}
-					tasks={values.selectedTasks}
+					name={optionsValues.name}
+					tags={optionsValues.tags}
+					comment={optionsValues.comment}
+					tasks={tasksValues}
 				/>
 			)}
 		</Grid>
