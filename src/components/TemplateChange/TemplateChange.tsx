@@ -13,15 +13,7 @@ import OptionsForm from '../OptionsForm';
 import Tasks from '../Tasks';
 import RestrictionsTable from '../RestrictionsTable';
 import RestrictionsFilter from '../RestrictionsFilter';
-import {
-	ITask,
-	IValues,
-	IErrors,
-	SetValue,
-	SetError,
-	TemplateCreate,
-	TemplateUpdate,
-} from '../../types';
+import { ITask, IValues, TemplateCreate, TemplateEdit } from '../../types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -61,32 +53,21 @@ const styles = (theme: Theme) =>
 
 interface ITemplateChangeProps extends WithStyles<typeof styles> {
 	tasks: ITask[];
-	values: IValues;
-	errors: IErrors;
-	setError: SetError;
-	setValue: SetValue;
-	action: TemplateCreate | TemplateUpdate;
+	action: TemplateCreate | TemplateEdit;
+	initialValues: IValues;
 }
 
-const TemplateChange: FC<ITemplateChangeProps> = ({
-	classes,
-	values,
-	errors,
-	setValue,
-	setError,
-	tasks,
-	action,
-}) => {
+const TemplateChange: FC<ITemplateChangeProps> = ({ classes, tasks, action, initialValues }) => {
+	const { tasks: initialTasksValues, ...initialOptionsValues } = initialValues;
+
 	const [activeStep, setActiveStep]: [number, (activeStep: number) => void] = useState(0);
 
-	const [optionsValues, setOptionsValues]: [IValues, (optionsValues: IValues) => void] = useState({
-		comment: '',
-		name: '',
-		tags: '',
-	} as IValues);
+	const [optionsValues, setOptionsValues]: [IValues, (optionsValues: IValues) => void] = useState(
+		initialOptionsValues,
+	);
 
 	const [tasksValues, setTasksValues]: [IValues, (tasksValues: IValues) => void] = useState(
-		{} as IValues,
+		initialTasksValues,
 	);
 
 	const isFirstStep: boolean = activeStep === 0;
@@ -117,8 +98,8 @@ const TemplateChange: FC<ITemplateChangeProps> = ({
 	};
 
 	const handleComplete = (): void => {
-		const { name, comment, tags, id, selectedTasks } = values;
-		action({ id, name, comment, tags, tasks: selectedTasks });
+		console.log({ ...optionsValues, tasks: tasksValues });
+		// action({ id, name, comment, tags, tasks: selectedTasks });
 	};
 
 	const renderOptionsActions = (): ReactNode => (

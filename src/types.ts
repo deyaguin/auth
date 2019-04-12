@@ -47,17 +47,9 @@ export interface IValues {
 	[name: string]: any;
 }
 
-export interface IErrors {
-	[name: string]: boolean;
-}
-
 export interface IFilters {
 	[name: string]: string;
 }
-
-export type SetValue = (key: string, value: any) => void;
-
-export type SetError = (key: string, value: boolean) => void;
 
 export type SetLimit = (limit: number) => void;
 
@@ -70,12 +62,10 @@ export type TemplateCreate = (template: {
 	tasks: ITasks;
 }) => void;
 
-export type TemplateUpdate = (template: {
+export type TemplateEdit = (template: {
 	id: string;
 	name: string;
 	tags: string;
 	comment: string;
 	tasks: ITasks;
 }) => void;
-
-export type TemplateAction = (template: ITemplate) => void;

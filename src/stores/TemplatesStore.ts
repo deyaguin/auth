@@ -9,7 +9,38 @@ import IFiltersStore from './Interfaces/FiltersStore';
 import ITask from './Interfaces/Task';
 
 const TEMPLATES = {
-	'1': new Template({ template_id: '1', name: 'Диспетчер УК1', comment: 'test' }),
+	'1': new Template({
+		template_id: '1',
+		name: 'Диспетчер УК1',
+		comment: 'test',
+		tasks: [
+			{
+				name: 'Работа с заявками',
+				operations: [
+					{
+						attributes: [
+							{ key: 'organitzation_id', title: 'Организация', name: '' },
+							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+							{ key: 'district_id', title: 'Район', name: '' },
+						],
+						name: 'Обновление заявки',
+						operation_id: '1',
+					},
+					{
+						attributes: [
+							{ key: 'organitzation_id', title: 'Организация', name: '' },
+							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+							{ key: 'district_id', title: 'Район', name: '' },
+						],
+						name: 'Создание заявки',
+						operation_id: '2',
+					},
+					{ operation_id: '3', name: 'Список заявок', attributes: [] },
+				],
+				task_id: '2',
+			},
+		],
+	}),
 	'2': new Template({ template_id: '2', name: 'Диспетчер УК2', comment: 'test' }),
 	'3': new Template({ template_id: '3', name: 'Диспетчер УК3', comment: 'test' }),
 	'4': new Template({ template_id: '4', name: 'Диспетчер УК4', comment: 'test' }),

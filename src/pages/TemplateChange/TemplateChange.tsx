@@ -1,9 +1,10 @@
 import React, { FunctionComponent } from 'react';
-import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
+import { ITask, IValues, TemplateCreate, TemplateEdit, ITemplate, IOperation } from '../../types';
 import { TEMPLATE_CREATE, TEMPLATES } from '../../constants/routes';
 import { Page, TemplateChange as TemplateChangeComponent } from '../../components';
 
@@ -13,24 +14,12 @@ const styles = createStyles({
 	},
 });
 
-interface ITask {
-	id: string;
-	name: string;
-	operations: Array<{ id: string; name: string }>;
-}
-
-interface ITemplate {
-	id: string;
-	name: string;
-	tasks: ITask[];
-}
-
 interface ITemplateCreateProps
 	extends RouteComponentProps<{ id: string }>,
 		WithStyles<typeof styles> {
-	templateCreate: (values: ITemplate) => void;
-	templateEdit: (values: ITemplate) => void;
-	getTemplate: (id: string) => {};
+	templateCreate: TemplateCreate;
+	templateEdit: TemplateEdit;
+	getTemplate: (id: string) => ITemplate;
 	setSnackbar: (message: string, type?: string) => void;
 	tasks: ITask[];
 }
@@ -47,9 +36,28 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 
 	const headerTitle: string = isCreatePage ? 'Создание шаблона' : 'Редактирование шаблона';
 
-	const initialValues: ITemplate | {} = isCreatePage ? {} : getTemplate(match.params.id);
+	let initialValues: IValues = { name: '', tags: '', comment: '', tasks: [] };
 
-	const action: (values: ITemplate) => void = isCreatePage ? templateCreate : templateEdit;
+	if (!isCreatePage) {
+		const { tasks: tasksValues, ...rest }: ITemplate = getTemplate(match.params.id);
+
+		initialValues = {
+			...rest,
+			tasks: Object.values(tasksValues).reduce(
+				(acc: IValues, { id, operations, ...restTask }: IValues) => ({
+					...acc,
+					[id]: {
+						...restTask,
+						id,
+						operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
+					},
+				}),
+				{} as IValues,
+			),
+		};
+	}
+
+	const action: TemplateCreate | TemplateEdit = isCreatePage ? templateCreate : templateEdit;
 
 	return (
 		<Page

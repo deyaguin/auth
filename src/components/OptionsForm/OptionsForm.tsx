@@ -109,7 +109,7 @@ const Options: FC<IOprionsProps> = ({ classes, formActions, initialValues, onSub
 			</Grid>
 		</Form>
 	);
-	console.log(initialValues);
+
 	return (
 		<Fade in={true} timeout={400}>
 			<Grid container={true} direction="column" spacing={24} alignItems="center">
