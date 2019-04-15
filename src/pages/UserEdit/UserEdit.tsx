@@ -72,7 +72,7 @@ const UserEdit: FC<IUserEditProps> = ({
 
 	const restricrionsInitialValues: IValues = {
 		tag: tag || '',
-		tasks: selectedTasks,
+		tasks: { ...tasksToObject(), ...selectedTasks },
 	};
 
 	const [restrictionsValues, setRestrictionsValues]: [
@@ -80,7 +80,9 @@ const UserEdit: FC<IUserEditProps> = ({
 		(restrictionsValues: { tasks?: IValues; tag?: string }) => void
 	] = useState(restricrionsInitialValues);
 
-	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
+	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(
+		TABS.restrictions,
+	);
 
 	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => {
 		if (value === TABS.profile) {
