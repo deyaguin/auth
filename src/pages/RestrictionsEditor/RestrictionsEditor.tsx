@@ -70,7 +70,13 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 			]}
 			headerTitle="Редактирование прав доступа"
 		>
-			<Grid direction="column" className={classes.container} container={true} spacing={24}>
+			<Grid
+				direction="column"
+				className={classes.container}
+				container={true}
+				spacing={24}
+				wrap="nowrap"
+			>
 				{isRestrictions && (
 					<Grid container={true} item={true}>
 						<RestrictionsFilter
