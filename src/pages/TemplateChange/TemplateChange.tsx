@@ -64,7 +64,7 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 			actions={[
 				<Link key="cancel" className={classes.link} to={TEMPLATES}>
 					<Button variant="contained" color="primary">
-						Отмена
+						Закрыть
 					</Button>
 				</Link>,
 			]}

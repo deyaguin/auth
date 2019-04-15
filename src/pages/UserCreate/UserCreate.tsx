@@ -111,7 +111,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 			actions={[
 				<Link key="cancel" className={classes.link} to={USERS}>
 					<Button variant="contained" color="primary">
-						Отмена
+						Закрыть
 					</Button>
 				</Link>,
 			]}

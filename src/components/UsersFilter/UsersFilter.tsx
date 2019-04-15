@@ -80,9 +80,8 @@ const UsersFilter: FC<IUsersFilterProps> = ({ classes, filters, setFilters, clea
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
 					<Grid container={true} spacing={32}>
-						{renderField('Логин', 'name')}
-						{renderField('Хештег', 'tag')}
 						{PROFILE_SCHEMA.map(item => renderField(item.title, item.name))}
+						{renderField('Хештег', 'tag')}
 					</Grid>
 				</ExpansionPanelDetails>
 				<ExpansionPanelActions>

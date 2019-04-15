@@ -9,6 +9,7 @@ import UserEdit from '../UserEdit';
 import Templates from '../Templates';
 import Template from '../Template';
 import TemplateChange from '../TemplateChange';
+import RestrictionsEditor from '../RestrictionsEditor';
 import NotFound from '../NotFound';
 import { Layout } from '../../components';
 
@@ -38,6 +39,7 @@ const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) =>
 				<Route path={routes.TEMPLATE_CREATE} component={TemplateChange} exact={true} />
 				<Route path={routes.TEMPLATE_EDIT} component={TemplateChange} exact={true} />
 				<Route path={routes.TEMPLATE} component={Template} exact={true} />
+				<Route path={routes.RESTRICTIONS_EDITOR} component={RestrictionsEditor} exact={true} />
 				<Route component={NotFound} />
 			</Switch>
 		</Layout>

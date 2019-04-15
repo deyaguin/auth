@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent, Fragment } from 'react';
+import React, { FC, useState, useEffect, ChangeEvent, Fragment } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
+import { RESTRICTIONS_EDITOR } from '../../constants/routes';
 import { IOperation, ITasks, IUser, IValues } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, ProfileForm, UserRestrictions } from '../../components';
@@ -38,16 +39,24 @@ const styles = (theme: Theme) =>
 interface IUserEditProps extends RouteComponentProps<{ id: string }>, WithStyles<typeof styles> {
 	getUser: (id: string) => IUser;
 	setSnackbar: (message: string, type?: string) => void;
+	selectedTasks: ITasks;
+	setTasks: (tasks: ITasks) => void;
+	clearRestrictionsEditor: () => void;
 }
 
-const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) => {
+const UserEdit: FC<IUserEditProps> = ({
+	classes,
+	match,
+	getUser,
+	selectedTasks,
+	setSnackbar,
+	setTasks,
+	clearRestrictionsEditor,
+}) => {
 	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
 
-	const profileInitialValues: IValues = { ...rest, ...profile };
-
-	const restricrionsInitialValues: IValues = {
-		tag: tag || '',
-		tasks: tasks.reduce(
+	const tasksToObject = (): ITasks =>
+		tasks.reduce(
 			(acc: IValues, { id, operations, ...restTask }: IValues) => ({
 				...acc,
 				[id]: {
@@ -57,7 +66,13 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 				},
 			}),
 			{} as IValues,
-		),
+		);
+
+	const profileInitialValues: IValues = { ...rest, ...profile };
+
+	const restricrionsInitialValues: IValues = {
+		tag: tag || '',
+		tasks: selectedTasks,
 	};
 
 	const [restrictionsValues, setRestrictionsValues]: [
@@ -85,13 +100,17 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 		setSnackbar('Права доступа сохранены', 'success');
 	};
 
+	const handleRestrictionsEditor = (): void => {
+		setTasks(tasksToObject());
+	};
+
 	return (
 		<Page
 			headerTitle="Редактирование пользователя"
 			actions={[
 				<Link key="cancel" className={classes.link} to={USERS}>
 					<Button variant="contained" color="primary">
-						Отмена
+						Закрыть
 					</Button>
 				</Link>,
 			]}
@@ -152,9 +171,16 @@ const UserEdit: FC<IUserEditProps> = ({ classes, match, getUser, setSnackbar }) 
 							actions={
 								<Fragment>
 									<Grid item={true}>
-										<Button className={classes.button} color="primary" variant="outlined">
-											Перейти в конструктор прав
-										</Button>
+										<Link className={classes.link} to={RESTRICTIONS_EDITOR}>
+											<Button
+												onClick={handleRestrictionsEditor}
+												className={classes.button}
+												color="primary"
+												variant="outlined"
+											>
+												Перейти в конструктор прав
+											</Button>
+										</Link>
 									</Grid>
 									<Grid item={true}>
 										<Button

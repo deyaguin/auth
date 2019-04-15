@@ -23,3 +23,9 @@ export { default as ProfileForm } from './ProfileForm';
 export { default as UserTemplates } from './UserTemplates';
 
 export { default as UserRestrictions } from './UserRestrictions';
+
+export { default as RestrictionsTable } from './RestrictionsTable';
+
+export { default as RestrictionsFilter } from './RestrictionsFilter';
+
+export { default as Tasks } from './Tasks';

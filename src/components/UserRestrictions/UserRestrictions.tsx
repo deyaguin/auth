@@ -42,7 +42,7 @@ const UserRestrictions: FC<IUserRestrictionsProps> = ({
 	};
 
 	return (
-		<Fade in={true}>
+		<Fade in={true} timeout={400}>
 			<Grid
 				className={classes.container}
 				container={true}

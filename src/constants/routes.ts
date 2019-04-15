@@ -7,6 +7,7 @@ const USER_CREATE = `${USERS}/create`;
 const USER_EDIT = `${USERS}/edit/:id(\\d+)`;
 const TEMPLATE = `${TEMPLATES}/:id(\\d+)`;
 const USER = `${USERS}/:id`;
+const RESTRICTIONS_EDITOR = '/restrictions_editor';
 
 export {
 	AUTH,
@@ -18,4 +19,5 @@ export {
 	USER_EDIT,
 	TEMPLATE,
 	USER,
+	RESTRICTIONS_EDITOR,
 };
