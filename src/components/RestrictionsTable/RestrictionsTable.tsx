@@ -55,6 +55,33 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	setValue,
 	editable = true,
 }) => {
+	const defaultExpandedIds: number[] = Object.keys(tasks).reduce(
+		(acc: number[], key: string, i: number): number[] => {
+			const tasksResult: number[] = [...acc, acc.length];
+
+			return [
+				...tasksResult,
+				...tasks[key].operations.reduce(
+					(operationsAcc: number[], operation: IOperation, j: number): number[] => {
+						const operationsResult: number[] = [
+							...operationsAcc,
+							tasksResult.length + operationsAcc.length,
+						];
+
+						return [
+							...operationsResult,
+							...operation.attributes.map(
+								(_, x: number) => x + operationsResult.length + tasksResult.length,
+							),
+						];
+					},
+					[] as number[],
+				),
+			];
+		},
+		[] as number[],
+	);
+
 	const [changedValueField, setChangedValueField]: [
 		string,
 		(changedValueField: string) => void
@@ -247,6 +274,8 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		return <Cell {...props} />;
 	};
 
+	console.log(defaultExpandedIds);
+
 	return (
 		<Paper className={classes.container}>
 			<Grid
@@ -254,7 +283,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				rows={Object.values(tasks).map(mapTasks)}
 				columns={COLUMNS}
 			>
-				<TreeDataState />
+				<TreeDataState defaultExpandedRowIds={defaultExpandedIds} />
 				<CustomTreeData getChildRows={getChildRows} />
 				<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
 				<TableHeaderRow />
