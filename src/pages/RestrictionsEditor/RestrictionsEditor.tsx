@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 import Grid from '@material-ui/core/Grid';
@@ -60,6 +60,12 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 	const handleClose = (): void => history.goBack();
 
 	const handleComplete = (): void => history.goBack();
+
+	if (Object.keys(selectedTasks).length < 1) {
+		history.goBack();
+
+		return null;
+	}
 
 	return (
 		<Page

@@ -274,8 +274,6 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		return <Cell {...props} />;
 	};
 
-	console.log(defaultExpandedIds);
-
 	return (
 		<Paper className={classes.container}>
 			<Grid

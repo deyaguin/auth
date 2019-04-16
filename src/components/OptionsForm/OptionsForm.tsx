@@ -1,16 +1,7 @@
-import React, { FC, ChangeEvent, ReactNode } from 'react';
-import classNames from 'classnames';
+import React, { FC, ReactNode } from 'react';
 import * as Yup from 'yup';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
-import {
-	Formik,
-	FormikActions,
-	FormikProps,
-	Form,
-	Field,
-	FieldProps,
-	FormikFormProps,
-} from 'formik';
+import { Formik, FormikActions, Form, Field, FieldProps } from 'formik';
 import TextField from '@material-ui/core/TextField';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';

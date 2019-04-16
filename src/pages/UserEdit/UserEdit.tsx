@@ -54,6 +54,7 @@ const UserEdit: FC<IUserEditProps> = ({
 	clearRestrictionsEditor,
 }) => {
 	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
+	console.log(selectedTasks);
 
 	const tasksToObject = (): ITasks =>
 		tasks.reduce(

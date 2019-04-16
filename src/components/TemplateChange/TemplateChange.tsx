@@ -19,7 +19,7 @@ const styles = (theme: Theme) =>
 	createStyles({
 		actions: {
 			'& > button:nth-child(n+2)': {
-				marginLeft: theme.spacing.unit * 2,
+				marginLeft: theme.spacing.unit * 3,
 			},
 			display: 'flex',
 			justifyContent: 'center',
@@ -35,7 +35,7 @@ const styles = (theme: Theme) =>
 		},
 		content: {
 			flexGrow: 1,
-			padding: `0 ${theme.spacing.unit * 2}`,
+			padding: `0 ${theme.spacing.unit * 3}`,
 		},
 		link: {
 			textDecoration: 'none',
