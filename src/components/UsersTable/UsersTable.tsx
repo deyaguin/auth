@@ -22,7 +22,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import { SelectedItem } from '../../types';
 import { TABLE_PAGE_SIZES, TABLE_MESSAGES, TABLE_PAGINATION_MESSAGES } from '../../constants/ui';
 import { USERS } from '../../constants/routes';
-import { PROFILE_SCHEMA } from '../../constants';
 import Popover from '../Popover';
 import TableActions from '../TableActions';
 import GridRootContainer from '../GridRootContainer';
@@ -58,7 +57,7 @@ interface IUsersTableProps extends WithStyles<typeof styles> {
 	onSelectItems: (selecetedUser: any) => void;
 }
 
-const COLUMNS = [...PROFILE_SCHEMA];
+const COLUMNS = [{ name: 'login', title: 'Логин' }];
 
 const UsersTable: FC<IUsersTableProps> = ({
 	classes,

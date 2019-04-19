@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 
-import { PROFILE_SCHEMA } from '../../constants';
 import { IValues } from '../../types';
 
 const styles = createStyles({
@@ -32,15 +31,7 @@ interface IProfileFormProps extends WithStyles<typeof styles> {
 }
 
 const ValidationSchema: Yup.Schema<IValues> = Yup.object().shape({
-	...PROFILE_SCHEMA.reduce(
-		(acc, item) => ({
-			...acc,
-			[item.name]: item.required
-				? Yup.string().required('Необходимо ввести значение')
-				: Yup.string(),
-		}),
-		{},
-	),
+	login: Yup.string().required('Необходимо ввести значение'),
 });
 
 const ProfileForm: FC<IProfileFormProps> = ({ classes, initialValues, onSubmit, formActions }) => {
@@ -98,9 +89,7 @@ const ProfileForm: FC<IProfileFormProps> = ({ classes, initialValues, onSubmit, 
 				spacing={16}
 				alignItems="center"
 			>
-				{PROFILE_SCHEMA.sort(profileSchemaSort).map(item =>
-					renderFormField(item.title, item.name, item.required),
-				)}
+				{renderFormField('Логин', 'login', true)}
 				{formActions && (
 					<Grid
 						className={classes.actionsWrapper}

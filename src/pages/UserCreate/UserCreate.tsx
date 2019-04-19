@@ -9,7 +9,6 @@ import Tab from '@material-ui/core/Tab';
 
 import { IValues } from '../../types';
 import { USERS } from '../../constants/routes';
-import { PROFILE_SCHEMA } from '../../constants';
 import { Page, ProfileForm, UserTemplates } from '../../components';
 
 enum TABS {
@@ -73,8 +72,8 @@ const UserCreate: FC<IUserCreateProps> = ({
 	);
 
 	const [profileValues, setProfileValues]: [IValues, (profileValues: IValues) => void] = useState({
-		...PROFILE_SCHEMA.reduce((acc, item) => ({ ...acc, [item.name]: '' }), {}),
-	});
+		login: '',
+	} as IValues);
 
 	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
 

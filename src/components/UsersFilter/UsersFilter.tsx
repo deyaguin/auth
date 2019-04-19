@@ -11,7 +11,6 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { PROFILE_SCHEMA } from '../../constants';
 import { IFilters } from '../../types';
 
 const styles = (theme: Theme) =>
@@ -80,7 +79,7 @@ const UsersFilter: FC<IUsersFilterProps> = ({ classes, filters, setFilters, clea
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
 					<Grid container={true} spacing={32}>
-						{PROFILE_SCHEMA.map(item => renderField(item.title, item.name))}
+						{renderField('Логин', 'login')}
 						{renderField('Хештег', 'tag')}
 					</Grid>
 				</ExpansionPanelDetails>
