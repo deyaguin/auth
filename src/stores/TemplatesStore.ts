@@ -1,5 +1,5 @@
 import { observable, action, computed, toJS } from 'mobx';
-import { values, compose, slice, reduce, merge } from 'ramda';
+import { values, compose, slice, reduce } from 'ramda';
 
 import Store from './Store';
 import { Services } from '../services';
@@ -102,19 +102,19 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 
 		this.offset = 0;
 
-		this.templatesMap = merge(
-			this.templatesMap,
-			this.getTemplates(this.offset, this.limit)(TEMPLATES),
-		);
+		this.templatesMap = {
+			...this.templatesMap,
+			...this.getTemplates(this.offset, this.limit)(TEMPLATES),
+		};
 	};
 
 	@action public setOffset = (offset: number): void => {
 		this.offset = offset;
 
-		this.templatesMap = merge(
-			this.templatesMap,
-			this.getTemplates(this.offset, this.limit)(TEMPLATES),
-		);
+		this.templatesMap = {
+			...this.templatesMap,
+			...this.getTemplates(this.offset, this.limit)(TEMPLATES),
+		};
 	};
 
 	@action public templateCreate = ({

@@ -1,4 +1,5 @@
-import React, { FC, useState, useEffect, ChangeEvent, Fragment } from 'react';
+import React, { FC, useState, ChangeEvent, Fragment, ReactNode } from 'react';
+import { reduce, map } from 'ramda';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
@@ -54,26 +55,24 @@ const UserEdit: FC<IUserEditProps> = ({
 	clearRestrictionsEditor,
 }) => {
 	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
-	console.log(selectedTasks);
 
-	const tasksToObject = (): ITasks =>
-		tasks.reduce(
-			(acc: IValues, { id, operations, ...restTask }: IValues) => ({
-				...acc,
-				[id]: {
-					...restTask,
-					id,
-					operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
-				},
-			}),
-			{} as IValues,
-		);
+	const tasksToObject = reduce(
+		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
+			...acc,
+			[id]: {
+				...restTask,
+				id,
+				operations: map((item: IOperation) => ({ ...item, selected: true }), operations),
+			},
+		}),
+		{} as IValues,
+	);
 
 	const profileInitialValues: IValues = { ...rest, ...profile };
 
 	const restricrionsInitialValues: IValues = {
 		tag: tag || '',
-		tasks: { ...tasksToObject(), ...selectedTasks },
+		tasks: { ...tasksToObject(tasks), ...selectedTasks },
 	};
 
 	const [restrictionsValues, setRestrictionsValues]: [
@@ -104,8 +103,60 @@ const UserEdit: FC<IUserEditProps> = ({
 	};
 
 	const handleRestrictionsEditor = (): void => {
-		setTasks(tasksToObject());
+		setTasks(tasksToObject(tasks));
 	};
+
+	const renderProfileForm = (): ReactNode =>
+		selectedTab === TABS.profile && (
+			<ProfileForm
+				initialValues={profileInitialValues}
+				onSubmit={handleSaveProfile}
+				formActions={
+					<Grid item={true}>
+						<Button className={classes.button} type="submit" color="primary" variant="outlined">
+							Сохранить
+						</Button>
+					</Grid>
+				}
+			/>
+		);
+
+	const renderRestrictions = (): ReactNode =>
+		selectedTab === TABS.restrictions && (
+			<UserRestrictions
+				values={restrictionsValues}
+				setRestritionsValues={setRestrictionsValues}
+				filters={{}}
+				clearFilters={() => {}}
+				setFilters={(filters: any) => {}}
+				actions={
+					<Fragment>
+						<Grid item={true}>
+							<Link className={classes.link} to={RESTRICTIONS_EDITOR}>
+								<Button
+									onClick={handleRestrictionsEditor}
+									className={classes.button}
+									color="primary"
+									variant="outlined"
+								>
+									Перейти в конструктор прав
+								</Button>
+							</Link>
+						</Grid>
+						<Grid item={true}>
+							<Button
+								className={classes.button}
+								color="primary"
+								variant="outlined"
+								onClick={handleSaveRestrictions}
+							>
+								Сохранить
+							</Button>
+						</Grid>
+					</Fragment>
+				}
+			/>
+		);
 
 	return (
 		<Page
@@ -146,59 +197,8 @@ const UserEdit: FC<IUserEditProps> = ({
 					alignItems="center"
 					wrap="nowrap"
 				>
-					{selectedTab === TABS.profile && (
-						<ProfileForm
-							initialValues={profileInitialValues}
-							onSubmit={handleSaveProfile}
-							formActions={
-								<Grid item={true}>
-									<Button
-										className={classes.button}
-										type="submit"
-										color="primary"
-										variant="outlined"
-									>
-										Сохранить
-									</Button>
-								</Grid>
-							}
-						/>
-					)}
-					{selectedTab === TABS.restrictions && (
-						<UserRestrictions
-							values={restrictionsValues}
-							setRestritionsValues={setRestrictionsValues}
-							filters={{}}
-							clearFilters={() => {}}
-							setFilters={(filters: any) => {}}
-							actions={
-								<Fragment>
-									<Grid item={true}>
-										<Link className={classes.link} to={RESTRICTIONS_EDITOR}>
-											<Button
-												onClick={handleRestrictionsEditor}
-												className={classes.button}
-												color="primary"
-												variant="outlined"
-											>
-												Перейти в конструктор прав
-											</Button>
-										</Link>
-									</Grid>
-									<Grid item={true}>
-										<Button
-											className={classes.button}
-											color="primary"
-											variant="outlined"
-											onClick={handleSaveRestrictions}
-										>
-											Сохранить
-										</Button>
-									</Grid>
-								</Fragment>
-							}
-						/>
-					)}
+					{renderProfileForm()}
+					{renderRestrictions()}
 				</Grid>
 			</Grid>
 		</Page>

@@ -7,7 +7,6 @@ import {
 	keys,
 	compose,
 	length,
-	merge,
 	filter,
 	insertAll,
 	uniq,
@@ -179,13 +178,13 @@ class UsersStore extends Store
 
 		this.offset = 0;
 
-		this.usersMap = merge(this.usersMap, this.getUsers(this.offset, this.limit)(USERS));
+		this.usersMap = { ...this.usersMap, ...this.getUsers(this.offset, this.limit)(USERS) };
 	};
 
 	@action public setOffset = (offset: number) => {
 		this.offset = offset;
 
-		this.usersMap = merge(this.usersMap, this.getUsers(this.offset, this.limit)(USERS));
+		this.usersMap = { ...this.usersMap, ...this.getUsers(this.offset, this.limit)(USERS) };
 	};
 
 	@action public setUsers = (userValues: IUser[]) => {
@@ -272,7 +271,7 @@ class UsersStore extends Store
 	}
 
 	@computed public get total(): number {
-		return length(keys(USERS));
+		return Object.keys(USERS).length;
 	}
 
 	@computed public get pageSelections(): SelectedItem[] {
