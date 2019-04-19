@@ -1,22 +1,16 @@
-import React, { FC, useState, ChangeEvent, Fragment, ReactNode } from 'react';
+import React, { FC, useState, ChangeEvent, ReactNode } from 'react';
 import { reduce, map } from 'ramda';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import TextField from '@material-ui/core/TextField';
 
 import { RESTRICTIONS_EDITOR } from '../../constants/routes';
 import { IOperation, ITasks, IUser, IValues } from '../../types';
 import { USERS } from '../../constants/routes';
-import { Page, ProfileForm, UserRestrictions } from '../../components';
-
-enum TABS {
-	profile,
-	restrictions,
-}
+import { Page, UserRestrictions } from '../../components';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -24,9 +18,8 @@ const styles = (theme: Theme) =>
 			minWidth: 260,
 		},
 		container: {
-			paddingBottom: theme.spacing.unit * 3,
-			paddingLeft: theme.spacing.unit * 3,
-			paddingRight: theme.spacing.unit * 3,
+			flexGrow: 1,
+			padding: theme.spacing.unit * 3,
 		},
 		content: {
 			flexGrow: 1,
@@ -34,6 +27,9 @@ const styles = (theme: Theme) =>
 		},
 		link: {
 			textDecoration: 'none',
+		},
+		textField: {
+			width: 500,
 		},
 	});
 
@@ -54,7 +50,7 @@ const UserEdit: FC<IUserEditProps> = ({
 	setTasks,
 	clearRestrictionsEditor,
 }) => {
-	const { tasks = [], profile, tag, ...rest }: IUser = getUser(match.params.id);
+	const { tasks = [], login, tags, ...rest }: IUser = getUser(match.params.id);
 
 	const tasksToObject = reduce(
 		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
@@ -68,95 +64,99 @@ const UserEdit: FC<IUserEditProps> = ({
 		{},
 	);
 
-	const profileInitialValues: IValues = { ...rest, ...profile };
-
 	const restricrionsInitialValues: IValues = {
-		tag: tag || '',
 		tasks: { ...tasksToObject(tasks), ...selectedTasks },
 	};
 
 	const [restrictionsValues, setRestrictionsValues]: [
-		{ tasks?: ITasks; tag?: string },
-		(restrictionsValues: { tasks?: IValues; tag?: string }) => void
+		{ tasks?: ITasks },
+		(restrictionsValues: { tasks?: IValues }) => void
 	] = useState(restricrionsInitialValues);
 
-	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(
-		TABS.restrictions,
-	);
+	const [loginValue, setLoginValue]: [string, (loginValue: string) => void] = useState(login);
 
-	const handleSelectTab = (e: ChangeEvent<{}>, value: TABS) => {
-		if (value === TABS.profile) {
-			setRestrictionsValues(restricrionsInitialValues);
+	const [loginFieldTouched, setLoginFieldTouched]: [
+		boolean,
+		(loginValueTouched: boolean) => void
+	] = useState(false);
+
+	const handleSave = (): void => {
+		setLoginFieldTouched(true);
+
+		if (loginValue) {
+			console.log(login, tagsValue, restrictionsValues);
+			setSnackbar('Пользователь изменен', 'success');
 		}
-
-		setSelectedTab(value);
 	};
 
-	const handleSaveProfile = (values: IValues): void => {
-		console.log(values);
-		setSnackbar('Профиль сохранен', 'success');
+	const handleSetLoginValue = (e: ChangeEvent<HTMLInputElement>): void => {
+		setLoginValue(e.currentTarget.value);
+
+		setLoginFieldTouched(true);
 	};
 
-	const handleSaveRestrictions = (): void => {
-		console.log(restrictionsValues);
-		setSnackbar('Права доступа сохранены', 'success');
+	const [tagsValue, setTagsValue]: [string, (tagValue: string) => void] = useState(tags || '');
+
+	const handleSetTagsValue = (e: ChangeEvent<HTMLInputElement>) => {
+		setTagsValue(e.currentTarget.value);
 	};
 
 	const handleRestrictionsEditor = (): void => {
 		setTasks(tasksToObject(tasks));
 	};
 
-	const renderProfileForm = (): ReactNode =>
-		selectedTab === TABS.profile && (
-			<ProfileForm
-				initialValues={profileInitialValues}
-				onSubmit={handleSaveProfile}
-				formActions={
-					<Grid item={true}>
-						<Button className={classes.button} type="submit" color="primary" variant="outlined">
-							Сохранить
-						</Button>
-					</Grid>
-				}
+	const renderLoginField = (): ReactNode => (
+		<Grid item={true}>
+			<TextField
+				required={true}
+				className={classes.textField}
+				fullWidth={true}
+				label="Логин"
+				InputLabelProps={{
+					shrink: true,
+				}}
+				variant="outlined"
+				error={loginFieldTouched && !loginValue}
+				helperText={loginFieldTouched && !loginValue && 'Необходимо ввести значение'}
+				onChange={handleSetLoginValue}
+				value={loginValue}
 			/>
-		);
+		</Grid>
+	);
 
-	const renderRestrictions = (): ReactNode =>
-		selectedTab === TABS.restrictions && (
-			<UserRestrictions
-				values={restrictionsValues}
-				setRestritionsValues={setRestrictionsValues}
-				filters={{}}
-				clearFilters={() => {}}
-				setFilters={(filters: any) => {}}
-				actions={
-					<Fragment>
-						<Grid item={true}>
-							<Link className={classes.link} to={RESTRICTIONS_EDITOR}>
-								<Button
-									onClick={handleRestrictionsEditor}
-									className={classes.button}
-									color="primary"
-									variant="outlined"
-								>
-									Перейти в конструктор прав
-								</Button>
-							</Link>
-						</Grid>
-						<Grid item={true}>
-							<Button
-								className={classes.button}
-								color="primary"
-								variant="outlined"
-								onClick={handleSaveRestrictions}
-							>
-								Сохранить
-							</Button>
-						</Grid>
-					</Fragment>
-				}
+	const renderTagsField = (): ReactNode => (
+		<Grid item={true} container={true}>
+			<TextField
+				value={tagsValue}
+				fullWidth={true}
+				variant="outlined"
+				label="Теги"
+				onChange={handleSetTagsValue}
 			/>
-		);
+		</Grid>
+	);
+
+	const renderActions = (): ReactNode => (
+		<Grid item={true} container={true} justify="center" spacing={24}>
+			<Grid item={true}>
+				<Button onClick={handleSave} className={classes.button} variant="outlined" color="primary">
+					Сохранить
+				</Button>
+			</Grid>
+			<Grid item={true}>
+				<Link className={classes.link} to={RESTRICTIONS_EDITOR}>
+					<Button
+						onClick={handleRestrictionsEditor}
+						className={classes.button}
+						color="primary"
+						variant="outlined"
+					>
+						Перейти в конструктор прав
+					</Button>
+				</Link>
+			</Grid>
+		</Grid>
+	);
 
 	return (
 		<Page
@@ -176,30 +176,18 @@ const UserEdit: FC<IUserEditProps> = ({
 				wrap="nowrap"
 				spacing={24}
 			>
-				<Grid item={true}>
-					<Tabs
-						value={selectedTab}
-						onChange={handleSelectTab}
-						textColor="primary"
-						indicatorColor="primary"
-						centered={true}
-					>
-						<Tab label="Профиль" />
-						<Tab label="Права доступа" />
-					</Tabs>
+				<Grid container={true} item={true} spacing={24} wrap="nowrap">
+					{renderLoginField()}
+					{renderTagsField()}
 				</Grid>
-				<Grid
-					className={classes.content}
-					container={true}
-					item={true}
-					spacing={24}
-					direction="column"
-					alignItems="center"
-					wrap="nowrap"
-				>
-					{renderProfileForm()}
-					{renderRestrictions()}
-				</Grid>
+				<UserRestrictions
+					values={restrictionsValues}
+					setRestritionsValues={setRestrictionsValues}
+					filters={{}}
+					clearFilters={() => {}}
+					setFilters={(filters: any) => {}}
+				/>
+				{renderActions()}
 			</Grid>
 		</Page>
 	);

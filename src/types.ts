@@ -1,7 +1,7 @@
 export interface IUser {
 	id: string;
 	login: string;
-	tag?: string;
+	tags?: string;
 	profile?: { [propName: string]: string };
 	tasks?: ITask[];
 }

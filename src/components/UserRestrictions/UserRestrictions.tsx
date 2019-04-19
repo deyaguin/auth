@@ -1,8 +1,7 @@
-import React, { FC, ReactNode, ChangeEvent } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
-import TextField from '@material-ui/core/TextField';
 
 import { ITasks, IValues } from '../../types';
 import RestrictionsFilter from '../RestrictionsFilter';
@@ -37,10 +36,6 @@ const UserRestrictions: FC<IUserRestrictionsProps> = ({
 }) => {
 	const handleSetTasks = (tasks: IValues) => setRestritionsValues({ ...values, tasks });
 
-	const handleSetTag = (e: ChangeEvent<HTMLInputElement>) => {
-		setRestritionsValues({ ...values, tag: e.currentTarget.value });
-	};
-
 	return (
 		<Fade in={true} timeout={400}>
 			<Grid
@@ -52,9 +47,6 @@ const UserRestrictions: FC<IUserRestrictionsProps> = ({
 				alignItems="center"
 				wrap="nowrap"
 			>
-				<Grid item={true} container={true}>
-					<TextField fullWidth={true} variant="outlined" label="Теги" onChange={handleSetTag} />
-				</Grid>
 				<Grid item={true} container={true}>
 					<RestrictionsFilter
 						filters={filters}

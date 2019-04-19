@@ -9,11 +9,6 @@ import TextField from '@material-ui/core/TextField';
 import { USERS } from '../../constants/routes';
 import { Page, UserTemplates } from '../../components';
 
-enum TABS {
-	profile,
-	templates,
-}
-
 const styles = (theme: Theme) =>
 	createStyles({
 		button: {
@@ -102,19 +97,22 @@ const UserCreate: FC<IUserCreateProps> = ({
 	};
 
 	const renderLoginField = (): ReactNode => (
-		<TextField
-			required={true}
-			className={classes.textField}
-			fullWidth={true}
-			label="Логин"
-			InputLabelProps={{
-				shrink: true,
-			}}
-			variant="outlined"
-			error={loginFieldTouched && !loginValue}
-			helperText={loginFieldTouched && !loginValue && 'Необходимо ввести значение'}
-			onChange={handleSetLoginValue}
-		/>
+		<Grid item={true}>
+			<TextField
+				required={true}
+				className={classes.textField}
+				fullWidth={true}
+				label="Логин"
+				InputLabelProps={{
+					shrink: true,
+				}}
+				variant="outlined"
+				error={loginFieldTouched && !loginValue}
+				helperText={loginFieldTouched && !loginValue && 'Необходимо ввести значение'}
+				onChange={handleSetLoginValue}
+				value={loginValue}
+			/>
+		</Grid>
 	);
 
 	return (
@@ -135,7 +133,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 				wrap="nowrap"
 				spacing={24}
 			>
-				<Grid item={true}>{renderLoginField()}</Grid>
+				{renderLoginField()}
 				<UserTemplates
 					onSelectTemplate={handleSetSelelectedTemplates}
 					templates={templates}

@@ -18,8 +18,6 @@ export { default as UsersTable } from './UsersTable';
 
 export { default as UsersFilter } from './UsersFilter';
 
-export { default as ProfileForm } from './ProfileForm';
-
 export { default as UserTemplates } from './UserTemplates';
 
 export { default as UserRestrictions } from './UserRestrictions';
