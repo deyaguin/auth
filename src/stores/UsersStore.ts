@@ -177,6 +177,8 @@ class UsersStore extends Store
 	@action public setLimit = (limit: number) => {
 		this.limit = limit;
 
+		this.offset = 0;
+
 		this.usersMap = merge(this.usersMap, this.getUsers(this.offset, this.limit)(USERS));
 	};
 
@@ -251,7 +253,7 @@ class UsersStore extends Store
 
 	@computed public get users(): User[] {
 		return compose(
-			map<User, User>((item: User) =>
+			map<User, User>(item =>
 				item.profile
 					? {
 							id: item.id,

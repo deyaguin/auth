@@ -1,4 +1,5 @@
 import { observable, action, computed, toJS } from 'mobx';
+import { values, compose, slice, reduce, merge } from 'ramda';
 
 import Store from './Store';
 import { Services } from '../services';
@@ -66,6 +67,10 @@ const TEMPLATES = {
 	'24': new Template({ template_id: '24', name: 'Диспетчер УК24', comment: 'test' }),
 };
 
+interface ITempaltesMap {
+	[id: string]: Template;
+}
+
 interface IFilters {
 	[name: string]: string;
 }
@@ -75,16 +80,16 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 	@observable public limit: number;
 	@observable public offset: number;
 	@observable public filtersMap: IFilters;
-	@observable private templatesMap: { [id: string]: Template };
+	@observable private templatesMap: ITempaltesMap;
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
 		this.loading = false;
-		this.limit = 20;
+		this.limit = 5;
 		this.offset = 0;
 
-		this.templatesMap = TEMPLATES;
+		this.templatesMap = this.getTemplates(this.offset, this.limit)(TEMPLATES);
 		this.filtersMap = {};
 	}
 
@@ -96,10 +101,20 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		this.limit = limit;
 
 		this.offset = 0;
+
+		this.templatesMap = merge(
+			this.templatesMap,
+			this.getTemplates(this.offset, this.limit)(TEMPLATES),
+		);
 	};
 
 	@action public setOffset = (offset: number): void => {
 		this.offset = offset;
+
+		this.templatesMap = merge(
+			this.templatesMap,
+			this.getTemplates(this.offset, this.limit)(TEMPLATES),
+		);
 	};
 
 	@action public templateCreate = ({
@@ -157,7 +172,7 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 	};
 
 	@computed public get templates(): Template[] {
-		return Object.values(toJS(this.templatesMap)).slice(this.offset, this.offset + this.limit);
+		return slice<Template>(this.offset, this.offset + this.limit, values(toJS(this.templatesMap)));
 	}
 
 	@computed public get filters(): IFilters {
@@ -167,6 +182,13 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 	@computed public get total(): number {
 		return Object.keys(TEMPLATES).length;
 	}
+
+	private getTemplates = (offsetValue: number, limitValue: number) =>
+		compose(
+			reduce<Template, ITempaltesMap>((acc, item) => ({ ...acc, [item.id]: item }), {}),
+			slice(offsetValue, offsetValue + limitValue),
+			values,
+		);
 }
 
 export default TemplatesStore;
