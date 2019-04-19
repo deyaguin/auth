@@ -1,4 +1,18 @@
 import { observable, computed, action, toJS } from 'mobx';
+import {
+	map,
+	slice,
+	reduce,
+	values,
+	keys,
+	compose,
+	length,
+	merge,
+	filter,
+	insertAll,
+	uniq,
+	without,
+} from 'ramda';
 
 import Store from './Store';
 import { Services } from '../services';
@@ -7,6 +21,8 @@ import IUser from './Interfaces/User';
 import ILoadingStore from './Interfaces/LoadingStore';
 import IPagintaionStore from './Interfaces/PaginationStore';
 import IFiltersStore from './Interfaces/FiltersStore';
+import ISelectionStore from './Interfaces/SelectionStore';
+import { SelectedItem } from '../types';
 
 const USERS = {
 	'1': new User(
@@ -113,25 +129,34 @@ const USERS = {
 	),
 };
 
+interface IUsersMap {
+	[id: string]: User;
+}
+
 interface IFilters {
 	[name: string]: string;
 }
 
-class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFiltersStore {
+class UsersStore extends Store
+	implements ILoadingStore, IPagintaionStore, IFiltersStore, ISelectionStore {
 	@observable public loading: boolean;
 	@observable public limit: number;
 	@observable public offset: number;
 	@observable public filtersMap: IFilters;
-	@observable private usersMap: { [id: string]: User };
+	@observable public selectedItems: SelectedItem[];
+	@observable private usersMap: IUsersMap;
+	@observable private selectedUsers: string[];
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
 
-		this.usersMap = USERS;
 		this.loading = false;
-		this.limit = 20;
+		this.limit = 5;
 		this.offset = 0;
 		this.filtersMap = {};
+		this.selectedItems = [];
+		this.selectedUsers = [];
+		this.usersMap = this.getUsers(this.offset, this.limit)(USERS);
 
 		// this.services.authentication.subscriptions.usersList.subscribe({
 		// 	next: async (response: any) => {
@@ -151,27 +176,27 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 
 	@action public setLimit = (limit: number) => {
 		this.limit = limit;
+
+		this.usersMap = merge(this.usersMap, this.getUsers(this.offset, this.limit)(USERS));
 	};
 
 	@action public setOffset = (offset: number) => {
 		this.offset = offset;
+
+		this.usersMap = merge(this.usersMap, this.getUsers(this.offset, this.limit)(USERS));
 	};
 
-	@action public setUsers = async (values: IUser[]) => {
-		const users = await values.reduce((acc: { [id: string]: User }, item: IUser) => {
-			const user = new User(item);
-
-			return { ...acc, [item.user_id]: user };
-		}, {});
-
-		this.usersMap = users;
+	@action public setUsers = (userValues: IUser[]) => {
+		this.usersMap = reduce((acc, item: IUser) => ({ ...acc, [item.user_id]: new User(item) }), {})(
+			userValues,
+		);
 	};
 
 	@action public usersList = () => {
 		this.services.authentication.requests.usersList({}, () => this.setLoading(true));
 	};
 
-	@action public userCreate = (values: any) => {
+	@action public userCreate = (creationValues: any) => {
 		// todo
 	};
 
@@ -189,20 +214,55 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 		return toJS(this.usersMap[id]);
 	};
 
-	@computed public get users() {
-		return Object.values(toJS(this.usersMap))
-			.map((item: User) => {
-				if (item.profile) {
-					return {
-						id: item.id,
-						login: item.login,
-						...item.profile,
-					};
-				}
+	@action public setSelectedItems = (items: SelectedItem[]): void => {
+		const currentPageUsers: string[] = compose(
+			map<User, string>(item => item.id),
+			slice(this.offset, this.offset + this.limit),
+			values,
+		)(toJS(this.usersMap));
 
-				return item;
-			})
-			.slice(this.offset, this.offset + this.limit);
+		const currentPageSelections: SelectedItem[] = filter<SelectedItem>(
+			(item: SelectedItem): boolean => item >= this.offset && item < this.offset + this.limit,
+		)(this.selectedItems);
+
+		this.selectedItems = compose(
+			arr => uniq(arr),
+			insertAll<SelectedItem>(
+				this.selectedItems.length,
+				map<SelectedItem, SelectedItem>(item => Number(item) + this.offset)(items),
+			),
+			without<SelectedItem>(currentPageSelections),
+		)(this.selectedItems);
+
+		this.selectedUsers = compose(
+			arr => uniq(arr),
+			insertAll<string>(
+				this.selectedUsers.length,
+				map<SelectedItem, string>(item => currentPageUsers[Number(item)])(items),
+			),
+			without<string>(currentPageUsers),
+		)(toJS(this.selectedUsers));
+	};
+
+	@action public clearSelectedItems = (): void => {
+		this.selectedItems = [];
+		this.selectedUsers = [];
+	};
+
+	@computed public get users(): User[] {
+		return compose(
+			map<User, User>((item: User) =>
+				item.profile
+					? {
+							id: item.id,
+							login: item.login,
+							...item.profile,
+					  }
+					: item,
+			),
+			slice(this.offset, this.offset + this.limit),
+			values,
+		)(toJS(this.usersMap));
 	}
 
 	@computed public get filters(): IFilters {
@@ -210,8 +270,32 @@ class UsersStore extends Store implements ILoadingStore, IPagintaionStore, IFilt
 	}
 
 	@computed public get total(): number {
-		return Object.keys(USERS).length;
+		return length(keys(USERS));
 	}
+
+	@computed public get pageSelections(): SelectedItem[] {
+		const currentPage: number = this.offset / this.limit;
+
+		return map<SelectedItem, number>(
+			(item: SelectedItem) => Number(item) - this.limit * currentPage,
+		)(
+			filter<SelectedItem>(
+				(item: SelectedItem) =>
+					item >= this.limit * currentPage && item < this.limit * (currentPage + 1),
+			)(this.selectedItems),
+		);
+	}
+
+	@computed public get selectionsCount(): number {
+		return this.selectedItems.length;
+	}
+
+	private getUsers = (offsetValue: number, limitValue: number) =>
+		compose(
+			reduce<User, IUsersMap>((acc, item) => ({ ...acc, [item.id]: item }), {}),
+			slice(offsetValue, offsetValue + limitValue),
+			values,
+		);
 }
 
 export default UsersStore;

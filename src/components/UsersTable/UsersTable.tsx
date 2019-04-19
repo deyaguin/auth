@@ -17,9 +17,9 @@ import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import EditIcon from '@material-ui/icons/Edit';
 
+import { SelectedItem } from '../../types';
 import { TABLE_PAGE_SIZES, TABLE_MESSAGES, TABLE_PAGINATION_MESSAGES } from '../../constants/ui';
 import { USERS } from '../../constants/routes';
 import { PROFILE_SCHEMA } from '../../constants';
@@ -51,11 +51,11 @@ interface IUsersTableProps extends WithStyles<typeof styles> {
 	pageSize: number;
 	currentPage: number;
 	total: number;
-	selectedUsers: Array<string | number>;
+	selectedItems: SelectedItem[];
 	userDelete: (id: string) => void;
 	onPageSizeChange: (pageSize: number) => void;
 	onCurrentPageChange: (currentPage: number) => void;
-	onSelectUsers: (selecetedUser: any) => void;
+	onSelectItems: (selecetedUser: any) => void;
 }
 
 const COLUMNS = [...PROFILE_SCHEMA];
@@ -66,17 +66,15 @@ const UsersTable: FC<IUsersTableProps> = ({
 	pageSize,
 	total,
 	currentPage,
-	selectedUsers,
+	selectedItems,
 	onPageSizeChange,
 	onCurrentPageChange,
 	userDelete,
-	onSelectUsers: onSelectUser,
+	onSelectItems,
 }) => {
 	const handleUserDelete = (id: string) => (): void => userDelete(id);
 
-	const handleSelectUser = (selection: Array<string | number>): void => {
-		onSelectUser(selection);
-	};
+	const handleSelectItem = (selection: SelectedItem[]): void => onSelectItems(selection);
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>
@@ -113,7 +111,7 @@ const UsersTable: FC<IUsersTableProps> = ({
 				onCurrentPageChange={onCurrentPageChange}
 				onPageSizeChange={onPageSizeChange}
 			/>
-			<SelectionState selection={selectedUsers} onSelectionChange={handleSelectUser} />
+			<SelectionState selection={selectedItems} onSelectionChange={handleSelectItem} />
 			<CustomPaging totalCount={total} />
 			<IntegratedSelection />
 			<VirtualTable

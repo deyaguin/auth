@@ -69,3 +69,5 @@ export type TemplateEdit = (template: {
 	comment: string;
 	tasks: ITasks;
 }) => void;
+
+export type SelectedItem = string | number;

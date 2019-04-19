@@ -2,7 +2,7 @@ const DRAWER_WIDTH = 240;
 
 const TABLE_ACTIONS_WIDTH = 200;
 
-const TABLE_PAGE_SIZES = [20, 50, 100];
+const TABLE_PAGE_SIZES = [5, 10, 15];
 
 const FILTER_MESSAGES = {
 	filterPlaceholder: 'Фильтр',

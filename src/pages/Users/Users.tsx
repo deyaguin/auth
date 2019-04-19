@@ -1,10 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import { USER_CREATE } from '../../constants/routes';
 import { Page, UsersTable, UsersFilter } from '../../components';
+import { SelectedItem } from '../../types';
 
 const styles = createStyles({
 	link: {
@@ -19,6 +20,9 @@ interface IUsersProps extends WithStyles<typeof styles> {
 	offset: number;
 	total: number;
 	filters: { [name: string]: string };
+	pageSelections: SelectedItem[];
+	selectionsCount: number;
+	setSelectedItems: (items: SelectedItem[]) => void;
 	userDelete: (id: string) => void;
 	usersList: () => void;
 	setLimit: (limit: number) => void;
@@ -26,6 +30,7 @@ interface IUsersProps extends WithStyles<typeof styles> {
 	setSnackbar: (message: string, type?: string) => void;
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
+	clearSelectedItems: () => void;
 }
 
 const Users: FC<IUsersProps> = ({
@@ -42,8 +47,18 @@ const Users: FC<IUsersProps> = ({
 	clearFilters,
 	setFilters,
 	filters,
+	selectionsCount,
+	pageSelections,
+	setSelectedItems,
+	clearSelectedItems,
 }) => {
-	const [selectedUsers, setSelecetedUsers] = useState([]);
+	useEffect(() => clearSelectedItems(), []);
+
+	const currentPage: number = offset / limit;
+
+	const handleSetSelectedItems = (items: SelectedItem[]): void => {
+		setSelectedItems(items);
+	};
 
 	const handleDelete = (id: string): void => {
 		userDelete(id);
@@ -55,15 +70,15 @@ const Users: FC<IUsersProps> = ({
 		setLimit(pageSize);
 	};
 
-	const handleCurrentPageChange = (currentPage: number): void => {
-		setOffset(currentPage * limit);
+	const handleCurrentPageChange = (page: number): void => {
+		setOffset(page * limit);
 	};
 
 	return (
 		<Page
 			actions={[
 				<Link key="assign-template" className={classes.link} to={USER_CREATE}>
-					<Button variant="contained" color="primary" disabled={selectedUsers.length < 1}>
+					<Button variant="contained" color="primary" disabled={selectionsCount < 1}>
 						Применить шаблон
 					</Button>
 				</Link>,
@@ -80,14 +95,14 @@ const Users: FC<IUsersProps> = ({
 		>
 			<UsersTable
 				pageSize={limit}
-				currentPage={offset / limit}
+				currentPage={currentPage}
 				total={total}
 				onPageSizeChange={handlePageSizeChange}
 				onCurrentPageChange={handleCurrentPageChange}
 				users={users}
 				userDelete={handleDelete}
-				onSelectUsers={setSelecetedUsers}
-				selectedUsers={selectedUsers}
+				onSelectItems={handleSetSelectedItems}
+				selectedItems={pageSelections}
 			/>
 		</Page>
 	);
