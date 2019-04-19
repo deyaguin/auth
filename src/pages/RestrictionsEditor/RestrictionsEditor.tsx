@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 import Grid from '@material-ui/core/Grid';
@@ -66,6 +66,43 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 
 		return null;
 	}
+	const renderActions = (): ReactNode => (
+		<Grid item={true} container={true} justify="center" spacing={16}>
+			<Grid item={true}>
+				<Button
+					disabled={isTasks}
+					className={classes.button}
+					color="primary"
+					variant="outlined"
+					onClick={handlePrev}
+				>
+					Назад
+				</Button>
+			</Grid>
+			<Grid item={true}>
+				{isTasks && (
+					<Button
+						onClick={handleNext}
+						className={classes.button}
+						color="primary"
+						variant="outlined"
+					>
+						Далее
+					</Button>
+				)}
+				{isRestrictions && (
+					<Button
+						onClick={handleComplete}
+						className={classes.button}
+						color="primary"
+						variant="outlined"
+					>
+						Готово
+					</Button>
+				)}
+			</Grid>
+		</Grid>
+	);
 
 	return (
 		<Page
@@ -100,41 +137,7 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 						<RestrictionsTable tasks={selectedTasks} setValue={handleSetTasks} editable={true} />
 					)}
 				</Grid>
-				<Grid item={true} container={true} justify="center" spacing={16}>
-					<Grid item={true}>
-						<Button
-							disabled={isTasks}
-							className={classes.button}
-							color="primary"
-							variant="outlined"
-							onClick={handlePrev}
-						>
-							Назад
-						</Button>
-					</Grid>
-					<Grid item={true}>
-						{isTasks && (
-							<Button
-								onClick={handleNext}
-								className={classes.button}
-								color="primary"
-								variant="outlined"
-							>
-								Далее
-							</Button>
-						)}
-						{isRestrictions && (
-							<Button
-								onClick={handleComplete}
-								className={classes.button}
-								color="primary"
-								variant="outlined"
-							>
-								Готово
-							</Button>
-						)}
-					</Grid>
-				</Grid>
+				{renderActions()}
 			</Grid>
 		</Page>
 	);

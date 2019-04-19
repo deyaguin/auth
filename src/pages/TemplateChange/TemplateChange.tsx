@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { reduce, map } from 'ramda';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -43,16 +44,17 @@ const TemplateChange: FunctionComponent<ITemplateCreateProps> = ({
 
 		initialValues = {
 			...rest,
-			tasks: tasksValues.reduce(
+			tasks: reduce(
 				(acc: IValues, { id, operations, ...restTask }: IValues) => ({
 					...acc,
 					[id]: {
 						...restTask,
 						id,
-						operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
+						operations: map((item: IOperation) => ({ ...item, selected: true }), operations),
 					},
 				}),
-				{} as IValues,
+				{},
+				tasksValues,
 			),
 		};
 	}

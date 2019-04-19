@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { omit } from 'ramda';
+import { omit, map, filter, reduce, compose, keys } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 
-import { ITask, IOperation, IValues } from '../../types';
+import { ITask, ITasks, IOperation, IValues } from '../../types';
 import TasksList from './TasksList';
 
 const LIST = 'list';
@@ -41,16 +41,19 @@ interface ITasksProps extends WithStyles<typeof styles> {
 const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
 	const handleSelectTask = ({ destination, source, draggableId }: DropResult): void => {
 		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
-			const filteredTask: ITask = tasks.filter((item: ITask) => item.id === draggableId)[0];
+			const filteredTask: ITask = filter((item: ITask) => item.id === draggableId, tasks)[0];
 
 			setValue({
 				...selectedTasks,
 				[draggableId]: {
 					...filteredTask,
-					operations: filteredTask.operations.map((item: IOperation) => ({
-						...item,
-						selected: true,
-					})),
+					operations: map(
+						(item: IOperation) => ({
+							...item,
+							selected: true,
+						}),
+						filteredTask.operations,
+					),
 				},
 			});
 		}
@@ -60,8 +63,9 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }
 		}
 	};
 
-	const selectedTasksArray: ITask[] = Object.keys(selectedTasks).map(
-		(key: string) => selectedTasks[key],
+	const getSelectedTasksArray: (tasks: ITasks) => ITask[] = compose(
+		map((key: string) => selectedTasks[key]),
+		keys,
 	);
 
 	return (
@@ -71,20 +75,18 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }
 					<Grid container={true} item={true}>
 						<TasksList
 							droppableId={LIST}
-							tasks={tasks.reduce((acc: ITask[], item: ITask) => {
-								if (selectedTasks[item.id]) {
-									return acc;
-								}
-
-								return [...acc, item];
-							}, [])}
+							tasks={reduce<ITask, ITask[]>(
+								(acc: ITask[], item: ITask) => (selectedTasks[item.id] ? acc : [...acc, item]),
+								[],
+								tasks,
+							)}
 							subheader="Список задач:"
 						/>
 					</Grid>
 					<Grid container={true} item={true}>
 						<TasksList
 							droppableId={SELECTED}
-							tasks={selectedTasksArray}
+							tasks={getSelectedTasksArray(selectedTasks)}
 							subheader="Выбрано:"
 							setValue={setValue}
 							selectedTasks={selectedTasks}

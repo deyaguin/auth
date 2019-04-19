@@ -1,4 +1,5 @@
 import React, { FC, ChangeEvent, ReactElement, useState } from 'react';
+import { compose, map, reduce, values, keys } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { TreeDataState, CustomTreeData } from '@devexpress/dx-react-grid';
 import {
@@ -19,21 +20,16 @@ import ValuePicker from '../ValuePicker';
 
 const { Cell } = Table;
 
-const styles = (theme: Theme) =>
-	createStyles({
-		conditionPicker: {
-			// maxWidth: 50,
-		},
-		container: {
-			display: 'flex',
-			flexGrow: 1,
-			height: '100%',
-			width: '100%',
-		},
-		statePicker: {
-			// maxWidth: 120,
-		},
-	});
+const styles = createStyles({
+	conditionPicker: {},
+	container: {
+		display: 'flex',
+		flexGrow: 1,
+		height: '100%',
+		width: '100%',
+	},
+	statePicker: {},
+});
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
 	tasks?: { [id: string]: ITask };
@@ -55,14 +51,14 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	setValue,
 	editable = true,
 }) => {
-	const defaultExpandedIds: number[] = Object.keys(tasks).reduce(
-		(acc: number[], key: string, i: number): number[] => {
+	const defaultExpandedIds: number[] = compose(
+		reduce<string, number[]>((acc: number[], key: string): number[] => {
 			const tasksResult: number[] = [...acc, acc.length];
 
 			return [
 				...tasksResult,
-				...tasks[key].operations.reduce(
-					(operationsAcc: number[], operation: IOperation, j: number): number[] => {
+				...reduce<IOperation, number[]>(
+					(operationsAcc: number[], operation: IOperation): number[] => {
 						const operationsResult: number[] = [
 							...operationsAcc,
 							tasksResult.length + operationsAcc.length,
@@ -70,17 +66,16 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 						return [
 							...operationsResult,
-							...operation.attributes.map(
-								(_, x: number) => x + operationsResult.length + tasksResult.length,
-							),
+							...map(() => operationsResult.length + tasksResult.length, operation.attributes),
 						];
 					},
-					[] as number[],
+					[],
+					tasks[key].operations,
 				),
 			];
-		},
-		[] as number[],
-	);
+		}, []),
+		keys,
+	)(tasks);
 
 	const [changedValueField, setChangedValueField]: [
 		string,
@@ -95,13 +90,10 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: task.operations.map((item: IOperation) => {
-						if (item.id === operationId) {
-							return { ...item, state: value };
-						}
-
-						return item;
-					}),
+					operations: map(
+						(item: IOperation) => (item.id === operationId ? { ...item, state: value } : item),
+						task.operations,
+					),
 				},
 			});
 		}
@@ -117,22 +109,20 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: task.operations.map((operation: IOperation) => {
-						if (operation.id === operationId) {
-							return {
-								...operation,
-								attributes: operation.attributes.map((attribute: IAttribute) => {
-									if (attribute.key === key) {
-										return { ...attribute, condition: value };
-									}
-
-									return attribute;
-								}),
-							};
-						}
-
-						return operation;
-					}),
+					operations: map(
+						(operation: IOperation) =>
+							operation.id === operationId
+								? {
+										...operation,
+										attributes: map(
+											(attribute: IAttribute) =>
+												attribute.key === key ? { ...attribute, condition: value } : attribute,
+											operation.attributes,
+										),
+								  }
+								: operation,
+						task.operations,
+					),
 				},
 			});
 		}
@@ -149,22 +139,20 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: task.operations.map((operation: IOperation) => {
-						if (operation.id === operationId) {
-							return {
-								...operation,
-								attributes: operation.attributes.map((attribute: IAttribute) => {
-									if (attribute.key === key) {
-										return { ...attribute, values };
-									}
-
-									return attribute;
-								}),
-							};
-						}
-
-						return operation;
-					}),
+					operations: map(
+						(operation: IOperation) =>
+							operation.id === operationId
+								? {
+										...operation,
+										attributes: map(
+											(attribute: IAttribute) =>
+												attribute.key === key ? { ...attribute, values } : attribute,
+											operation.attributes,
+										),
+								  }
+								: operation,
+						task.operations,
+					),
 				},
 			});
 		}
@@ -174,29 +162,30 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 	const mapTasks = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
-		operations: operations.reduce(
-			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) => {
-				if (selected) {
-					return [
-						...acc,
-						{
-							...restOperation,
-							attributes: attributes.map((item: IAttribute) => ({
-								...item,
-								attr: `${item.key} (${item.title})`,
-								condition: item.condition || 'equal',
-								operationId: restOperation.id,
-								taskId: restTask.id,
-								values: item.values || '',
-							})),
-							state: state || 'allowed',
-						},
-					];
-				}
-
-				return acc;
-			},
+		operations: reduce<IOperation, IOperation[]>(
+			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) =>
+				selected
+					? [
+							...acc,
+							{
+								...restOperation,
+								attributes: map(
+									(item: IAttribute) => ({
+										...item,
+										attr: `${item.key} (${item.title})`,
+										condition: item.condition || 'equal',
+										operationId: restOperation.id,
+										taskId: restTask.id,
+										values: item.values || '',
+									}),
+									attributes,
+								),
+								state: state || 'allowed',
+							},
+					  ]
+					: acc,
 			[],
+			operations,
 		),
 	});
 

@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { reduce, map } from 'ramda';
 import { RouteComponentProps } from 'react-router';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 
@@ -19,16 +20,17 @@ interface ITemplateProps extends RouteComponentProps<{ id: string }>, WithStyles
 const Template: FC<ITemplateProps> = ({ match: { params }, getTemplate, classes }) => {
 	const { tasks: tasksValues, ...rest }: ITemplate = getTemplate(params.id);
 
-	const tasks: IValues = tasksValues.reduce(
+	const tasks: IValues = reduce(
 		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
 			...acc,
 			[id]: {
 				...restTask,
 				id,
-				operations: operations.map((item: IOperation) => ({ ...item, selected: true })),
+				operations: map((item: IOperation) => ({ ...item, selected: true }), operations),
 			},
 		}),
-		{} as IValues,
+		{},
+		tasksValues,
 	);
 
 	return (

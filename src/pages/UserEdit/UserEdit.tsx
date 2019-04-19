@@ -65,7 +65,7 @@ const UserEdit: FC<IUserEditProps> = ({
 				operations: map((item: IOperation) => ({ ...item, selected: true }), operations),
 			},
 		}),
-		{} as IValues,
+		{},
 	);
 
 	const profileInitialValues: IValues = { ...rest, ...profile };

@@ -101,13 +101,10 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 		}
 	};
 
-	const handleSelectTemplate = (selection: Array<string | number>): void => {
-		if (multipleSelect) {
-			setSelectedTemplates(selection);
-		} else {
-			setSelectedTemplates(without(selectedTemplates, selection));
-		}
-	};
+	const handleSelectTemplate = (selection: Array<string | number>): void =>
+		multipleSelect
+			? setSelectedTemplates(selection)
+			: setSelectedTemplates(without(selectedTemplates, selection));
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>

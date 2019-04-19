@@ -1,5 +1,5 @@
 import React, { Component, ReactNode, ChangeEvent, MouseEvent } from 'react';
-import { clone } from 'ramda';
+import { clone, filter } from 'ramda';
 import { Draggable, Droppable, DraggableProvided, DroppableProvided } from 'react-beautiful-dnd';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -173,7 +173,7 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		const { tasks } = this.props;
 
 		this.setState({
-			count: tasks.filter(this.handleFilterTask(e.currentTarget.value)).length,
+			count: filter(this.handleFilterTask(e.currentTarget.value), tasks).length,
 			filterValue: e.currentTarget.value,
 		});
 	};
@@ -188,8 +188,9 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		if (setValue && selectedTasks) {
 			const selectedTask: ITask = clone(selectedTasks[taskId]);
 
-			const filteredOperation: IOperation = selectedTask.operations.filter(
+			const filteredOperation: IOperation = filter(
 				item => item.id === operationId,
+				selectedTask.operations,
 			)[0];
 
 			filteredOperation.selected = !filteredOperation.selected;

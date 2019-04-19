@@ -35,18 +35,6 @@ const ValidationSchema: Yup.Schema<IValues> = Yup.object().shape({
 });
 
 const ProfileForm: FC<IProfileFormProps> = ({ classes, initialValues, onSubmit, formActions }) => {
-	const profileSchemaSort = (a: { required: boolean }, b: { required: boolean }) => {
-		if (a.required === true && b.required === false) {
-			return -1;
-		}
-
-		if (a.required === false && b.required === true) {
-			return 1;
-		}
-
-		return 0;
-	};
-
 	const handleSubmit = (values: IValues, actions: FormikActions<IValues>): void => {
 		onSubmit(values);
 	};

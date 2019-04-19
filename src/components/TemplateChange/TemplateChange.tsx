@@ -88,8 +88,8 @@ const TemplateChange: FC<ITemplateChangeProps> = ({ classes, tasks, action, init
 		setActiveStep(activeStep + 1);
 	};
 
-	const handleSetOptions = (optionsValues: IValues): void => {
-		setOptionsValues(optionsValues);
+	const handleSetOptions = (values: IValues): void => {
+		setOptionsValues(values);
 		setActiveStep(activeStep + 1);
 	};
 
