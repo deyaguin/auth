@@ -1,17 +1,13 @@
-// todo remove tabs
-
-import React, { FC, Fragment, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, ReactNode, ChangeEvent } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import TextField from '@material-ui/core/TextField';
 
-import { IValues } from '../../types';
 import { USERS } from '../../constants/routes';
-import { Page, ProfileForm, UserTemplates } from '../../components';
+import { Page, UserTemplates } from '../../components';
 
 enum TABS {
 	profile,
@@ -24,16 +20,14 @@ const styles = (theme: Theme) =>
 			minWidth: 260,
 		},
 		container: {
-			paddingBottom: theme.spacing.unit * 3,
-			paddingLeft: theme.spacing.unit * 3,
-			paddingRight: theme.spacing.unit * 3,
-		},
-		content: {
 			flexGrow: 1,
 			padding: theme.spacing.unit * 3,
 		},
 		link: {
 			textDecoration: 'none',
+		},
+		textField: {
+			width: 500,
 		},
 	});
 
@@ -73,11 +67,12 @@ const UserCreate: FC<IUserCreateProps> = ({
 		[],
 	);
 
-	const [profileValues, setProfileValues]: [IValues, (profileValues: IValues) => void] = useState({
-		login: '',
-	} as IValues);
+	const [loginValue, setLoginValue]: [string, (loginValue: string) => void] = useState('');
 
-	const [selectedTab, setSelectedTab]: [TABS, (selectedTab: TABS) => void] = useState(TABS.profile);
+	const [loginFieldTouched, setLoginFieldTouched]: [
+		boolean,
+		(loginValueTouched: boolean) => void
+	] = useState(false);
 
 	const [selectedTemplates, setSelectedTemplates]: [
 		string[],
@@ -88,23 +83,39 @@ const UserCreate: FC<IUserCreateProps> = ({
 		setSelectedTemplates(values);
 	};
 
-	const handleSetProfileValues = (values: IValues): void => {
-		setProfileValues(values);
+	const handleSetLoginValue = (e: ChangeEvent<HTMLInputElement>): void => {
+		setLoginValue(e.currentTarget.value);
 
-		setSelectedTab(TABS.templates);
-	};
-
-	const handleProfile = (): void => {
-		setSelectedTab(TABS.profile);
+		setLoginFieldTouched(true);
 	};
 
 	const handleSave = (): void => {
-		console.log({ ...profileValues, templates: selectedTemplates });
+		setLoginFieldTouched(true);
 
-		setSnackbar('Пользователь успешно создан', 'success');
+		if (loginValue) {
+			console.log({ login: loginValue, templates: selectedTemplates });
 
-		history.replace(USERS);
+			setSnackbar('Пользователь успешно создан', 'success');
+
+			history.replace(USERS);
+		}
 	};
+
+	const renderLoginField = (): ReactNode => (
+		<TextField
+			required={true}
+			className={classes.textField}
+			fullWidth={true}
+			label="Логин"
+			InputLabelProps={{
+				shrink: true,
+			}}
+			variant="outlined"
+			error={loginFieldTouched && !loginValue}
+			helperText={loginFieldTouched && !loginValue && 'Необходимо ввести значение'}
+			onChange={handleSetLoginValue}
+		/>
+	);
 
 	return (
 		<Page
@@ -124,63 +135,29 @@ const UserCreate: FC<IUserCreateProps> = ({
 				wrap="nowrap"
 				spacing={24}
 			>
-				<Grid item={true}>
-					<Tabs value={selectedTab} textColor="primary" indicatorColor="primary" centered={true}>
-						<Tab disabled={true} label="Профиль" />
-						<Tab disabled={true} label="Права доступа" />
-					</Tabs>
+				<Grid item={true}>{renderLoginField()}</Grid>
+				<UserTemplates
+					onSelectTemplate={handleSetSelelectedTemplates}
+					templates={templates}
+					filters={filters}
+					setFilters={setFilters}
+					clearFilters={clearFilters}
+					limit={limit}
+					offset={offset}
+					total={total}
+					setLimit={setLimit}
+					setOffset={setOffset}
+				/>
+				<Grid item={true} container={true} justify="center">
+					<Button
+						onClick={handleSave}
+						className={classes.button}
+						variant="outlined"
+						color="primary"
+					>
+						Сохранить
+					</Button>
 				</Grid>
-				{selectedTab === TABS.profile && (
-					<ProfileForm
-						initialValues={profileValues}
-						onSubmit={handleSetProfileValues}
-						formActions={
-							<Grid item={true}>
-								<Button className={classes.button} type="submit" color="primary" variant="outlined">
-									Далее
-								</Button>
-							</Grid>
-						}
-					/>
-				)}
-				{selectedTab === TABS.templates && (
-					<UserTemplates
-						onSelectTemplate={handleSetSelelectedTemplates}
-						templates={templates}
-						filters={filters}
-						setFilters={setFilters}
-						clearFilters={clearFilters}
-						limit={limit}
-						offset={offset}
-						total={total}
-						setLimit={setLimit}
-						setOffset={setOffset}
-						actions={
-							<Fragment>
-								<Grid item={true}>
-									<Button
-										onClick={handleProfile}
-										className={classes.button}
-										color="primary"
-										variant="outlined"
-									>
-										Назад
-									</Button>
-								</Grid>
-								<Grid item={true}>
-									<Button
-										onClick={handleSave}
-										className={classes.button}
-										color="primary"
-										variant="outlined"
-									>
-										Сохранить
-									</Button>
-								</Grid>
-							</Fragment>
-						}
-					/>
-				)}
 			</Grid>
 		</Page>
 	);

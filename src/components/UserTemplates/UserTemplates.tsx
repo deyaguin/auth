@@ -64,7 +64,7 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 				container={true}
 				item={true}
 				direction="column"
-				spacing={16}
+				spacing={24}
 				alignItems="center"
 				wrap="nowrap"
 			>
