@@ -1,6 +1,6 @@
-import React, { FC, ChangeEvent, ReactElement, useState } from 'react';
-import { compose, map, reduce, values, keys } from 'ramda';
-import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import React, { FC, ChangeEvent, ReactElement, useState, useMemo } from 'react';
+import { compose, map, reduce, keys, values } from 'ramda';
+import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import { TreeDataState, CustomTreeData } from '@devexpress/dx-react-grid';
 import {
 	Grid,
@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
-import { ITask, IOperation, IAttribute, IValues } from '../../types';
+import { ITask, ITasks, IOperation, IAttribute, IValues } from '../../types';
 import GridRootComponent from '../GridRootContainer';
 import ValuePicker from '../ValuePicker';
 
@@ -131,7 +131,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	const handleSetValue = (key: string, operationId: string, taskId: string) => (
 		e: ChangeEvent<HTMLInputElement>,
 	): void => {
-		const values: string = e.currentTarget.value;
+		const targetValues: string = e.currentTarget.value;
 		const task: ITask = tasks[taskId];
 
 		if (setValue) {
@@ -146,7 +146,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 										...operation,
 										attributes: map(
 											(attribute: IAttribute) =>
-												attribute.key === key ? { ...attribute, values } : attribute,
+												attribute.key === key ? { ...attribute, values: targetValues } : attribute,
 											operation.attributes,
 										),
 								  }
@@ -263,20 +263,24 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		return <Cell {...props} />;
 	};
 
-	return (
-		<Paper className={classes.container}>
-			<Grid
-				rootComponent={GridRootComponent}
-				rows={Object.values(tasks).map(mapTasks)}
-				columns={COLUMNS}
-			>
-				<TreeDataState defaultExpandedRowIds={defaultExpandedIds} />
-				<CustomTreeData getChildRows={getChildRows} />
-				<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
-				<TableHeaderRow />
-				<TableTreeColumn for="name" />
-			</Grid>
-		</Paper>
+	const tasksToArray: (tasks: ITasks) => ITask[] = compose(
+		map<ITask, ITask>(mapTasks),
+		values,
+	);
+
+	return useMemo(
+		() => (
+			<Paper className={classes.container}>
+				<Grid rootComponent={GridRootComponent} rows={tasksToArray(tasks)} columns={COLUMNS}>
+					<TreeDataState defaultExpandedRowIds={defaultExpandedIds} />
+					<CustomTreeData getChildRows={getChildRows} />
+					<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
+					<TableHeaderRow />
+					<TableTreeColumn for="name" />
+				</Grid>
+			</Paper>
+		),
+		[tasks],
 	);
 };
 

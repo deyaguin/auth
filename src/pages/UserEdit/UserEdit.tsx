@@ -1,3 +1,5 @@
+// todo useMemo in restrictionsTable
+
 import React, { FC, useState, ChangeEvent, ReactNode } from 'react';
 import { reduce, map } from 'ramda';
 import { RouteComponentProps } from 'react-router';
@@ -50,13 +52,13 @@ const UserEdit: FC<IUserEditProps> = ({
 	setTasks,
 	clearRestrictionsEditor,
 }) => {
-	const { tasks = [], login, tags, ...rest }: IUser = getUser(match.params.id);
+	const { tasks = [], login, tags }: IUser = getUser(match.params.id);
 
 	const tasksToObject = reduce(
-		(acc: IValues, { id, operations, ...restTask }: IValues) => ({
+		(acc: IValues, { id, operations, ...rest }: IValues) => ({
 			...acc,
 			[id]: {
-				...restTask,
+				...rest,
 				id,
 				operations: map((item: IOperation) => ({ ...item, selected: true }), operations),
 			},
@@ -108,6 +110,7 @@ const UserEdit: FC<IUserEditProps> = ({
 	const renderLoginField = (): ReactNode => (
 		<Grid item={true}>
 			<TextField
+				autoFocus={true}
 				required={true}
 				className={classes.textField}
 				fullWidth={true}
