@@ -1,3 +1,5 @@
+// todo save tasks order
+
 import React, { FC } from 'react';
 import { omit, map, filter, reduce, compose, keys } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';

@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
+import { ITemplate } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, UserTemplates } from '../../components';
 
@@ -27,7 +28,7 @@ const styles = (theme: Theme) =>
 	});
 
 interface IUserCreateProps extends RouteComponentProps, WithStyles<typeof styles> {
-	templates: Array<{ id: string; name: string; comment: string }>;
+	templates: ITemplate[];
 	filters: { [name: string]: string };
 	limit: number;
 	offset: number;

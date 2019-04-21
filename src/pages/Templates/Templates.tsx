@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+import { ITemplate } from '../../types';
 import { TEMPLATE_CREATE } from '../../constants/routes';
 import { Page, TemplatesTable, TemplatesFilter } from '../../components';
 
@@ -14,7 +15,7 @@ const styles = createStyles({
 
 interface ITemplateProps extends WithStyles<typeof styles> {
 	loading: boolean;
-	templates: Array<{ id: string; name: string; comment: string }>;
+	templates: ITemplate[];
 	limit: number;
 	offset: number;
 	total: number;

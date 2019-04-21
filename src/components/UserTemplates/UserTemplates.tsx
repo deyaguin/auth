@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
-import { SetLimit, SetOffset } from '../../types';
+import { SetLimit, SetOffset, ITemplate, IFilters } from '../../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 
@@ -22,8 +22,8 @@ const styles = createStyles({
 });
 
 interface IUserTemplatesProps extends WithStyles<typeof styles> {
-	templates: Array<{ id: string; name: string; comment: string }>;
-	filters: { [name: string]: string };
+	templates: ITemplate[];
+	filters: IFilters;
 	limit: number;
 	offset: number;
 	total: number;

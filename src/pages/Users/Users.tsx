@@ -1,9 +1,11 @@
+// todo show selected users count, clear selections
+
 import React, { FC, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import { USER_CREATE } from '../../constants/routes';
+import { USER_CREATE, ASSIGN_TEMPLATES } from '../../constants/routes';
 import { Page, UsersTable, UsersFilter } from '../../components';
 import { SelectedItem } from '../../types';
 
@@ -77,7 +79,7 @@ const Users: FC<IUsersProps> = ({
 	return (
 		<Page
 			actions={[
-				<Link key="assign-template" className={classes.link} to={USER_CREATE}>
+				<Link key="assign-template" className={classes.link} to={ASSIGN_TEMPLATES}>
 					<Button variant="contained" color="primary" disabled={selectionsCount < 1}>
 						Применить шаблон
 					</Button>

@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { routes } from '../../constants';
+import { Layout } from '../../components';
 import Auth from '../Auth';
 import Users from '../Users';
 import UserCreate from '../UserCreate';
@@ -11,7 +12,7 @@ import Template from '../Template';
 import TemplateChange from '../TemplateChange';
 import RestrictionsEditor from '../RestrictionsEditor';
 import NotFound from '../NotFound';
-import { Layout } from '../../components';
+import AssignTemplates from '../AssignTemplates';
 
 interface ISnackbarOptions {
 	open: boolean;
@@ -40,6 +41,7 @@ const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) =>
 				<Route path={routes.TEMPLATE_EDIT} component={TemplateChange} exact={true} />
 				<Route path={routes.TEMPLATE} component={Template} exact={true} />
 				<Route path={routes.RESTRICTIONS_EDITOR} component={RestrictionsEditor} exact={true} />
+				<Route path={routes.ASSIGN_TEMPLATES} component={AssignTemplates} exact={true} />
 				<Route component={NotFound} />
 			</Switch>
 		</Layout>

@@ -18,6 +18,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import EditIcon from '@material-ui/icons/Edit';
 
+import { ITemplate } from '../../types';
 import { TABLE_PAGE_SIZES, TABLE_MESSAGES, TABLE_PAGINATION_MESSAGES } from '../../constants/ui';
 import { TEMPLATES } from '../../constants/routes';
 import Popover from '../Popover';
@@ -37,12 +38,6 @@ const styles = createStyles({
 		flex: 1,
 	},
 });
-
-interface ITemplate {
-	id: string;
-	name: string;
-	comment: string;
-}
 
 interface ITemplatesTableProps extends WithStyles<typeof styles> {
 	templates: ITemplate[];
