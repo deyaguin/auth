@@ -9,6 +9,7 @@ const TEMPLATE = `${TEMPLATES}/:id(\\d+)`;
 const USER = `${USERS}/:id`;
 const RESTRICTIONS_EDITOR = '/restrictions_editor';
 const ASSIGN_TEMPLATES = '/assign_templates';
+const CONFLICT_RESOLUTION = '/conflict_resolution';
 
 export {
 	AUTH,
@@ -22,4 +23,5 @@ export {
 	USER,
 	RESTRICTIONS_EDITOR,
 	ASSIGN_TEMPLATES,
+	CONFLICT_RESOLUTION,
 };

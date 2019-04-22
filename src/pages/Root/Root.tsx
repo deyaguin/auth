@@ -13,6 +13,7 @@ import TemplateChange from '../TemplateChange';
 import RestrictionsEditor from '../RestrictionsEditor';
 import NotFound from '../NotFound';
 import AssignTemplates from '../AssignTemplates';
+import ConflictResolution from '../ConflictResolution';
 
 interface ISnackbarOptions {
 	open: boolean;
@@ -42,6 +43,7 @@ const Root: FC<IRootProps> = ({ snackbarOptions, drawerOpen, setDrawerOpen }) =>
 				<Route path={routes.TEMPLATE} component={Template} exact={true} />
 				<Route path={routes.RESTRICTIONS_EDITOR} component={RestrictionsEditor} exact={true} />
 				<Route path={routes.ASSIGN_TEMPLATES} component={AssignTemplates} exact={true} />
+				<Route path={routes.CONFLICT_RESOLUTION} component={ConflictResolution} exact={true} />
 				<Route component={NotFound} />
 			</Switch>
 		</Layout>

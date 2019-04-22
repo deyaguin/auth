@@ -1,10 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import { USERS } from '../../constants/routes';
+import { USERS, CONFLICT_RESOLUTION } from '../../constants/routes';
 import { ITemplate, SelectedItem } from '../../types';
 import { Page, UserTemplates } from '../../components';
 
@@ -92,29 +92,35 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 				/>
 				<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
 					<Grid item={true}>
-						<Button
-							className={classes.button}
-							variant="outlined"
-							color="primary"
-							disabled={selectionsCount < 1}
-						>
-							Перезаписать
-						</Button>
+						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+							<Button
+								className={classes.button}
+								variant="outlined"
+								color="primary"
+								disabled={selectionsCount < 1}
+							>
+								Перезаписать
+							</Button>
+						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Button
-							className={classes.button}
-							variant="outlined"
-							color="primary"
-							disabled={selectionsCount < 1}
-						>
-							Перезаписать частично
-						</Button>
+						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+							<Button
+								className={classes.button}
+								variant="outlined"
+								color="primary"
+								disabled={selectionsCount < 1}
+							>
+								Перезаписать частично
+							</Button>
+						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Button className={classes.button} variant="outlined" color="primary">
-							Добавить
-						</Button>
+						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+							<Button className={classes.button} variant="outlined" color="primary">
+								Добавить
+							</Button>
+						</Link>
 					</Grid>
 				</Grid>
 			</Grid>
