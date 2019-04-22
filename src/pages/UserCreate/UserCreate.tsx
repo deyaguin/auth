@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
-import { ITemplate } from '../../types';
+import { ITemplate, SelectedItem } from '../../types';
 import { USERS } from '../../constants/routes';
 import { Page, UserTemplates } from '../../components';
 
@@ -33,6 +33,9 @@ interface IUserCreateProps extends RouteComponentProps, WithStyles<typeof styles
 	limit: number;
 	offset: number;
 	total: number;
+	pageSelections: SelectedItem[];
+	clearSelectedItems: () => void;
+	setSelectedItems: (items: SelectedItem[]) => void;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
 	setFilters: (filters: { [name: string]: string }) => void;
@@ -53,12 +56,16 @@ const UserCreate: FC<IUserCreateProps> = ({
 	setFilters,
 	clearFilters,
 	setSnackbar,
+	pageSelections,
+	setSelectedItems,
+	clearSelectedItems,
 }) => {
 	useEffect(
 		() => () => {
 			clearFilters();
 			setOffset(0);
 			setLimit(20);
+			clearSelectedItems();
 		},
 		[],
 	);
@@ -70,13 +77,8 @@ const UserCreate: FC<IUserCreateProps> = ({
 		(loginValueTouched: boolean) => void
 	] = useState(false);
 
-	const [selectedTemplates, setSelectedTemplates]: [
-		string[],
-		(selectedTempates: string[]) => void
-	] = useState([] as string[]);
-
-	const handleSetSelelectedTemplates = (values: any) => {
-		setSelectedTemplates(values);
+	const handleSelectItems = (items: SelectedItem[]) => {
+		setSelectedItems(items);
 	};
 
 	const handleSetLoginValue = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -89,8 +91,6 @@ const UserCreate: FC<IUserCreateProps> = ({
 		setLoginFieldTouched(true);
 
 		if (loginValue) {
-			console.log({ login: loginValue, templates: selectedTemplates });
-
 			setSnackbar('Пользователь успешно создан', 'success');
 
 			history.replace(USERS);
@@ -136,7 +136,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 			>
 				{renderLoginField()}
 				<UserTemplates
-					onSelectTemplate={handleSetSelelectedTemplates}
+					onSelectItems={handleSelectItems}
 					templates={templates}
 					filters={filters}
 					setFilters={setFilters}
@@ -146,6 +146,8 @@ const UserCreate: FC<IUserCreateProps> = ({
 					total={total}
 					setLimit={setLimit}
 					setOffset={setOffset}
+					selectedItems={pageSelections}
+					clearSelectedItems={clearSelectedItems}
 				/>
 				<Grid item={true} container={true} justify="center">
 					<Button

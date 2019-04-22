@@ -1,5 +1,5 @@
 import { observable, action, computed, toJS } from 'mobx';
-import { values, compose, slice, reduce } from 'ramda';
+import { values, compose, slice, reduce, filter, map, insertAll, uniq, without } from 'ramda';
 
 import Store from './Store';
 import { Services } from '../services';
@@ -7,7 +7,9 @@ import Template from './Models/Template';
 import ILoadingStore from './Interfaces/LoadingStore';
 import IPagintaionStore from './Interfaces/PaginationStore';
 import IFiltersStore from './Interfaces/FiltersStore';
+import ISelectionStore from './Interfaces/SelectionStore';
 import ITask from './Interfaces/Task';
+import { SelectedItem } from '../types';
 
 const TEMPLATES = {
 	'1': new Template({
@@ -75,12 +77,15 @@ interface IFilters {
 	[name: string]: string;
 }
 
-class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, IFiltersStore {
+class TemplatesStore extends Store
+	implements ILoadingStore, IPagintaionStore, IFiltersStore, ISelectionStore {
 	@observable public loading: boolean;
 	@observable public limit: number;
 	@observable public offset: number;
 	@observable public filtersMap: IFilters;
+	@observable public selectedItems: SelectedItem[];
 	@observable private templatesMap: ITempaltesMap;
+	@observable private selectedTemplates: string[];
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
@@ -90,6 +95,8 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		this.offset = 0;
 
 		this.templatesMap = this.getTemplates(this.offset, this.limit)(TEMPLATES);
+		this.selectedItems = [];
+		this.selectedTemplates = [];
 		this.filtersMap = {};
 	}
 
@@ -141,7 +148,6 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		name,
 		comment,
 		tags,
-		tasks,
 	}: {
 		id: string;
 		name: string;
@@ -171,6 +177,33 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 		return toJS(this.templatesMap[id]);
 	};
 
+	@action public setSelectedItems = (items: SelectedItem[]): void => {
+		const currentPageTemplates: string[] = compose(
+			map<Template, string>(item => item.id),
+			slice(this.offset, this.offset + this.limit),
+			values,
+		)(toJS(this.templatesMap));
+
+		this.selectedItems = without<SelectedItem>(
+			this.selectedItems,
+			map((item: SelectedItem) => Number(item) + this.offset, items),
+		);
+
+		this.selectedTemplates = compose(
+			arr => uniq(arr),
+			insertAll<string>(
+				this.selectedTemplates.length,
+				map<SelectedItem, string>(item => currentPageTemplates[Number(item)])(items),
+			),
+			without<string>(currentPageTemplates),
+		)(toJS(this.selectedTemplates));
+	};
+
+	@action public clearSelectedItems = (): void => {
+		this.selectedItems = [];
+		this.selectedTemplates = [];
+	};
+
 	@computed public get templates(): Template[] {
 		return slice<Template>(this.offset, this.offset + this.limit, values(toJS(this.templatesMap)));
 	}
@@ -181,6 +214,23 @@ class TemplatesStore extends Store implements ILoadingStore, IPagintaionStore, I
 
 	@computed public get total(): number {
 		return Object.keys(TEMPLATES).length;
+	}
+
+	@computed public get pageSelections(): SelectedItem[] {
+		const currentPage: number = this.offset / this.limit;
+
+		return map<SelectedItem, number>(
+			(item: SelectedItem) => Number(item) - this.limit * currentPage,
+		)(
+			filter<SelectedItem>(
+				(item: SelectedItem) =>
+					item >= this.limit * currentPage && item < this.limit * (currentPage + 1),
+			)(this.selectedItems),
+		);
+	}
+
+	@computed public get selectionsCount(): number {
+		return this.selectedItems.length;
 	}
 
 	private getTemplates = (offsetValue: number, limitValue: number) =>

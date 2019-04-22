@@ -1,17 +1,5 @@
 import { observable, computed, action, toJS } from 'mobx';
-import {
-	map,
-	slice,
-	reduce,
-	values,
-	keys,
-	compose,
-	length,
-	filter,
-	insertAll,
-	uniq,
-	without,
-} from 'ramda';
+import { map, slice, reduce, values, compose, filter, insertAll, uniq, without } from 'ramda';
 
 import Store from './Store';
 import { Services } from '../services';

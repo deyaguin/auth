@@ -54,7 +54,7 @@ interface IUsersTableProps extends WithStyles<typeof styles> {
 	userDelete: (id: string) => void;
 	onPageSizeChange: (pageSize: number) => void;
 	onCurrentPageChange: (currentPage: number) => void;
-	onSelectItems: (selecetedUser: any) => void;
+	onSelectItems: (selectedItems: SelectedItem[]) => void;
 }
 
 const COLUMNS = [{ name: 'login', title: 'Логин' }];

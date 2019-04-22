@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
 import { USERS } from '../../constants/routes';
-import { ITemplate } from '../../types';
+import { ITemplate, SelectedItem } from '../../types';
 import { Page, UserTemplates } from '../../components';
 
 const styles = (theme: Theme) =>
@@ -28,10 +28,14 @@ interface IAssignTemplatesProps extends WithStyles<typeof styles> {
 	limit: number;
 	offset: number;
 	total: number;
+	pageSelections: SelectedItem[];
+	selectionsCount: number;
+	setSelectedItems: (items: SelectedItem[]) => void;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
+	clearSelectedItems: () => void;
 }
 
 const AssignTemplates: FC<IAssignTemplatesProps> = ({
@@ -45,14 +49,13 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 	setOffset,
 	setFilters,
 	clearFilters,
+	clearSelectedItems,
+	setSelectedItems,
+	pageSelections,
+	selectionsCount,
 }) => {
-	const [selectedTemplates, setSelectedTemplates]: [
-		string[],
-		(selectedTempates: string[]) => void
-	] = useState([] as string[]);
-
-	const handleSetSelelectedTemplates = (values: any) => {
-		setSelectedTemplates(values);
+	const handleSelectItems = (items: SelectedItem[]): void => {
+		setSelectedItems(items);
 	};
 
 	return (
@@ -74,7 +77,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 				spacing={24}
 			>
 				<UserTemplates
-					onSelectTemplate={handleSetSelelectedTemplates}
+					onSelectItems={handleSelectItems}
 					templates={templates}
 					filters={filters}
 					setFilters={setFilters}
@@ -84,15 +87,27 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 					total={total}
 					setLimit={setLimit}
 					setOffset={setOffset}
+					selectedItems={pageSelections}
+					clearSelectedItems={clearSelectedItems}
 				/>
 				<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
 					<Grid item={true}>
-						<Button className={classes.button} variant="outlined" color="primary">
+						<Button
+							className={classes.button}
+							variant="outlined"
+							color="primary"
+							disabled={selectionsCount < 1}
+						>
 							Перезаписать
 						</Button>
 					</Grid>
 					<Grid item={true}>
-						<Button className={classes.button} variant="outlined" color="primary">
+						<Button
+							className={classes.button}
+							variant="outlined"
+							color="primary"
+							disabled={selectionsCount < 1}
+						>
 							Перезаписать частично
 						</Button>
 					</Grid>

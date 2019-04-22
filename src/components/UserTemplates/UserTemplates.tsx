@@ -1,10 +1,10 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useEffect } from 'react';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
-import { SetLimit, SetOffset, ITemplate, IFilters } from '../../types';
+import { SetLimit, SetOffset, ITemplate, IFilters, SelectedItem } from '../../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 
@@ -29,10 +29,12 @@ interface IUserTemplatesProps extends WithStyles<typeof styles> {
 	total: number;
 	setLimit: SetLimit;
 	setOffset: SetOffset;
+	actions?: ReactNode;
+	selectedItems: SelectedItem[];
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
-	actions?: ReactNode;
-	onSelectTemplate: (values: string[]) => void;
+	clearSelectedItems: () => void;
+	onSelectItems: (items: SelectedItem[]) => void;
 }
 
 const UserTemplates: FC<IUserTemplatesProps> = ({
@@ -47,8 +49,16 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 	setFilters,
 	clearFilters,
 	actions,
-	onSelectTemplate,
+	onSelectItems,
+	selectedItems,
+	clearSelectedItems,
 }) => {
+	useEffect(() => {
+		if (clearSelectedItems) {
+			clearSelectedItems();
+		}
+	}, []);
+
 	const handlePageSizeChange = (pageSize: number): void => {
 		setLimit(pageSize);
 	};
@@ -81,7 +91,8 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 							total={total}
 							onPageSizeChange={handlePageSizeChange}
 							onCurrentPageChange={handleCurrentPageChange}
-							onSelectTemplate={onSelectTemplate}
+							onSelectItems={onSelectItems}
+							selectedItems={selectedItems}
 						/>
 					</Paper>
 				</Grid>
