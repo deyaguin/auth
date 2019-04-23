@@ -12,108 +12,54 @@ import ISelectionStore from './Interfaces/SelectionStore';
 import { SelectedItem } from '../types';
 
 const USERS = {
-	'1': new User(
-		{
-			user_id: '1',
-			login: 'TEST',
-			tasks: [
-				{
-					name: 'Работа с заявками',
-					operations: [
-						{
-							attributes: [
-								{ key: 'organitzation_id', title: 'Организация', name: '' },
-								{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
-								{ key: 'district_id', title: 'Район', name: '' },
-							],
-							name: 'Обновление заявки',
-							operation_id: '1',
-						},
-						{
-							attributes: [
-								{ key: 'organitzation_id', title: 'Организация', name: '' },
-								{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
-								{ key: 'district_id', title: 'Район', name: '' },
-							],
-							name: 'Создание заявки',
-							operation_id: '2',
-						},
-						{ operation_id: '3', name: 'Список заявок', attributes: [] },
-					],
-					task_id: '2',
-				},
-			],
-		},
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'2': new User(
-		{ user_id: '2', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'3': new User(
-		{ user_id: '3', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'4': new User(
-		{ user_id: '4', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'5': new User(
-		{ user_id: '5', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'6': new User(
-		{ user_id: '6', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'7': new User(
-		{ user_id: '7', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'8': new User(
-		{ user_id: '8', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'9': new User(
-		{ user_id: '9', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'10': new User(
-		{ user_id: '10', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'11': new User(
-		{ user_id: '11', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'12': new User(
-		{ user_id: '12', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'13': new User(
-		{ user_id: '13', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'14': new User(
-		{ user_id: '14', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'15': new User(
-		{ user_id: '15', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'16': new User(
-		{ user_id: '16', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'17': new User(
-		{ user_id: '17', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
-	'18': new User(
-		{ user_id: '18', login: 'TEST' },
-		{ name: 'test', address: 'test', personalAccount: 'test', organization: 'test', email: 'test' },
-	),
+	'1': new User({
+		user_id: '1',
+		login: 'TEST',
+		tasks: [
+			{
+				name: 'Работа с заявками',
+				operations: [
+					{
+						attributes: [
+							{ key: 'organitzation_id', title: 'Организация', name: '' },
+							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+							{ key: 'district_id', title: 'Район', name: '' },
+						],
+						name: 'Обновление заявки',
+						operation_id: '1',
+					},
+					{
+						attributes: [
+							{ key: 'organitzation_id', title: 'Организация', name: '' },
+							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+							{ key: 'district_id', title: 'Район', name: '' },
+						],
+						name: 'Создание заявки',
+						operation_id: '2',
+					},
+					{ operation_id: '3', name: 'Список заявок', attributes: [] },
+				],
+				task_id: '2',
+			},
+		],
+	}),
+	'2': new User({ user_id: '2', login: 'TEST' }),
+	'3': new User({ user_id: '3', login: 'TEST' }),
+	'4': new User({ user_id: '4', login: 'TEST' }),
+	'5': new User({ user_id: '5', login: 'TEST' }),
+	'6': new User({ user_id: '6', login: 'TEST' }),
+	'7': new User({ user_id: '7', login: 'TEST' }),
+	'8': new User({ user_id: '8', login: 'TEST' }),
+	'9': new User({ user_id: '9', login: 'TEST' }),
+	'10': new User({ user_id: '10', login: 'TEST' }),
+	'11': new User({ user_id: '11', login: 'TEST' }),
+	'12': new User({ user_id: '12', login: 'TEST' }),
+	'13': new User({ user_id: '13', login: 'TEST' }),
+	'14': new User({ user_id: '14', login: 'TEST' }),
+	'15': new User({ user_id: '15', login: 'TEST' }),
+	'16': new User({ user_id: '16', login: 'TEST' }),
+	'17': new User({ user_id: '17', login: 'TEST' }),
+	'18': new User({ user_id: '18', login: 'TEST' }),
 };
 
 interface IUsersMap {
@@ -132,7 +78,7 @@ class UsersStore extends Store
 	@observable public filtersMap: IFilters;
 	@observable public selectedItems: SelectedItem[];
 	@observable private usersMap: IUsersMap;
-	@observable private selectedUsers: string[];
+	@observable private selectedUsersArr: string[];
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
@@ -142,7 +88,7 @@ class UsersStore extends Store
 		this.offset = 0;
 		this.filtersMap = {};
 		this.selectedItems = [];
-		this.selectedUsers = [];
+		this.selectedUsersArr = [];
 		this.usersMap = this.getUsers(this.offset, this.limit)(USERS);
 
 		// this.services.authentication.subscriptions.usersList.subscribe({
@@ -203,6 +149,10 @@ class UsersStore extends Store
 		return toJS(this.usersMap[id]);
 	};
 
+	@action public setSelectedUsers = (users: string[]): void => {
+		this.selectedUsersArr = users;
+	};
+
 	@action public setSelectedItems = (items: SelectedItem[]): void => {
 		const currentPageUsers: string[] = compose(
 			map<User, string>(item => item.id),
@@ -223,35 +173,23 @@ class UsersStore extends Store
 			without<SelectedItem>(currentPageSelections),
 		)(this.selectedItems);
 
-		this.selectedUsers = compose(
+		this.selectedUsersArr = compose(
 			arr => uniq(arr),
 			insertAll<string>(
-				this.selectedUsers.length,
+				this.selectedUsersArr.length,
 				map<SelectedItem, string>(item => currentPageUsers[Number(item)])(items),
 			),
 			without<string>(currentPageUsers),
-		)(toJS(this.selectedUsers));
+		)(toJS(this.selectedUsersArr));
 	};
 
 	@action public clearSelectedItems = (): void => {
 		this.selectedItems = [];
-		this.selectedUsers = [];
+		this.selectedUsersArr = [];
 	};
 
 	@computed public get users(): User[] {
-		return compose(
-			map<User, User>(item =>
-				item.profile
-					? {
-							id: item.id,
-							login: item.login,
-							...item.profile,
-					  }
-					: item,
-			),
-			slice(this.offset, this.offset + this.limit),
-			values,
-		)(toJS(this.usersMap));
+		return slice(this.offset, this.offset + this.limit, values(toJS(this.usersMap)));
 	}
 
 	@computed public get filters(): IFilters {
@@ -277,6 +215,10 @@ class UsersStore extends Store
 
 	@computed public get selectionsCount(): number {
 		return this.selectedItems.length;
+	}
+
+	@computed public get selectedUsers(): string[] {
+		return toJS(this.selectedUsersArr);
 	}
 
 	private getUsers = (offsetValue: number, limitValue: number) =>

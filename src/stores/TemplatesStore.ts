@@ -85,7 +85,7 @@ class TemplatesStore extends Store
 	@observable public filtersMap: IFilters;
 	@observable public selectedItems: SelectedItem[];
 	@observable private templatesMap: ITempaltesMap;
-	@observable private selectedTemplates: string[];
+	@observable private selectedTemplatesArr: string[];
 
 	public constructor(services: Services, setSnackbar: (message: string, type: string) => void) {
 		super(services, setSnackbar);
@@ -96,7 +96,7 @@ class TemplatesStore extends Store
 
 		this.templatesMap = this.getTemplates(this.offset, this.limit)(TEMPLATES);
 		this.selectedItems = [];
-		this.selectedTemplates = [];
+		this.selectedTemplatesArr = [];
 		this.filtersMap = {};
 	}
 
@@ -189,19 +189,12 @@ class TemplatesStore extends Store
 			map((item: SelectedItem) => Number(item) + this.offset, items),
 		);
 
-		this.selectedTemplates = compose(
-			arr => uniq(arr),
-			insertAll<string>(
-				this.selectedTemplates.length,
-				map<SelectedItem, string>(item => currentPageTemplates[Number(item)])(items),
-			),
-			without<string>(currentPageTemplates),
-		)(toJS(this.selectedTemplates));
+		this.selectedTemplatesArr = [currentPageTemplates[Number(this.selectedItems[0])]];
 	};
 
 	@action public clearSelectedItems = (): void => {
 		this.selectedItems = [];
-		this.selectedTemplates = [];
+		this.selectedTemplatesArr = [];
 	};
 
 	@computed public get templates(): Template[] {
@@ -231,6 +224,10 @@ class TemplatesStore extends Store
 
 	@computed public get selectionsCount(): number {
 		return this.selectedItems.length;
+	}
+
+	@computed public get selectedTemplates(): string[] {
+		return toJS(this.selectedTemplatesArr);
 	}
 
 	private getTemplates = (offsetValue: number, limitValue: number) =>

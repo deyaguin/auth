@@ -1,6 +1,7 @@
 // todo show selected users count, clear selections
 
 import React, { FC, useEffect } from 'react';
+import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -24,6 +25,7 @@ interface IUsersProps extends WithStyles<typeof styles> {
 	filters: { [name: string]: string };
 	pageSelections: SelectedItem[];
 	selectionsCount: number;
+	selectedUsers: string[];
 	setSelectedItems: (items: SelectedItem[]) => void;
 	userDelete: (id: string) => void;
 	usersList: () => void;
@@ -51,10 +53,15 @@ const Users: FC<IUsersProps> = ({
 	filters,
 	selectionsCount,
 	pageSelections,
+	selectedUsers,
 	setSelectedItems,
 	clearSelectedItems,
 }) => {
 	useEffect(() => clearSelectedItems(), []);
+
+	const assignTemplates: string = `${ASSIGN_TEMPLATES}?${queryString.stringify({
+		users: selectedUsers,
+	})}`;
 
 	const currentPage: number = offset / limit;
 
@@ -79,7 +86,7 @@ const Users: FC<IUsersProps> = ({
 	return (
 		<Page
 			actions={[
-				<Link key="assign-template" className={classes.link} to={ASSIGN_TEMPLATES}>
+				<Link key="assign-template" className={classes.link} to={assignTemplates}>
 					<Button variant="contained" color="primary" disabled={selectionsCount < 1}>
 						Применить шаблон
 					</Button>

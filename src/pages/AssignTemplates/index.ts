@@ -18,6 +18,7 @@ export default inject(
 			clearSelectedItems,
 			selectionsCount,
 			pageSelections,
+			selectedTemplates,
 		},
 	}) => ({
 		clearFilters,
@@ -26,6 +27,7 @@ export default inject(
 		limit,
 		offset,
 		pageSelections,
+		selectedTemplates,
 		selectionsCount,
 		setFilters,
 		setLimit,

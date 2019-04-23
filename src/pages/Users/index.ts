@@ -21,6 +21,7 @@ export default inject(
 			setOffset,
 			setSelectedItems,
 			clearSelectedItems,
+			selectedUsers,
 		},
 	}) => ({
 		clearFilters,
@@ -30,6 +31,7 @@ export default inject(
 		loading,
 		offset,
 		pageSelections,
+		selectedUsers,
 		selectionsCount,
 		setLimit,
 		setOffset,

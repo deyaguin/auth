@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+import queryString from 'query-string';
+import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -22,7 +24,7 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-interface IAssignTemplatesProps extends WithStyles<typeof styles> {
+interface IAssignTemplatesProps extends WithStyles<typeof styles>, RouteComponentProps {
 	templates: ITemplate[];
 	filters: { [name: string]: string };
 	limit: number;
@@ -30,6 +32,7 @@ interface IAssignTemplatesProps extends WithStyles<typeof styles> {
 	total: number;
 	pageSelections: SelectedItem[];
 	selectionsCount: number;
+	selectedTemplates: string[];
 	setSelectedItems: (items: SelectedItem[]) => void;
 	setLimit: (limit: number) => void;
 	setOffset: (offset: number) => void;
@@ -53,7 +56,16 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 	setSelectedItems,
 	pageSelections,
 	selectionsCount,
+	selectedTemplates,
+	location,
 }) => {
+	const selectedUsers: string[] | string = queryString.parse(location.search).users || [];
+
+	const conflictResolution: string = `${CONFLICT_RESOLUTION}?${queryString.stringify({
+		templates: selectedTemplates,
+		users: selectedUsers,
+	})}`;
+
 	const handleSelectItems = (items: SelectedItem[]): void => {
 		setSelectedItems(items);
 	};
@@ -92,7 +104,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 				/>
 				<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
 					<Grid item={true}>
-						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+						<Link className={classes.link} to={conflictResolution}>
 							<Button
 								className={classes.button}
 								variant="outlined"
@@ -104,7 +116,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+						<Link className={classes.link} to={conflictResolution}>
 							<Button
 								className={classes.button}
 								variant="outlined"
@@ -116,7 +128,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Link className={classes.link} to={CONFLICT_RESOLUTION}>
+						<Link className={classes.link} to={conflictResolution}>
 							<Button className={classes.button} variant="outlined" color="primary">
 								Добавить
 							</Button>
