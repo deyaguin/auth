@@ -27,3 +27,5 @@ export { default as RestrictionsTable } from './RestrictionsTable';
 export { default as RestrictionsFilter } from './RestrictionsFilter';
 
 export { default as Tasks } from './Tasks';
+
+export { default as ConflictsList } from './ConflictsList';

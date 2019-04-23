@@ -1,16 +1,15 @@
-import React, { FC, useState } from 'react';
-import { reduce, map } from 'ramda';
+import React, { FC, useState, useEffect, ReactNode } from 'react';
+import { reduce, map, compose } from 'ramda';
 import queryString from 'query-string';
-import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 
-import { IUser, ITasks, ITask, ITemplate, IOperation } from '../../types';
-import { ASSIGN_TEMPLATES } from '../../constants/routes';
-import { Page, RestrictionsTable, RestrictionsFilter } from '../../components';
+import { CONDITIONS, OPERATION_STATES } from '../../constants/ui';
+import { IUser, ITasks, ITask, ITemplate, IOperation, IValues, IAttribute } from '../../types';
+import { Page, RestrictionsTable, RestrictionsFilter, ConflictsList } from '../../components';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -39,6 +38,7 @@ interface IConflictResolutionProps extends WithStyles<typeof styles>, RouteCompo
 
 const ConflictResolution: FC<IConflictResolutionProps> = ({
 	classes,
+	history,
 	location,
 	getUser,
 	getTemplate,
@@ -47,7 +47,34 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	setSelectedUsers,
 	setSelectedTemplates,
 }) => {
+	const tasksToRules = reduce<ITask, string[]>(
+		(accTasks: string[], taskValue: ITask) => [
+			...accTasks,
+			...reduce<IOperation, string[]>(
+				(accOperations: string[], operationValue: IOperation) => [
+					...accOperations,
+					...map((attributeValue: IAttribute) => {
+						let result: string = `${taskValue.name}/${operationValue.name}/${
+							OPERATION_STATES[operationValue.state as string]
+						}/${attributeValue.title}`;
+
+						if (attributeValue.condition && attributeValue.values) {
+							result = `${result}/${CONDITIONS[attributeValue.condition]}/${attributeValue.values}`;
+						}
+
+						return result;
+					}, operationValue.attributes),
+				],
+				[] as string[],
+				taskValue.operations,
+			),
+		],
+		[] as string[],
+	);
+
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
+
+	const [tasks, setTasks]: [IValues, (tasks: IValues) => void] = useState({});
 
 	const { users: queryUsers, templates: queryTemplates, vaitant: queryVariant } = queryString.parse(
 		location.search,
@@ -76,86 +103,116 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const currentUser: IUser = getUser(selectedUsers[currentUserNumber]);
 
-	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
+	const handleSetTasks = (): void =>
+		setTasks(
+			reduce(
+				(acc: ITasks, item: ITask) => ({
+					...acc,
+					[item.id]: {
+						...item,
+						operations: map(
+							(operation: IOperation) => ({ ...operation, selected: true }),
+							item.operations,
+						),
+					},
+				}),
+				{},
+				currentUser ? currentUser.tasks || [] : [],
+			),
+		);
 
 	const handleApply = (): void => {
 		setCurrentUserNumber(currentUserNumber + 1);
 	};
 
+	const handleClose = (): void => history.goBack();
+
+	useEffect(() => {
+		handleSetTasks();
+	}, [currentUserNumber]);
+
+	useEffect(() => {
+		handleSetTasks();
+	}, [selectedUsers]);
+
+	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
+
+	const renderHeader = (): ReactNode => (
+		<Grid container={true} item={true} justify="space-between">
+			<Grid item={true}>
+				<Typography variant="subheading">
+					Пользователь: {currentUser && currentUser.login}
+				</Typography>
+			</Grid>
+			<Grid item={true}>
+				<Typography variant="subheading">
+					Обработано: {currentUserNumber} из {selectedUsers.length}
+				</Typography>
+			</Grid>
+		</Grid>
+	);
+
+	const renderContent = (): ReactNode => (
+		<Grid className={classes.content} container={true} item={true} wrap="nowrap" spacing={24}>
+			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+				<Grid item={true}>
+					<Typography variant="subheading">Текущие права</Typography>
+				</Grid>
+				<ConflictsList items={tasksToRules(currentUser ? currentUser.tasks || [] : [])} />
+			</Grid>
+			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+				<Grid item={true}>
+					<Typography variant="subheading">Результат применения шаблона</Typography>
+				</Grid>
+				<RestrictionsTable tasks={tasks} />
+			</Grid>
+			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+				<Grid item={true}>
+					<Typography variant="subheading">Применяемые права</Typography>
+				</Grid>
+				<ConflictsList />
+			</Grid>
+		</Grid>
+	);
+
+	const renderActions = (): ReactNode => (
+		<Grid container={true} item={true} spacing={24} justify="center">
+			<Grid item={true}>
+				<Button onClick={handleApply} className={classes.button} variant="outlined" color="primary">
+					Применить
+				</Button>
+			</Grid>
+			<Grid item={true}>
+				<Button onClick={handleApply} className={classes.button} variant="outlined" color="primary">
+					Пропустить конфликты и применить
+				</Button>
+			</Grid>
+			<Grid item={true}>
+				<Button
+					onClick={handleApply}
+					className={classes.button}
+					variant="outlined"
+					color="secondary"
+				>
+					Сбросить
+				</Button>
+			</Grid>
+		</Grid>
+	);
+
 	return (
 		<Page
 			actions={[
-				<Link key="cancel" className={classes.link} to={ASSIGN_TEMPLATES}>
-					<Button variant="contained" color="primary">
-						Закрыть
-					</Button>
-				</Link>,
+				<Button key="close" variant="contained" color="primary" onClick={handleClose}>
+					Закрыть
+				</Button>,
 			]}
 			headerTitle="Предварительный результат"
 		>
 			<Grid className={classes.container} container={true} direction="column" spacing={24}>
-				<Grid container={true} item={true} justify="space-between">
-					<Grid item={true}>
-						<Typography variant="subheading">
-							Пользователь: {currentUser && currentUser.login}
-						</Typography>
-					</Grid>
-					<Grid item={true}>
-						<Typography variant="subheading">
-							Обработано: {currentUserNumber} из {selectedUsers.length}
-						</Typography>
-					</Grid>
-				</Grid>
-				<Grid className={classes.content} container={true} item={true}>
-					<RestrictionsTable
-						tasks={reduce(
-							(acc: ITasks, item: ITask) => ({
-								...acc,
-								[item.id]: {
-									...item,
-									operations: map(
-										(operation: IOperation) => ({ ...operation, selected: true }),
-										item.operations,
-									),
-								},
-							}),
-							{},
-							currentUser ? currentUser.tasks || [] : [],
-						)}
-					/>
-				</Grid>
-				<Grid container={true} item={true} spacing={24} justify="center">
-					<Grid item={true}>
-						<Button
-							onClick={handleApply}
-							className={classes.button}
-							variant="outlined"
-							color="primary"
-						>
-							Применить
-						</Button>
-					</Grid>
-					<Grid item={true}>
-						<Button
-							onClick={handleApply}
-							className={classes.button}
-							variant="outlined"
-							color="primary"
-						>
-							Пропустить конфликты и применить
-						</Button>
-					</Grid>
-					<Grid item={true}>
-						<Button
-							onClick={handleApply}
-							className={classes.button}
-							variant="outlined"
-							color="secondary"
-						>
-							Сбросить
-						</Button>
-					</Grid>
-				</Grid>
+				{renderHeader()}
+				{renderContent()}
+				{renderActions()}
 			</Grid>
 		</Page>
 	);

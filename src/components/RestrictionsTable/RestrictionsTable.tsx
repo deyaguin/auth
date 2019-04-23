@@ -64,9 +64,15 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 							tasksResult.length + operationsAcc.length,
 						];
 
+						let x = -1;
+
 						return [
 							...operationsResult,
-							...map(() => operationsResult.length + tasksResult.length, operation.attributes),
+							...map(() => {
+								x += 1;
+
+								return operationsResult.length + tasksResult.length + x;
+							}, operation.attributes),
 						];
 					},
 					[],
@@ -267,8 +273,6 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		map<ITask, ITask>(mapTasks),
 		values,
 	);
-
-	console.log(values(tasks));
 
 	return useMemo(
 		() => (

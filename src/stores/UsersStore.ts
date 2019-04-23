@@ -20,9 +20,22 @@ const USERS = {
 				name: 'Работа с заявками',
 				operations: [
 					{
+						state: 'allowed',
 						attributes: [
-							{ key: 'organitzation_id', title: 'Организация', name: '' },
-							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
+							{
+								condition: 'less',
+								key: 'organitzation_id',
+								name: '',
+								title: 'Организация',
+								values: '1, 2, 3',
+							},
+							{
+								condition: 'less_or_equal',
+								key: 'personal_account_id',
+								name: '',
+								title: 'Лицевой счет',
+								values: '1, 3',
+							},
 							{ key: 'district_id', title: 'Район', name: '' },
 						],
 						name: 'Обновление заявки',
