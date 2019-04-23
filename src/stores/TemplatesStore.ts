@@ -177,6 +177,10 @@ class TemplatesStore extends Store
 		return toJS(this.templatesMap[id]);
 	};
 
+	@action public setSelectedTemplates = (templates: string[]): void => {
+		this.selectedTemplatesArr = templates;
+	};
+
 	@action public setSelectedItems = (items: SelectedItem[]): void => {
 		const currentPageTemplates: string[] = compose(
 			map<Template, string>(item => item.id),
