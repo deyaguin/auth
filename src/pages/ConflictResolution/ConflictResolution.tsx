@@ -8,9 +8,9 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 
-import { IUser, ITasks, ITask, ITemplate } from '../../types';
+import { IUser, ITasks, ITask, ITemplate, IOperation } from '../../types';
 import { ASSIGN_TEMPLATES } from '../../constants/routes';
-import { Page, RestrictionsTable } from '../../components';
+import { Page, RestrictionsTable, RestrictionsFilter } from '../../components';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -49,7 +49,9 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 }) => {
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
-	const { users: queryUsers, templates: queryTemplates } = queryString.parse(location.search);
+	const { users: queryUsers, templates: queryTemplates, vaitant: queryVariant } = queryString.parse(
+		location.search,
+	);
 
 	if (!initialized) {
 		setInitialized(true);
@@ -75,9 +77,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	const currentUser: IUser = getUser(selectedUsers[currentUserNumber]);
 
 	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
-	console.log(templates);
-
-	console.log(currentUser);
 
 	const handleApply = (): void => {
 		setCurrentUserNumber(currentUserNumber + 1);
@@ -110,7 +109,16 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				<Grid className={classes.content} container={true} item={true}>
 					<RestrictionsTable
 						tasks={reduce(
-							(acc: ITasks, item: ITask) => ({ ...acc, [item.id]: item }),
+							(acc: ITasks, item: ITask) => ({
+								...acc,
+								[item.id]: {
+									...item,
+									operations: map(
+										(operation: IOperation) => ({ ...operation, selected: true }),
+										item.operations,
+									),
+								},
+							}),
 							{},
 							currentUser ? currentUser.tasks || [] : [],
 						)}
@@ -135,6 +143,16 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 							color="primary"
 						>
 							Пропустить конфликты и применить
+						</Button>
+					</Grid>
+					<Grid item={true}>
+						<Button
+							onClick={handleApply}
+							className={classes.button}
+							variant="outlined"
+							color="secondary"
+						>
+							Сбросить
 						</Button>
 					</Grid>
 				</Grid>

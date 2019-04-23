@@ -268,6 +268,8 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 		values,
 	);
 
+	console.log(values(tasks));
+
 	return useMemo(
 		() => (
 			<Paper className={classes.container}>

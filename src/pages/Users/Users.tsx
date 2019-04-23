@@ -59,7 +59,7 @@ const Users: FC<IUsersProps> = ({
 }) => {
 	useEffect(() => clearSelectedItems(), []);
 
-	const assignTemplates: string = `${ASSIGN_TEMPLATES}?${queryString.stringify({
+	const assignTemplatesPath: string = `${ASSIGN_TEMPLATES}?${queryString.stringify({
 		users: selectedUsers,
 	})}`;
 
@@ -86,7 +86,7 @@ const Users: FC<IUsersProps> = ({
 	return (
 		<Page
 			actions={[
-				<Link key="assign-template" className={classes.link} to={assignTemplates}>
+				<Link key="assign-template" className={classes.link} to={assignTemplatesPath}>
 					<Button variant="contained" color="primary" disabled={selectionsCount < 1}>
 						Применить шаблон
 					</Button>

@@ -6,6 +6,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+import { conflictResolutionVariants } from '../../constants';
 import { USERS, CONFLICT_RESOLUTION } from '../../constants/routes';
 import { ITemplate, SelectedItem } from '../../types';
 import { Page, UserTemplates } from '../../components';
@@ -61,10 +62,12 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 }) => {
 	const selectedUsers: string[] | string = queryString.parse(location.search).users || [];
 
-	const conflictResolution: string = `${CONFLICT_RESOLUTION}?${queryString.stringify({
-		templates: selectedTemplates,
-		users: selectedUsers,
-	})}`;
+	const conflictResolutionPath = (variant: string): string =>
+		`${CONFLICT_RESOLUTION}?${queryString.stringify({
+			templates: selectedTemplates,
+			users: selectedUsers,
+			variant,
+		})}`;
 
 	const handleSelectItems = (items: SelectedItem[]): void => {
 		setSelectedItems(items);
@@ -104,7 +107,10 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 				/>
 				<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
 					<Grid item={true}>
-						<Link className={classes.link} to={conflictResolution}>
+						<Link
+							className={classes.link}
+							to={conflictResolutionPath(conflictResolutionVariants.OVERWRITE)}
+						>
 							<Button
 								className={classes.button}
 								variant="outlined"
@@ -116,7 +122,10 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Link className={classes.link} to={conflictResolution}>
+						<Link
+							className={classes.link}
+							to={conflictResolutionPath(conflictResolutionVariants.OVERWRITE_PARTIALLY)}
+						>
 							<Button
 								className={classes.button}
 								variant="outlined"
@@ -128,7 +137,10 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 						</Link>
 					</Grid>
 					<Grid item={true}>
-						<Link className={classes.link} to={conflictResolution}>
+						<Link
+							className={classes.link}
+							to={conflictResolutionPath(conflictResolutionVariants.ADD)}
+						>
 							<Button className={classes.button} variant="outlined" color="primary">
 								Добавить
 							</Button>
