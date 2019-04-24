@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, ReactNode } from 'react';
-import { reduce, map, compose } from 'ramda';
+import { reduce, map, forEach, filter, clone } from 'ramda';
 import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -8,17 +8,8 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { RouteComponentProps } from 'react-router';
 
 import { CONDITIONS, OPERATION_STATES } from '../../constants/ui';
-import {
-	IUser,
-	ITasks,
-	ITask,
-	ITemplate,
-	IOperation,
-	IValues,
-	IAttribute,
-	IRule,
-} from '../../types';
-import { Page, RestrictionsTable, RestrictionsFilter, ConflictsList } from '../../components';
+import { IUser, ITasks, ITask, ITemplate, IOperation, IAttribute, IRule } from '../../types';
+import { Page, RestrictionsTable, RestrictionsFilter, RulesList } from '../../components';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -70,6 +61,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					...accOperations,
 					...map((attributeValue: IAttribute) => {
 						const result: IRule = {
+							conflicted: false,
 							operation: operationValue.id,
 							task: taskValue.id,
 							text: `${taskValue.name}/${operationValue.name}/${
@@ -102,13 +94,28 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		[] as IRule[],
 	);
 
+	const compareRules = (current: IRule[], assigned: IRule[]): void => {
+		/*console.log(current);
+		console.log(assigned);
+		console.log(tasks);*/
+	};
+
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
-	const [tasks, setTasks]: [IValues, (tasks: IValues) => void] = useState({});
+	const [tasks, setTasks]: [ITasks, (tasks: ITasks) => void] = useState({});
 
 	const { users: queryUsers, templates: queryTemplates, vaitant: queryVariant } = queryString.parse(
 		location.search,
 	);
+
+	const [currentRulesState, setCurrentRulesState]: [IRule[], ((rules: IRule[]) => void)] = useState(
+		[] as IRule[],
+	);
+
+	const [assignedRulesState, setAssignedRulesState]: [
+		IRule[],
+		((rules: IRule[]) => void)
+	] = useState([] as IRule[]);
 
 	if (!initialized) {
 		setInitialized(true);
@@ -133,7 +140,9 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const currentUser: IUser = getUser(selectedUsers[currentUserNumber]);
 
-	const handleSetTasks = (): void =>
+	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
+
+	const handleSetTasks = (tasksArr: ITask[]): void =>
 		setTasks(
 			reduce(
 				(acc: ITasks, item: ITask) => ({
@@ -147,7 +156,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					},
 				}),
 				{},
-				currentUser ? currentUser.tasks || [] : [],
+				tasksArr,
 			),
 		);
 
@@ -155,21 +164,70 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		setCurrentUserNumber(currentUserNumber + 1);
 	};
 
-	const handleClose = (): void => history.goBack();
-
 	useEffect(() => {
-		handleSetTasks();
+		if (currentUser && currentUser.tasks) {
+			handleSetTasks(currentUser.tasks);
+		}
 	}, [currentUserNumber]);
 
 	useEffect(() => {
-		handleSetTasks();
-	}, [selectedUsers]);
+		if (currentUser && currentUser.tasks) {
+			handleSetTasks(currentUser.tasks);
+		}
 
-	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
+		if (currentUser && templates[0] && currentUser.tasks && templates[0].tasks) {
+			const currentRules: IRule[] = tasksToRules(currentUser.tasks || []);
+			const assignedRules: IRule[] = tasksToRules(templates[0].tasks);
 
-	const currentRules: IRule[] = tasksToRules(currentUser ? currentUser.tasks || [] : []);
+			setCurrentRulesState(
+				map<IRule, IRule>((currentRule: IRule) => {
+					const rule: IRule = clone(currentRule);
+					forEach((assignedRule: IRule) => {
+						if (
+							rule.task === assignedRule.task &&
+							rule.operation === assignedRule.operation &&
+							rule.state !== assignedRule.state
+						) {
+							rule.conflicted = true;
+						}
+					}, assignedRules);
 
-	const assignedRules: IRule[] = tasksToRules(templates[0] ? templates[0].tasks : []);
+					return rule;
+				}, currentRules),
+			);
+
+			setAssignedRulesState(
+				map<IRule, IRule>((assignedRule: IRule) => {
+					const rule: IRule = clone(assignedRule);
+					forEach((currentRule: IRule) => {
+						if (
+							rule.task === currentRule.task &&
+							rule.operation === currentRule.operation &&
+							rule.state !== currentRule.state
+						) {
+							rule.conflicted = true;
+						}
+					}, currentRules);
+
+					return rule;
+				}, assignedRules),
+			);
+		}
+	}, [selectedUsers, selectedTemplates]);
+
+	if (currentRulesState && assignedRulesState) {
+		compareRules(currentRulesState, assignedRulesState);
+	}
+
+	const handleClose = (): void => history.goBack();
+
+	const handleRemoveCurrent = (rule: IRule) => (): void => {};
+
+	const handleRemoveAssigned = (rule: IRule) => (): void => {};
+
+	const handleAddCurrent = (rule: IRule) => (): void => {};
+
+	const handleAddAssigned = (rule: IRule) => (): void => {};
 
 	const renderHeader = (): ReactNode => (
 		<Grid container={true} item={true} justify="space-between">
@@ -186,11 +244,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		</Grid>
 	);
 
-	if (currentRules && assignedRules) {
-		console.log(currentRules);
-		console.log(assignedRules);
-	}
-
 	const renderContent = (): ReactNode => (
 		<Grid className={classes.content} container={true} item={true} wrap="nowrap" spacing={24}>
 			<Grid item={true} container={true} direction="column" wrap="nowrap">
@@ -198,7 +251,11 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					<Typography variant="subheading">Текущие права:</Typography>
 				</Grid>
 				<Grid className={classes.rulesContainer} item={true}>
-					<ConflictsList items={currentRules} />
+					<RulesList
+						onAdd={handleAddCurrent}
+						onRemove={handleRemoveCurrent}
+						rules={currentRulesState}
+					/>
 				</Grid>
 			</Grid>
 			<Grid
@@ -212,7 +269,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					<Typography variant="subheading">Результат применения шаблона:</Typography>
 				</Grid>
 				<Grid container={true} item={true} className={classes.resultContainer}>
-					<RestrictionsTable tasks={tasks} />
+					<RestrictionsTable tasks={tasks} setValue={setTasks} />
 				</Grid>
 			</Grid>
 			<Grid item={true} container={true} direction="column" wrap="nowrap">
@@ -220,7 +277,12 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					<Typography variant="subheading">Применяемые права:</Typography>
 				</Grid>
 				<Grid className={classes.rulesContainer} item={true} container={true}>
-					<ConflictsList items={assignedRules} buttonPosition="left" />
+					<RulesList
+						onAdd={handleAddAssigned}
+						onRemove={handleRemoveAssigned}
+						rules={assignedRulesState}
+						buttonPosition="left"
+					/>
 				</Grid>
 			</Grid>
 		</Grid>

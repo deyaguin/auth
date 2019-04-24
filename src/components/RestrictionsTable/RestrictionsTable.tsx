@@ -1,3 +1,5 @@
+// remove selected
+
 import React, { FC, ChangeEvent, ReactElement, useState, useMemo } from 'react';
 import { compose, map, reduce, keys, values } from 'ramda';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';

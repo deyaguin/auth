@@ -85,4 +85,6 @@ export interface IRule {
 	attribute?: string;
 	condition?: string;
 	values?: string;
+	selected?: boolean;
+	conflicted?: boolean;
 }

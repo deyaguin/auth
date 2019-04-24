@@ -1,4 +1,5 @@
 import React, { FC, ReactNode } from 'react';
+import classNames from 'classnames';
 import { map } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -16,7 +17,8 @@ import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import commomColor from '@material-ui/core/colors/common';
 
 import { IRule } from '../../types';
-const HEADER_LIST = '#Задача/Операция/Состояние/Атрибут/Тип/Условие/Значение';
+
+const HEADER_LIST_TEXT = '#Задача/Операция/Состояние/Атрибут/Тип/Условие/Значение';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -46,21 +48,26 @@ const styles = (theme: Theme) =>
 	});
 
 interface IConflictsListProps extends WithStyles<typeof styles> {
-	items?: IRule[];
+	rules?: IRule[];
 	buttonPosition?: string;
+	onAdd: (rule: IRule) => () => void;
+	onRemove: (rule: IRule) => () => void;
 }
 
 const ConflictsList: FC<IConflictsListProps> = ({
 	classes,
-	items = [],
+	rules = [],
 	buttonPosition = 'right',
+	onAdd,
+	onRemove,
 }) => {
-	const renderActions = (add: boolean, remove: boolean): ReactNode => (
+	console.log(rules);
+	const renderActions = (add: boolean, remove: boolean, rule: IRule): ReactNode => (
 		<Grid className={classes.buttons} container={true} item={true} direction="column">
 			<Grid item={true}>
 				<Tooltip title="Добавить">
 					<div>
-						<Button disabled={add} color="primary">
+						<Button onClick={onAdd(rule)} disabled={add} color="primary">
 							<AddIcon />
 						</Button>
 					</div>
@@ -69,7 +76,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 			<Grid item={true}>
 				<Tooltip title="Удалить">
 					<div>
-						<Button disabled={remove} color="secondary">
+						<Button onClick={onRemove(rule)} disabled={remove} color="secondary">
 							<RemoveIcon />
 						</Button>
 					</div>
@@ -78,14 +85,21 @@ const ConflictsList: FC<IConflictsListProps> = ({
 		</Grid>
 	);
 
-	const renderItem = (item: IRule): ReactNode => (
-		<ListItem divider={true} key={item.text}>
+	const renderRule = (rule: IRule): ReactNode => (
+		<ListItem divider={true} key={rule.text}>
 			<Grid container={true} spacing={16} wrap="nowrap" alignItems="center">
-				{buttonPosition === 'left' && renderActions(true, false)}
+				{buttonPosition === 'left' && renderActions(true, false, rule)}
 				<Grid item={true}>
-					<Typography variant="body2">{item.text}</Typography>
+					<Typography
+						className={classNames({
+							[classes.conflict]: rule.conflicted,
+						})}
+						variant="body2"
+					>
+						{rule.text}
+					</Typography>
 				</Grid>
-				{buttonPosition === 'right' && renderActions(true, false)}
+				{buttonPosition === 'right' && renderActions(true, false, rule)}
 			</Grid>
 		</ListItem>
 	);
@@ -95,11 +109,11 @@ const ConflictsList: FC<IConflictsListProps> = ({
 			<List
 				subheader={
 					<ListSubheader className={classes.subheader}>
-						<Typography variant="caption">{HEADER_LIST}</Typography>
+						<Typography variant="caption">{HEADER_LIST_TEXT}</Typography>
 					</ListSubheader>
 				}
 			>
-				{map<IRule, ReactNode>(renderItem, items)}
+				{map<IRule, ReactNode>(renderRule, rules)}
 			</List>
 		</Paper>
 	);
