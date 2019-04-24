@@ -19,7 +19,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { SelectedItem } from '../../types';
+import { SelectedItem, IUser } from '../../types';
 import { TABLE_PAGE_SIZES, TABLE_MESSAGES, TABLE_PAGINATION_MESSAGES } from '../../constants/ui';
 import { USERS } from '../../constants/routes';
 import Popover from '../Popover';
@@ -39,11 +39,6 @@ const styles = createStyles({
 		flex: 1,
 	},
 });
-
-interface IUser {
-	id: string;
-	login: string;
-}
 
 interface IUsersTableProps extends WithStyles<typeof styles> {
 	users: IUser[];

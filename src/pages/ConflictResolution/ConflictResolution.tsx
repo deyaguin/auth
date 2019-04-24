@@ -8,7 +8,16 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { RouteComponentProps } from 'react-router';
 
 import { CONDITIONS, OPERATION_STATES } from '../../constants/ui';
-import { IUser, ITasks, ITask, ITemplate, IOperation, IValues, IAttribute } from '../../types';
+import {
+	IUser,
+	ITasks,
+	ITask,
+	ITemplate,
+	IOperation,
+	IValues,
+	IAttribute,
+	IRule,
+} from '../../types';
 import { Page, RestrictionsTable, RestrictionsFilter, ConflictsList } from '../../components';
 
 const styles = (theme: Theme) =>
@@ -24,6 +33,12 @@ const styles = (theme: Theme) =>
 		},
 		link: {
 			textDecoration: 'none',
+		},
+		resultContainer: {
+			height: '100%',
+		},
+		rulesContainer: {
+			height: '100%',
 		},
 	});
 
@@ -47,29 +62,44 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	setSelectedUsers,
 	setSelectedTemplates,
 }) => {
-	const tasksToRules = reduce<ITask, string[]>(
-		(accTasks: string[], taskValue: ITask) => [
+	const tasksToRules = reduce<ITask, IRule[]>(
+		(accTasks: IRule[], taskValue: ITask) => [
 			...accTasks,
-			...reduce<IOperation, string[]>(
-				(accOperations: string[], operationValue: IOperation) => [
+			...reduce<IOperation, IRule[]>(
+				(accOperations: IRule[], operationValue: IOperation) => [
 					...accOperations,
 					...map((attributeValue: IAttribute) => {
-						let result: string = `${taskValue.name}/${operationValue.name}/${
-							OPERATION_STATES[operationValue.state as string]
-						}/${attributeValue.title}`;
+						const result: IRule = {
+							operation: operationValue.id,
+							task: taskValue.id,
+							text: `${taskValue.name}/${operationValue.name}/${
+								OPERATION_STATES[operationValue.state as string]
+							}/${attributeValue.title}`,
+						};
+
+						if (operationValue.state) {
+							result.state = operationValue.state;
+						}
 
 						if (attributeValue.condition && attributeValue.values) {
-							result = `${result}/${CONDITIONS[attributeValue.condition]}/${attributeValue.values}`;
+							result.text = `${taskValue.name}/${operationValue.name}/${
+								OPERATION_STATES[operationValue.state as string]
+							}/${attributeValue.title}/${CONDITIONS[attributeValue.condition]}/${
+								attributeValue.values
+							}`;
+							result.attribute = attributeValue.key;
+							result.condition = attributeValue.condition;
+							result.values = attributeValue.values;
 						}
 
 						return result;
 					}, operationValue.attributes),
 				],
-				[] as string[],
+				[] as IRule[],
 				taskValue.operations,
 			),
 		],
-		[] as string[],
+		[] as IRule[],
 	);
 
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
@@ -137,6 +167,10 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
 
+	const currentRules: IRule[] = tasksToRules(currentUser ? currentUser.tasks || [] : []);
+
+	const assignedRules: IRule[] = tasksToRules(templates[0] ? templates[0].tasks : []);
+
 	const renderHeader = (): ReactNode => (
 		<Grid container={true} item={true} justify="space-between">
 			<Grid item={true}>
@@ -152,25 +186,42 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		</Grid>
 	);
 
+	if (currentRules && assignedRules) {
+		console.log(currentRules);
+		console.log(assignedRules);
+	}
+
 	const renderContent = (): ReactNode => (
 		<Grid className={classes.content} container={true} item={true} wrap="nowrap" spacing={24}>
-			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+			<Grid item={true} container={true} direction="column" wrap="nowrap">
 				<Grid item={true}>
-					<Typography variant="subheading">Текущие права</Typography>
+					<Typography variant="subheading">Текущие права:</Typography>
 				</Grid>
-				<ConflictsList items={tasksToRules(currentUser ? currentUser.tasks || [] : [])} />
+				<Grid className={classes.rulesContainer} item={true}>
+					<ConflictsList items={currentRules} />
+				</Grid>
 			</Grid>
-			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+			<Grid
+				item={true}
+				container={true}
+				direction="column"
+				wrap="nowrap"
+				className={classes.resultContainer}
+			>
 				<Grid item={true}>
-					<Typography variant="subheading">Результат применения шаблона</Typography>
+					<Typography variant="subheading">Результат применения шаблона:</Typography>
 				</Grid>
-				<RestrictionsTable tasks={tasks} />
+				<Grid container={true} item={true} className={classes.resultContainer}>
+					<RestrictionsTable tasks={tasks} />
+				</Grid>
 			</Grid>
-			<Grid item={true} container={true} direction="column" spacing={8} wrap="nowrap">
+			<Grid item={true} container={true} direction="column" wrap="nowrap">
 				<Grid item={true}>
-					<Typography variant="subheading">Применяемые права</Typography>
+					<Typography variant="subheading">Применяемые права:</Typography>
 				</Grid>
-				<ConflictsList />
+				<Grid className={classes.rulesContainer} item={true} container={true}>
+					<ConflictsList items={assignedRules} buttonPosition="left" />
+				</Grid>
 			</Grid>
 		</Grid>
 	);
@@ -209,7 +260,13 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 			]}
 			headerTitle="Предварительный результат"
 		>
-			<Grid className={classes.container} container={true} direction="column" spacing={24}>
+			<Grid
+				className={classes.container}
+				container={true}
+				direction="column"
+				spacing={24}
+				wrap="nowrap"
+			>
 				{renderHeader()}
 				{renderContent()}
 				{renderActions()}

@@ -71,3 +71,18 @@ export type TemplateEdit = (template: {
 }) => void;
 
 export type SelectedItem = string | number;
+
+export interface IUser {
+	id: string;
+	login: string;
+}
+
+export interface IRule {
+	task: string;
+	operation: string;
+	text: string;
+	state?: string;
+	attribute?: string;
+	condition?: string;
+	values?: string;
+}

@@ -22,23 +22,46 @@ const TEMPLATES = {
 				operations: [
 					{
 						attributes: [
-							{ key: 'organitzation_id', title: 'Организация', name: '' },
-							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
-							{ key: 'district_id', title: 'Район', name: '' },
+							{
+								key: 'organitzation_id',
+								title: 'Организация',
+								name: '',
+								condition: 'more',
+								values: '4',
+							},
+							{
+								key: 'personal_account_id',
+								title: 'Лицевой счет',
+								name: '',
+								condition: 'less',
+								values: '1',
+							},
+							{ key: 'district_id', title: 'Район', name: '', condition: 'equal', values: '1, 3' },
 						],
 						name: 'Обновление заявки',
 						operation_id: '1',
 					},
 					{
 						attributes: [
-							{ key: 'organitzation_id', title: 'Организация', name: '' },
-							{ key: 'personal_account_id', title: 'Лицевой счет', name: '' },
-							{ key: 'district_id', title: 'Район', name: '' },
+							{
+								key: 'organitzation_id',
+								title: 'Организация',
+								name: '',
+								condition: 'less',
+								values: '2',
+							},
+							{
+								key: 'personal_account_id',
+								title: 'Лицевой счет',
+								name: '',
+								condition: 'equal',
+								values: '1, 3, 5, 6',
+							},
+							{ key: 'district_id', title: 'Район', name: '', condition: 'equal', values: '3, 5' },
 						],
 						name: 'Создание заявки',
 						operation_id: '2',
 					},
-					{ operation_id: '3', name: 'Список заявок', attributes: [] },
 				],
 				task_id: '2',
 			},
