@@ -1,4 +1,4 @@
-// remove selected
+// remove selected!!!
 
 import React, { FC, ChangeEvent, ReactElement, useState, useMemo } from 'react';
 import { compose, map, reduce, keys, values } from 'ramda';
