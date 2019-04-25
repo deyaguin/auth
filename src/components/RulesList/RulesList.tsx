@@ -66,12 +66,12 @@ const ConflictsList: FC<IConflictsListProps> = ({
 	onAdd,
 	onRemove,
 }) => {
-	const renderActions = (add: boolean, remove: boolean, rule: IRule): ReactNode => (
+	const renderActions = (rule: IRule): ReactNode => (
 		<Grid className={classes.buttons} container={true} item={true} direction="column">
 			<Grid item={true}>
 				<Tooltip title="Добавить">
 					<div>
-						<Button onClick={onAdd(rule)} disabled={add} color="primary">
+						<Button onClick={onAdd(rule)} disabled={rule.selected} color="primary">
 							<AddIcon />
 						</Button>
 					</div>
@@ -80,7 +80,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 			<Grid item={true}>
 				<Tooltip title="Удалить">
 					<div>
-						<Button onClick={onRemove(rule)} disabled={remove} color="secondary">
+						<Button onClick={onRemove(rule)} disabled={!rule.selected} color="secondary">
 							<RemoveIcon />
 						</Button>
 					</div>
@@ -110,7 +110,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 				key={rule.text}
 			>
 				<Grid container={true} spacing={16} wrap="nowrap" alignItems="center">
-					{buttonPosition === 'left' && renderActions(true, false, rule)}
+					{buttonPosition === 'left' && renderActions(rule)}
 					<Grid item={true}>
 						<Typography
 							className={classNames({
@@ -134,7 +134,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 							attributes,
 						)}
 					</Grid>
-					{buttonPosition === 'right' && renderActions(true, false, rule)}
+					{buttonPosition === 'right' && renderActions(rule)}
 				</Grid>
 			</ListItem>
 		);

@@ -91,4 +91,6 @@ export interface IRule {
 	selected?: boolean;
 	conflicted?: boolean;
 	attributes: IRuleAttribute[];
+	onAdd?: () => void;
+	onRemove?: () => void;
 }

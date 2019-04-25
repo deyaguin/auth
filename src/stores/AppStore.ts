@@ -10,7 +10,7 @@ class AppStore extends Store {
 		super(services, setSnackbar);
 
 		this.services = services;
-		this.drawerOpen = true;
+		this.drawerOpen = false;
 	}
 
 	@action public setDrawerOpen = (drawerOpen: boolean): void => {

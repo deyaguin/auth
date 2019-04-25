@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, ReactNode } from 'react';
-import { reduce, map, forEach, filter, clone } from 'ramda';
+import { reduce, map, forEach, filter, clone, equals } from 'ramda';
 import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -52,11 +52,6 @@ interface IConflictResolutionProps extends WithStyles<typeof styles>, RouteCompo
 	setSelectedTemplates: (templates: string[]) => void;
 }
 
-interface ICondition {
-	condition: string;
-	values: string;
-}
-
 const ConflictResolution: FC<IConflictResolutionProps> = ({
 	classes,
 	history,
@@ -68,13 +63,24 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	setSelectedUsers,
 	setSelectedTemplates,
 }) => {
-	const { users: queryUsers, templates: queryTemplates, varianr: queryVariant } = queryString.parse(
+	const { users: queryUsers, templates: queryTemplates, variant: queryVariant } = queryString.parse(
 		location.search,
 	);
 
+	const isAdd: boolean = queryVariant === CONFLICT_RESOLUTION_VARIANTS.ADD;
+
+	const isOverwrite: boolean = queryVariant === CONFLICT_RESOLUTION_VARIANTS.OVERWRITE;
+
+	const isOverwritePartially: boolean =
+		queryVariant === CONFLICT_RESOLUTION_VARIANTS.OVERWRITE_PARTIALLY;
+
+	const compareOperations = (operation1: IOperation, operation2: IOperation): boolean => {
+		return false;
+	};
+
 	const tasksToRules = reduce<ITask, IRule[]>(
-		(accTasks: IRule[], taskValue: ITask) => [
-			...accTasks,
+		(accRules: IRule[], taskValue: ITask) => [
+			...accRules,
 			...reduce<IOperation, IRule[]>(
 				(accOperations: IRule[], operationValue: IOperation) => {
 					const attributes: IRuleAttribute[] = map<IAttribute, IRuleAttribute>(
@@ -90,7 +96,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 						attributes,
 						conflicted: false,
 						operation: operationValue.id,
-						selected: false,
 						task: taskValue.id,
 						text: `${taskValue.name}/${operationValue.name}/${
 							OPERATION_STATES[operationValue.state as string]
@@ -108,6 +113,27 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 			),
 		],
 		[] as IRule[],
+	);
+
+	const rulesToTasks = reduce<IRule, ITask[]>(
+		(accTasks: ITask[], ruleValue: IRule) => {
+			return [...accTasks];
+		},
+		[] as ITask[],
+	);
+
+	const tasksToObject = reduce(
+		(acc: ITasks, item: ITask) => ({
+			...acc,
+			[item.id]: {
+				...item,
+				operations: map(
+					(operation: IOperation) => ({ ...operation, selected: true }),
+					item.operations,
+				),
+			},
+		}),
+		{},
 	);
 
 	const compareRules = (current: IRule[], assigned: IRule[]): void => {
@@ -154,78 +180,148 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const templates = map<string, ITemplate>(item => getTemplate(item), selectedTemplates);
 
-	const handleSetTasks = (tasksArr: ITask[]): void =>
-		setTasks(
-			reduce(
-				(acc: ITasks, item: ITask) => ({
-					...acc,
-					[item.id]: {
-						...item,
-						operations: map(
-							(operation: IOperation) => ({ ...operation, selected: true }),
-							item.operations,
-						),
-					},
-				}),
-				{},
-				tasksArr,
-			),
-		);
+	const handleSetTasks = (tasksArr: ITask[]): void => setTasks(tasksToObject(tasksArr));
 
 	const handleApply = (): void => {
 		setCurrentUserNumber(currentUserNumber + 1);
 	};
 
 	useEffect(() => {
-		if (currentUser && currentUser.tasks) {
-			handleSetTasks(currentUser.tasks);
+		if (isAdd) {
+			if (templates[0] && templates[0].tasks) {
+				handleSetTasks(templates[0].tasks);
+			}
 		}
 	}, [currentUserNumber]);
 
 	useEffect(() => {
-		if (currentUser && currentUser.tasks) {
-			handleSetTasks(currentUser.tasks);
+		if (isOverwrite) {
+			if (templates[0] && templates[0].tasks) {
+				handleSetTasks(templates[0].tasks);
+			}
 		}
+	}, [selectedTemplates]);
 
+	useEffect(() => {
 		if (currentUser && templates[0] && currentUser.tasks && templates[0].tasks) {
 			const currentRules: IRule[] = tasksToRules(currentUser.tasks || []);
 			const assignedRules: IRule[] = tasksToRules(templates[0].tasks);
 
-			setCurrentRulesState(
-				map<IRule, IRule>((currentRule: IRule) => {
-					const rule: IRule = clone(currentRule);
-					forEach((assignedRule: IRule) => {
-						if (
-							rule.task === assignedRule.task &&
-							rule.operation === assignedRule.operation &&
-							rule.state !== assignedRule.state
-						) {
-							rule.conflicted = true;
-						}
-					}, assignedRules);
+			if (isAdd) {
+				setCurrentRulesState(
+					map<IRule, IRule>((currentRule: IRule) => {
+						const rule: IRule = clone(currentRule);
+						forEach((assignedRule: IRule) => {
+							if (
+								rule.task === assignedRule.task &&
+								rule.operation === assignedRule.operation &&
+								rule.state !== assignedRule.state
+							) {
+								rule.conflicted = true;
+							}
+						}, assignedRules);
 
-					return rule;
-				}, currentRules),
-			);
+						return rule;
+					}, currentRules),
+				);
 
-			setAssignedRulesState(
-				map<IRule, IRule>((assignedRule: IRule) => {
-					const rule: IRule = clone(assignedRule);
-					forEach((currentRule: IRule) => {
-						if (
-							rule.task === currentRule.task &&
-							rule.operation === currentRule.operation &&
-							rule.state !== currentRule.state
-						) {
-							rule.conflicted = true;
-						}
-					}, currentRules);
+				setAssignedRulesState(
+					map<IRule, IRule>((assignedRule: IRule) => {
+						const rule: IRule = clone(assignedRule);
+						forEach((currentRule: IRule) => {
+							if (
+								rule.task === currentRule.task &&
+								rule.operation === currentRule.operation &&
+								rule.state !== currentRule.state
+							) {
+								rule.conflicted = true;
+							}
+						}, currentRules);
 
-					return rule;
-				}, assignedRules),
-			);
+						return rule;
+					}, assignedRules),
+				);
+			} else {
+				setCurrentRulesState(currentRules);
+
+				setAssignedRulesState(assignedRules);
+			}
 		}
-	}, [selectedUsers, selectedTemplates]);
+	}, [selectedUsers, selectedTemplates, tasks]);
+
+	useEffect(() => {
+		setCurrentRulesState(
+			map<IRule, IRule>(currentRule => {
+				let selected: boolean = false;
+
+				const task: ITask = tasks[currentRule.task];
+
+				const operation: IOperation = filter((operationValue: IOperation) => {
+					let isEquals: boolean = false;
+
+					forEach((attributeValue: IAttribute) => {
+						forEach((ruleAttributeValue: IRuleAttribute) => {
+							if (
+								attributeValue.condition === ruleAttributeValue.condition &&
+								attributeValue.key === ruleAttributeValue.key &&
+								attributeValue.values === ruleAttributeValue.values
+							) {
+								isEquals = true;
+							}
+						}, currentRule.attributes);
+					}, operationValue.attributes);
+
+					return (
+						operationValue.id === currentRule.operation &&
+						operationValue.state === currentRule.state &&
+						isEquals
+					);
+				}, task.operations)[0];
+
+				if (operation) {
+					selected = true;
+				}
+
+				return { ...currentRule, selected };
+			}, currentRulesState),
+		);
+
+		setAssignedRulesState(
+			map<IRule, IRule>(assignedRule => {
+				let selected: boolean = false;
+
+				const task: ITask = tasks[assignedRule.task];
+
+				const operation: IOperation = filter((operationValue: IOperation) => {
+					let isEquals: boolean = false;
+
+					forEach((attributeValue: IAttribute) => {
+						forEach((ruleAttributeValue: IRuleAttribute) => {
+							if (
+								attributeValue.condition === ruleAttributeValue.condition &&
+								attributeValue.key === ruleAttributeValue.key &&
+								attributeValue.values === ruleAttributeValue.values
+							) {
+								isEquals = true;
+							}
+						}, assignedRule.attributes);
+					}, operationValue.attributes);
+
+					return (
+						operationValue.id === assignedRule.operation &&
+						operationValue.state === assignedRule.state &&
+						isEquals
+					);
+				}, task.operations)[0];
+
+				if (operation) {
+					selected = true;
+				}
+
+				return { ...assignedRule, selected };
+			}, assignedRulesState),
+		);
+	}, [tasks]);
 
 	if (currentRulesState && assignedRulesState) {
 		compareRules(currentRulesState, assignedRulesState);
@@ -237,7 +333,9 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const handleRemoveAssigned = (rule: IRule) => (): void => {};
 
-	const handleAddCurrent = (rule: IRule) => (): void => {};
+	const handleAddCurrent = (rule: IRule) => (): void => {
+		console.log(rule);
+	};
 
 	const handleAddAssigned = (rule: IRule) => (): void => {};
 
