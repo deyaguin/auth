@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { filter } from 'rxjs/operators';
 
 import actionNames from './actionNames';
-import { httpMethods } from '../../constants';
+import { HTTP_METHODS } from '../../constants';
 import { HttpClient } from '../../httpClient';
 import RequestFunction from '../../httpClient/requestTypes/requestFunctionType';
 import methods from './methods';

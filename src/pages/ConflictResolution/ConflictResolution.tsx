@@ -7,8 +7,18 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { RouteComponentProps } from 'react-router';
 
-import { CONDITIONS, OPERATION_STATES } from '../../constants/ui';
-import { IUser, ITasks, ITask, ITemplate, IOperation, IAttribute, IRule } from '../../types';
+import { CONFLICT_RESOLUTION_VARIANTS } from '../../constants';
+import { OPERATION_STATES } from '../../constants/ui';
+import {
+	IUser,
+	ITasks,
+	ITask,
+	ITemplate,
+	IOperation,
+	IAttribute,
+	IRule,
+	IRuleAttribute,
+} from '../../types';
 import { Page, RestrictionsTable, RestrictionsFilter, RulesList } from '../../components';
 
 const styles = (theme: Theme) =>
@@ -42,6 +52,11 @@ interface IConflictResolutionProps extends WithStyles<typeof styles>, RouteCompo
 	setSelectedTemplates: (templates: string[]) => void;
 }
 
+interface ICondition {
+	condition: string;
+	values: string;
+}
+
 const ConflictResolution: FC<IConflictResolutionProps> = ({
 	classes,
 	history,
@@ -53,40 +68,41 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	setSelectedUsers,
 	setSelectedTemplates,
 }) => {
+	const { users: queryUsers, templates: queryTemplates, varianr: queryVariant } = queryString.parse(
+		location.search,
+	);
+
 	const tasksToRules = reduce<ITask, IRule[]>(
 		(accTasks: IRule[], taskValue: ITask) => [
 			...accTasks,
 			...reduce<IOperation, IRule[]>(
-				(accOperations: IRule[], operationValue: IOperation) => [
-					...accOperations,
-					...map((attributeValue: IAttribute) => {
-						const result: IRule = {
-							conflicted: false,
-							operation: operationValue.id,
-							task: taskValue.id,
-							text: `${taskValue.name}/${operationValue.name}/${
-								OPERATION_STATES[operationValue.state as string]
-							}/${attributeValue.title}`,
-						};
+				(accOperations: IRule[], operationValue: IOperation) => {
+					const attributes: IRuleAttribute[] = map<IAttribute, IRuleAttribute>(
+						(attributeValue: IAttribute) => ({
+							condition: attributeValue.condition,
+							key: attributeValue.key,
+							values: attributeValue.values,
+						}),
+						operationValue.attributes,
+					);
 
-						if (operationValue.state) {
-							result.state = operationValue.state;
-						}
+					const result: IRule = {
+						attributes,
+						conflicted: false,
+						operation: operationValue.id,
+						selected: false,
+						task: taskValue.id,
+						text: `${taskValue.name}/${operationValue.name}/${
+							OPERATION_STATES[operationValue.state as string]
+						}`,
+					};
 
-						if (attributeValue.condition && attributeValue.values) {
-							result.text = `${taskValue.name}/${operationValue.name}/${
-								OPERATION_STATES[operationValue.state as string]
-							}/${attributeValue.title}/${CONDITIONS[attributeValue.condition]}/${
-								attributeValue.values
-							}`;
-							result.attribute = attributeValue.key;
-							result.condition = attributeValue.condition;
-							result.values = attributeValue.values;
-						}
+					if (operationValue.state) {
+						result.state = operationValue.state;
+					}
 
-						return result;
-					}, operationValue.attributes),
-				],
+					return [...accOperations, result];
+				},
 				[] as IRule[],
 				taskValue.operations,
 			),
@@ -103,10 +119,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
 	const [tasks, setTasks]: [ITasks, (tasks: ITasks) => void] = useState({});
-
-	const { users: queryUsers, templates: queryTemplates, vaitant: queryVariant } = queryString.parse(
-		location.search,
-	);
 
 	const [currentRulesState, setCurrentRulesState]: [IRule[], ((rules: IRule[]) => void)] = useState(
 		[] as IRule[],

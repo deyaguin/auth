@@ -6,7 +6,7 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import { conflictResolutionVariants } from '../../constants';
+import { CONFLICT_RESOLUTION_VARIANTS } from '../../constants';
 import { USERS, CONFLICT_RESOLUTION } from '../../constants/routes';
 import { ITemplate, SelectedItem } from '../../types';
 import { Page, UserTemplates } from '../../components';
@@ -109,7 +109,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 					<Grid item={true}>
 						<Link
 							className={classes.link}
-							to={conflictResolutionPath(conflictResolutionVariants.OVERWRITE)}
+							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE)}
 						>
 							<Button
 								className={classes.button}
@@ -124,7 +124,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 					<Grid item={true}>
 						<Link
 							className={classes.link}
-							to={conflictResolutionPath(conflictResolutionVariants.OVERWRITE_PARTIALLY)}
+							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE_PARTIALLY)}
 						>
 							<Button
 								className={classes.button}
@@ -139,7 +139,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 					<Grid item={true}>
 						<Link
 							className={classes.link}
-							to={conflictResolutionPath(conflictResolutionVariants.ADD)}
+							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.ADD)}
 						>
 							<Button className={classes.button} variant="outlined" color="primary">
 								Добавить

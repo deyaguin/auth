@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
-import { map } from 'ramda';
+import { map, reduce } from 'ramda';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
@@ -16,7 +16,8 @@ import AddIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveIcon from '@material-ui/icons/RemoveCircleOutline';
 import commomColor from '@material-ui/core/colors/common';
 
-import { IRule } from '../../types';
+import { CONDITIONS } from '../../constants/ui';
+import { IRule, IRuleAttribute } from '../../types';
 
 const HEADER_LIST_TEXT = '#Задача/Операция/Состояние/Атрибут/Тип/Условие/Значение';
 
@@ -28,7 +29,11 @@ const styles = (theme: Theme) =>
 		buttons: {
 			width: 80,
 		},
-		conflict: {
+		conflictItem: {
+			backgroundColor: red[50],
+			borderColor: red[500],
+		},
+		conflictText: {
 			color: red[500],
 		},
 		container: {
@@ -61,7 +66,6 @@ const ConflictsList: FC<IConflictsListProps> = ({
 	onAdd,
 	onRemove,
 }) => {
-	console.log(rules);
 	const renderActions = (add: boolean, remove: boolean, rule: IRule): ReactNode => (
 		<Grid className={classes.buttons} container={true} item={true} direction="column">
 			<Grid item={true}>
@@ -85,24 +89,56 @@ const ConflictsList: FC<IConflictsListProps> = ({
 		</Grid>
 	);
 
-	const renderRule = (rule: IRule): ReactNode => (
-		<ListItem divider={true} key={rule.text}>
-			<Grid container={true} spacing={16} wrap="nowrap" alignItems="center">
-				{buttonPosition === 'left' && renderActions(true, false, rule)}
-				<Grid item={true}>
-					<Typography
-						className={classNames({
-							[classes.conflict]: rule.conflicted,
-						})}
-						variant="body2"
-					>
-						{rule.text}
-					</Typography>
+	const renderRule = (rule: IRule): ReactNode => {
+		const attributes: string[] = reduce<IRuleAttribute, string[]>(
+			(accAtributes: string[], attributeValue: IRuleAttribute) => [
+				...accAtributes,
+				`${attributeValue.key}/${CONDITIONS[attributeValue.condition as string]}/${
+					attributeValue.values
+				}`,
+			],
+			[] as string[],
+			rule.attributes,
+		);
+
+		return (
+			<ListItem
+				className={classNames({
+					[classes.conflictItem]: rule.conflicted,
+				})}
+				divider={true}
+				key={rule.text}
+			>
+				<Grid container={true} spacing={16} wrap="nowrap" alignItems="center">
+					{buttonPosition === 'left' && renderActions(true, false, rule)}
+					<Grid item={true}>
+						<Typography
+							className={classNames({
+								[classes.conflictText]: rule.conflicted,
+							})}
+						>
+							{rule.text}
+						</Typography>
+						{map<string, ReactNode>(
+							attribute => (
+								<Typography
+									variant="caption"
+									className={classNames({
+										[classes.conflictText]: rule.conflicted,
+									})}
+									key={attribute}
+								>
+									{attribute}
+								</Typography>
+							),
+							attributes,
+						)}
+					</Grid>
+					{buttonPosition === 'right' && renderActions(true, false, rule)}
 				</Grid>
-				{buttonPosition === 'right' && renderActions(true, false, rule)}
-			</Grid>
-		</ListItem>
-	);
+			</ListItem>
+		);
+	};
 
 	return (
 		<Paper className={classes.container}>

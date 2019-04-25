@@ -1,11 +1,11 @@
 import { AxiosResponse, AxiosError } from 'axios';
 
-import { httpMethods } from '../../constants';
+import { HTTP_METHODS } from '../../constants';
 import RequestFunction from './requestFunctionType';
 
 interface IRestRequestConfig {
 	url: string;
-	method: httpMethods;
+	method: HTTP_METHODS;
 }
 
 const request: () => RequestFunction = () =>

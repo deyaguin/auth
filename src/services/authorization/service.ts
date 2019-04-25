@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 import { filter } from 'rxjs/operators';
 
 import actionNames from './actionNames';
-import { httpMethods } from '../../constants';
+import { HTTP_METHODS } from '../../constants';
 import { HttpClient } from '../../httpClient';
 import RequestFunction from '../../httpClient/requestTypes/requestFunctionType';
 import * as config from './config';
@@ -21,7 +21,7 @@ class AuthorizationService extends HttpClient {
 	private init = () => {
 		this.requests.rolesList = this.request(
 			{
-				method: httpMethods.GET,
+				method: HTTP_METHODS.GET,
 				url: config.AUTHORIZATION_ROLES_LIST,
 			},
 			actionNames.ROLES_LIST,
@@ -29,7 +29,7 @@ class AuthorizationService extends HttpClient {
 
 		this.requests.createRole = this.request(
 			{
-				method: httpMethods.POST,
+				method: HTTP_METHODS.POST,
 				url: config.AUTHORIZATION_ROLE_CREATE,
 			},
 			actionNames.CREATE_ROLE,

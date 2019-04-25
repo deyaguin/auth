@@ -77,14 +77,18 @@ export interface IUser {
 	login: string;
 }
 
+export interface IRuleAttribute {
+	key?: string;
+	condition?: string;
+	values?: string;
+}
+
 export interface IRule {
 	task: string;
 	operation: string;
 	text: string;
 	state?: string;
-	attribute?: string;
-	condition?: string;
-	values?: string;
 	selected?: boolean;
 	conflicted?: boolean;
+	attributes: IRuleAttribute[];
 }
