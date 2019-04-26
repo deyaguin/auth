@@ -41,7 +41,7 @@ const TEMPLATES = {
 						name: 'Обновление заявки',
 						operation_id: '1',
 					},
-					{
+					/*{
 						attributes: [
 							{
 								key: 'organitzation_id',
@@ -61,7 +61,7 @@ const TEMPLATES = {
 						],
 						name: 'Создание заявки',
 						operation_id: '2',
-					},
+					},*/
 				],
 				task_id: '2',
 			},

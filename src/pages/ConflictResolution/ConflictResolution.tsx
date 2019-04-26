@@ -193,15 +193,40 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				handleSetTasks(templates[0].tasks);
 			}
 		}
-	}, [currentUserNumber]);
 
-	useEffect(() => {
 		if (isOverwrite) {
 			if (templates[0] && templates[0].tasks) {
 				handleSetTasks(templates[0].tasks);
 			}
 		}
-	}, [selectedTemplates]);
+
+		if (isOverwritePartially) {
+			if (templates[0] && templates[0].tasks && currentUser && currentUser.tasks) {
+				const resultTasks: ITask[] = map<ITask, ITask>(currentTaskValue => {
+					const assignedTask: ITask = filter<ITask>(assignedTaskValue => {
+						return assignedTaskValue.id === currentTaskValue.id;
+					}, templates[0].tasks)[0];
+
+					const operations: IOperation[] = map<IOperation, IOperation>(currentOperationValue => {
+						const assignedOperation: IOperation = filter<IOperation>(
+							assignedOperationValue => currentOperationValue.id === assignedOperationValue.id,
+							assignedTask.operations,
+						)[0];
+
+						if (assignedOperation) {
+							return assignedOperation;
+						}
+
+						return currentOperationValue;
+					}, currentTaskValue.operations);
+
+					return { ...currentTaskValue, operations };
+				}, currentUser.tasks);
+
+				setTasks(tasksToObject(resultTasks));
+			}
+		}
+	}, [currentUserNumber, selectedTemplates]);
 
 	useEffect(() => {
 		if (currentUser && templates[0] && currentUser.tasks && templates[0].tasks) {
@@ -292,7 +317,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		);
 	}, [tasks]);
 
-	const onSelectOperation = (tasksArr: ITask[], rule: IRule): void => {
+	const onSelectOperationOverwrite = (tasksArr: ITask[], rule: IRule): void => {
 		const task: ITask = tasks[rule.task];
 		const operations: IOperation[] = task.operations;
 		const operation: IOperation = filter<IOperation>(
@@ -319,7 +344,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		setTasks(result);
 	};
 
-	const onRemoveOperation = (rule: IRule): void => {
+	const onRemoveOperationOverwrite = (rule: IRule): void => {
 		const task: ITask = tasks[rule.task];
 		const operations: IOperation[] = task.operations;
 
@@ -339,19 +364,19 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	const handleClose = (): void => history.goBack();
 
 	const handleRemoveCurrent = (rule: IRule) => (): void => {
-		onRemoveOperation(rule);
+		onRemoveOperationOverwrite(rule);
 	};
 
 	const handleRemoveAssigned = (rule: IRule) => (): void => {
-		onRemoveOperation(rule);
+		onRemoveOperationOverwrite(rule);
 	};
 
 	const handleAddCurrent = (rule: IRule) => (): void => {
-		onSelectOperation(currentUser.tasks || [], rule);
+		onSelectOperationOverwrite(currentUser.tasks || [], rule);
 	};
 
 	const handleAddAssigned = (rule: IRule) => (): void => {
-		onSelectOperation(templates[0].tasks, rule);
+		onSelectOperationOverwrite(templates[0].tasks, rule);
 	};
 
 	const renderHeader = (): ReactNode => (
