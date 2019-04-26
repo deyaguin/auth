@@ -187,48 +187,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		setCurrentUserNumber(currentUserNumber + 1);
 	};
 
-	useEffect(() => {
-		if (isAdd) {
-			if (templates[0] && templates[0].tasks) {
-				handleSetTasks(templates[0].tasks);
-			}
-		}
-
-		if (isOverwrite) {
-			if (templates[0] && templates[0].tasks) {
-				handleSetTasks(templates[0].tasks);
-			}
-		}
-
-		if (isOverwritePartially) {
-			if (templates[0] && templates[0].tasks && currentUser && currentUser.tasks) {
-				const resultTasks: ITask[] = map<ITask, ITask>(currentTaskValue => {
-					const assignedTask: ITask = filter<ITask>(assignedTaskValue => {
-						return assignedTaskValue.id === currentTaskValue.id;
-					}, templates[0].tasks)[0];
-
-					const operations: IOperation[] = map<IOperation, IOperation>(currentOperationValue => {
-						const assignedOperation: IOperation = filter<IOperation>(
-							assignedOperationValue => currentOperationValue.id === assignedOperationValue.id,
-							assignedTask.operations,
-						)[0];
-
-						if (assignedOperation) {
-							return assignedOperation;
-						}
-
-						return currentOperationValue;
-					}, currentTaskValue.operations);
-
-					return { ...currentTaskValue, operations };
-				}, currentUser.tasks);
-
-				setTasks(tasksToObject(resultTasks));
-			}
-		}
-	}, [currentUserNumber, selectedTemplates]);
-
-	useEffect(() => {
+	const initRulesStates = (): void => {
 		if (currentUser && templates[0] && currentUser.tasks && templates[0].tasks) {
 			const currentRules: IRule[] = tasksToRules(currentUser.tasks || []);
 			const assignedRules: IRule[] = tasksToRules(templates[0].tasks);
@@ -273,9 +232,9 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				setAssignedRulesState(assignedRules);
 			}
 		}
-	}, [selectedUsers, selectedTemplates, tasks]);
+	};
 
-	useEffect(() => {
+	const updateRulesState = (): void => {
 		setCurrentRulesState(
 			map<IRule, IRule>(currentRule => {
 				let selected: boolean = false;
@@ -315,6 +274,59 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				return { ...assignedRule, selected };
 			}, assignedRulesState),
 		);
+	};
+
+	const initTasks = (): void => {
+		if (isAdd) {
+			if (templates[0] && templates[0].tasks) {
+				handleSetTasks(templates[0].tasks);
+			}
+		}
+
+		if (isOverwrite) {
+			if (templates[0] && templates[0].tasks) {
+				handleSetTasks(templates[0].tasks);
+			}
+		}
+
+		if (isOverwritePartially) {
+			if (templates[0] && templates[0].tasks && currentUser && currentUser.tasks) {
+				const resultTasks: ITask[] = map<ITask, ITask>(currentTaskValue => {
+					const assignedTask: ITask = filter<ITask>(assignedTaskValue => {
+						return assignedTaskValue.id === currentTaskValue.id;
+					}, templates[0].tasks)[0];
+
+					const operations: IOperation[] = map<IOperation, IOperation>(currentOperationValue => {
+						const assignedOperation: IOperation = filter<IOperation>(
+							assignedOperationValue => currentOperationValue.id === assignedOperationValue.id,
+							assignedTask.operations,
+						)[0];
+
+						if (assignedOperation) {
+							return assignedOperation;
+						}
+
+						return currentOperationValue;
+					}, currentTaskValue.operations);
+
+					return { ...currentTaskValue, operations };
+				}, currentUser.tasks);
+
+				setTasks(tasksToObject(resultTasks));
+			}
+		}
+	};
+
+	useEffect(() => {
+		initTasks();
+	}, [currentUserNumber, selectedTemplates]);
+
+	useEffect(() => {
+		initRulesStates();
+	}, [selectedUsers, selectedTemplates, tasks]);
+
+	useEffect(() => {
+		updateRulesState();
 	}, [tasks]);
 
 	const onSelectOperationOverwrite = (tasksArr: ITask[], rule: IRule): void => {
@@ -379,6 +391,10 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		onSelectOperationOverwrite(templates[0].tasks, rule);
 	};
 
+	const handleClear = (): void => {
+		initTasks();
+	};
+
 	const renderHeader = (): ReactNode => (
 		<Grid container={true} item={true} justify="space-between">
 			<Grid item={true}>
@@ -419,7 +435,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					<Typography variant="subheading">Результат применения шаблона:</Typography>
 				</Grid>
 				<Grid container={true} item={true} className={classes.resultContainer}>
-					<RestrictionsTable tasks={tasks} setValue={setTasks} />
+					<RestrictionsTable editable={false} tasks={tasks} setValue={setTasks} />
 				</Grid>
 			</Grid>
 			<Grid item={true} container={true} direction="column" wrap="nowrap">
@@ -452,7 +468,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 			</Grid>
 			<Grid item={true}>
 				<Button
-					onClick={handleApply}
+					onClick={handleClear}
 					className={classes.button}
 					variant="outlined"
 					color="secondary"
