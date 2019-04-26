@@ -294,13 +294,15 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	return useMemo(
 		() => (
 			<Paper className={classes.container}>
-				<Grid rootComponent={GridRootComponent} rows={tasksToArray(tasks)} columns={COLUMNS}>
-					<TreeDataState defaultExpandedRowIds={defaultExpandedIds} />
-					<CustomTreeData getChildRows={getChildRows} />
-					<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
-					<TableHeaderRow />
-					<TableTreeColumn for="name" />
-				</Grid>
+				{defaultExpandedIds.length > 0 && (
+					<Grid rootComponent={GridRootComponent} rows={tasksToArray(tasks)} columns={COLUMNS}>
+						<TreeDataState defaultExpandedRowIds={defaultExpandedIds} />
+						<CustomTreeData getChildRows={getChildRows} />
+						<VirtualTable messages={TABLE_MESSAGES} cellComponent={renderCellComponent} />
+						<TableHeaderRow />
+						<TableTreeColumn for="name" />
+					</Grid>
+				)}
 			</Paper>
 		),
 		[tasks],
