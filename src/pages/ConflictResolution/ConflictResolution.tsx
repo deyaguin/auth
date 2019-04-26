@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, ReactNode } from 'react';
-import { reduce, map, forEach, filter, clone, omit } from 'ramda';
+import { reduce, map, forEach, filter, clone, propEq, find, findIndex, remove } from 'ramda';
 import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -111,13 +111,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		[] as IRule[],
 	);
 
-	const rulesToTasks = reduce<IRule, ITask[]>(
-		(accTasks: ITask[], ruleValue: IRule) => {
-			return [...accTasks];
-		},
-		[] as ITask[],
-	);
-
 	const tasksToObject = reduce(
 		(acc: ITasks, item: ITask) => ({
 			...acc,
@@ -132,10 +125,22 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		{},
 	);
 
-	const compareRules = (current: IRule[], assigned: IRule[]): void => {
-		/*console.log(current);
-		console.log(assigned);
-		console.log(tasks);*/
+	const compareOperationRule = (operation: IOperation, rule: IRule): boolean => {
+		let isEquals: boolean = false;
+
+		forEach((attributeValue: IAttribute) => {
+			forEach((ruleAttributeValue: IRuleAttribute) => {
+				if (
+					attributeValue.condition === ruleAttributeValue.condition &&
+					attributeValue.key === ruleAttributeValue.key &&
+					attributeValue.values === ruleAttributeValue.values
+				) {
+					isEquals = true;
+				}
+			}, rule.attributes);
+		}, operation.attributes);
+
+		return operation.id === rule.operation && operation.state === rule.state && isEquals;
 	};
 
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
@@ -150,6 +155,11 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		IRule[],
 		((rules: IRule[]) => void)
 	] = useState([] as IRule[]);
+
+	const [currentUserNumber, setCurrentUserNumber]: [
+		number,
+		(currentUserNumber: number) => void
+	] = useState(0);
 
 	if (!initialized) {
 		setInitialized(true);
@@ -166,11 +176,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 			setSelectedTemplates(queryTemplates || []);
 		}
 	}
-
-	const [currentUserNumber, setCurrentUserNumber]: [
-		number,
-		(currentUserNumber: number) => void
-	] = useState(0);
 
 	const currentUser: IUser = getUser(selectedUsers[currentUserNumber]);
 
@@ -245,24 +250,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		}
 	}, [selectedUsers, selectedTemplates, tasks]);
 
-	const compareOperations = (operation: IOperation, rule: IRule): boolean => {
-		let isEquals: boolean = false;
-
-		forEach((attributeValue: IAttribute) => {
-			forEach((ruleAttributeValue: IRuleAttribute) => {
-				if (
-					attributeValue.condition === ruleAttributeValue.condition &&
-					attributeValue.key === ruleAttributeValue.key &&
-					attributeValue.values === ruleAttributeValue.values
-				) {
-					isEquals = true;
-				}
-			}, rule.attributes);
-		}, operation.attributes);
-
-		return operation.id === rule.operation && operation.state === rule.state && isEquals;
-	};
-
 	useEffect(() => {
 		setCurrentRulesState(
 			map<IRule, IRule>(currentRule => {
@@ -272,7 +259,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 				if (task) {
 					const operation: IOperation = filter((operationValue: IOperation) => {
-						return compareOperations(operationValue, currentRule);
+						return compareOperationRule(operationValue, currentRule);
 					}, task.operations)[0];
 
 					if (operation) {
@@ -292,7 +279,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 				if (task) {
 					const operation: IOperation = filter((operationValue: IOperation) => {
-						return compareOperations(operationValue, assignedRule);
+						return compareOperationRule(operationValue, assignedRule);
 					}, task.operations)[0];
 
 					if (operation) {
@@ -305,59 +292,67 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		);
 	}, [tasks]);
 
-	if (currentRulesState && assignedRulesState) {
-		compareRules(currentRulesState, assignedRulesState);
-	}
-
-	const handleClose = (): void => history.goBack();
-
-	const handleRemoveCurrent = (rule: IRule) => (): void => {};
-
-	const handleRemoveAssigned = (rule: IRule) => (): void => {
-		const task: ITask = tasks[rule.task];
-		const operations: IOperation[] = task.operations;
-
-		setTasks({
-			...tasks,
-			[task.id]: {
-				...task,
-				operations: reduce<IOperation, IOperation[]>(
-					(accOperations, operationValue) => {
-						if (compareOperations(operationValue, rule)) {
-							return accOperations;
-						}
-
-						return [...accOperations, operationValue];
-					},
-					[],
-					operations,
-				),
-			},
-		});
-	};
-
-	const handleAddCurrent = (rule: IRule) => (): void => {
-		console.log(rule);
-	};
-
-	const handleAddAssigned = (rule: IRule) => (): void => {
+	const onSelectOperation = (tasksArr: ITask[], rule: IRule): void => {
 		const task: ITask = tasks[rule.task];
 		const operations: IOperation[] = task.operations;
 		const operation: IOperation = filter<IOperation>(
 			operationValue => operationValue.id === rule.operation,
-			filter<ITask>(taskValue => taskValue.id === rule.task, templates[0].tasks)[0].operations,
+			filter<ITask>(taskValue => taskValue.id === rule.task, tasksArr)[0].operations,
 		)[0];
 
-		setTasks({
-			...tasks,
-			[task.id]: {
+		const result: ITasks = clone(tasks);
+
+		const index: number = findIndex(propEq('id', operation.id))(task.operations);
+
+		if (index !== -1) {
+			result[task.id] = {
+				...task,
+				operations: [...remove(index, 1, operations), { ...operation, selected: true }],
+			};
+		} else {
+			result[task.id] = {
 				...task,
 				operations: [...operations, { ...operation, selected: true }],
-			},
-		});
+			};
+		}
+
+		setTasks(result);
 	};
 
-	console.log(tasks);
+	const onRemoveOperation = (rule: IRule): void => {
+		const task: ITask = tasks[rule.task];
+		const operations: IOperation[] = task.operations;
+
+		const index: number = findIndex(propEq('id', rule.operation))(task.operations);
+
+		if (index !== -1) {
+			setTasks({
+				...tasks,
+				[task.id]: {
+					...task,
+					operations: remove(index, 1, operations),
+				},
+			});
+		}
+	};
+
+	const handleClose = (): void => history.goBack();
+
+	const handleRemoveCurrent = (rule: IRule) => (): void => {
+		onRemoveOperation(rule);
+	};
+
+	const handleRemoveAssigned = (rule: IRule) => (): void => {
+		onRemoveOperation(rule);
+	};
+
+	const handleAddCurrent = (rule: IRule) => (): void => {
+		onSelectOperation(currentUser.tasks || [], rule);
+	};
+
+	const handleAddAssigned = (rule: IRule) => (): void => {
+		onSelectOperation(templates[0].tasks, rule);
+	};
 
 	const renderHeader = (): ReactNode => (
 		<Grid container={true} item={true} justify="space-between">

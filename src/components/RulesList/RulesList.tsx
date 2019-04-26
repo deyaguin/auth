@@ -44,6 +44,13 @@ const styles = (theme: Theme) =>
 			overflowY: 'auto',
 		},
 		removed: {},
+		selectedItem: {
+			backgroundColor: green[50],
+			borderColor: green[500],
+		},
+		selectedText: {
+			color: green[500],
+		},
 		subheader: {
 			backgroundColor: commomColor.white,
 			height: 56,
@@ -105,6 +112,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 			<ListItem
 				className={classNames({
 					[classes.conflictItem]: rule.conflicted,
+					[classes.selectedItem]: rule.selected,
 				})}
 				divider={true}
 				key={rule.text}
@@ -115,6 +123,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 						<Typography
 							className={classNames({
 								[classes.conflictText]: rule.conflicted,
+								[classes.selectedText]: rule.selected,
 							})}
 						>
 							{rule.text}
@@ -125,6 +134,7 @@ const ConflictsList: FC<IConflictsListProps> = ({
 									variant="caption"
 									className={classNames({
 										[classes.conflictText]: rule.conflicted,
+										[classes.selectedText]: rule.selected,
 									})}
 									key={attribute}
 								>
