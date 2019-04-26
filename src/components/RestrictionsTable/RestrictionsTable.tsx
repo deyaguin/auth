@@ -1,6 +1,7 @@
 // remove selected!!!
 
 import React, { FC, ChangeEvent, ReactElement, useState, useMemo } from 'react';
+import classNames from 'classnames';
 import { compose, map, reduce, keys, values } from 'ramda';
 import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
 import { TreeDataState, CustomTreeData } from '@devexpress/dx-react-grid';
@@ -14,6 +15,8 @@ import {
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 
 import { TABLE_MESSAGES, OPERATION_STATES, CONDITIONS } from '../../constants/ui';
 import { ITask, ITasks, IOperation, IAttribute, IValues } from '../../types';
@@ -23,12 +26,18 @@ import ValuePicker from '../ValuePicker';
 const { Cell } = Table;
 
 const styles = createStyles({
+	allowed: {
+		backgroundColor: green[100],
+	},
 	conditionPicker: {},
 	container: {
 		display: 'flex',
 		flexGrow: 1,
 		height: '100%',
 		width: '100%',
+	},
+	denied: {
+		backgroundColor: red[100],
 	},
 	statePicker: {},
 });
@@ -222,7 +231,13 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 
 			return (
 				<Cell {...props}>
-					<Chip label={OPERATION_STATES[props.value]} />
+					<Chip
+						className={classNames({
+							[classes.allowed]: props.value === 'allowed',
+							[classes.denied]: props.value === 'denied',
+						})}
+						label={OPERATION_STATES[props.value]}
+					/>
 				</Cell>
 			);
 		}
