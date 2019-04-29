@@ -43,6 +43,10 @@ const styles = (theme: Theme) =>
 		rulesContainer: {
 			height: '100%',
 		},
+		rulesContainerWrapper: {
+			boxSizing: 'initial',
+			width: 300,
+		},
 	});
 
 interface IConflictResolutionProps extends WithStyles<typeof styles>, RouteComponentProps {
@@ -209,7 +213,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 								rule.selected = true;
 							}
 						}
-
 						forEach((assignedRule: IRule) => {
 							if (
 								rule.task === assignedRule.task &&
@@ -714,7 +717,13 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const renderContent = (): ReactNode => (
 		<Grid className={classes.content} container={true} item={true} wrap="nowrap" spacing={24}>
-			<Grid item={true} container={true} direction="column" wrap="nowrap">
+			<Grid
+				item={true}
+				container={true}
+				direction="column"
+				wrap="nowrap"
+				className={classes.rulesContainerWrapper}
+			>
 				<Grid item={true}>
 					<Typography variant="subheading">Текущие права:</Typography>
 				</Grid>
@@ -740,7 +749,13 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					<RestrictionsTable editable={false} tasks={tasks} setValue={setTasks} />
 				</Grid>
 			</Grid>
-			<Grid item={true} container={true} direction="column" wrap="nowrap">
+			<Grid
+				item={true}
+				container={true}
+				direction="column"
+				wrap="nowrap"
+				className={classes.rulesContainerWrapper}
+			>
 				<Grid item={true}>
 					<Typography variant="subheading">Применяемые права:</Typography>
 				</Grid>

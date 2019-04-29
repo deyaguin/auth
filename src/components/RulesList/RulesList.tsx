@@ -39,9 +39,10 @@ const styles = (theme: Theme) =>
 		container: {
 			flexGrow: 1,
 			height: '100%',
-			minWidth: 300,
+			maxWidth: 300,
 			overflowX: 'hidden',
 			overflowY: 'auto',
+			width: 300,
 		},
 		removed: {},
 		selectedItem: {
