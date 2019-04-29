@@ -145,9 +145,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		return operation.id === rule.operation && operation.state === rule.state && isEquals;
 	};
 
-	const compareOperationRule = (operation: IOperation, rule: IRule): boolean =>
-		operation.id === rule.operation && operation.state === rule.state;
-
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
 	const [tasks, setTasks]: [ITasks, (tasks: ITasks) => void] = useState({});
@@ -541,29 +538,33 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	const onSelectOperation = (tasksValue: ITask[], rule: IRule): void => {
 		const task: ITask = tasks[rule.task];
 		const operations: IOperation[] = clone(task.operations);
-		const currentOperation: IOperation = filter<IOperation>(
+		const operation: IOperation = filter<IOperation>(
 			operationValue => operationValue.id === rule.operation,
 			filter<ITask>(taskValue => taskValue.id === rule.task, tasksValue)[0].operations,
 		)[0];
 
 		const result: ITasks = clone(tasks);
 
-		const index = findIndex(propEq('id', currentOperation.id))(operations);
+		const index = findIndex(propEq('id', operation.id))(operations);
 
 		if (index !== -1) {
-			operations[index].attributes = [
-				...operations[index].attributes,
-				...currentOperation.attributes,
-			];
+			if (operations[index].state !== operation.state) {
+				result[task.id] = {
+					...task,
+					operations: [...remove(index, 1, operations), { ...operation, selected: true }],
+				};
+			} else {
+				operations[index].attributes = [...operations[index].attributes, ...operation.attributes];
 
-			result[task.id] = {
-				...task,
-				operations,
-			};
+				result[task.id] = {
+					...task,
+					operations,
+				};
+			}
 		} else {
 			result[task.id] = {
 				...task,
-				operations: [...operations, { ...currentOperation, selected: true }],
+				operations: [...operations, { ...operation, selected: true }],
 			};
 		}
 
