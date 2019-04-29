@@ -41,7 +41,7 @@ const TEMPLATES = {
 						name: 'Обновление заявки',
 						operation_id: '1',
 					},
-					/*{
+					{
 						attributes: [
 							{
 								key: 'organitzation_id',
@@ -61,7 +61,28 @@ const TEMPLATES = {
 						],
 						name: 'Создание заявки',
 						operation_id: '2',
-					},*/
+					},
+					{
+						attributes: [
+							{
+								key: 'organitzation_id',
+								title: 'Организация',
+								name: '',
+								condition: 'less',
+								values: '2',
+							},
+							{
+								key: 'personal_account_id',
+								title: 'Лицевой счет',
+								name: '',
+								condition: 'equal',
+								values: '1, 3, 5, 6',
+							},
+							{ key: 'district_id', title: 'Район', name: '', condition: 'equal', values: '3, 5' },
+						],
+						name: 'Список заявок',
+						operation_id: '3',
+					},
 				],
 				task_id: '2',
 			},

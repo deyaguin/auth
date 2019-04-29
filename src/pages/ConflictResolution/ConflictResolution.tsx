@@ -1,5 +1,7 @@
+// todo refact this component
+
 import React, { FC, useState, useEffect, ReactNode } from 'react';
-import { reduce, map, forEach, filter, clone, propEq, find, findIndex, remove } from 'ramda';
+import { reduce, map, forEach, filter, clone, propEq, findIndex, remove, find } from 'ramda';
 import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -125,7 +127,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		{},
 	);
 
-	const compareOperationRule = (operation: IOperation, rule: IRule): boolean => {
+	const compareOperationRuleStrict = (operation: IOperation, rule: IRule): boolean => {
 		let isEquals: boolean = false;
 
 		forEach((attributeValue: IAttribute) => {
@@ -142,6 +144,9 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 		return operation.id === rule.operation && operation.state === rule.state && isEquals;
 	};
+
+	const compareOperationRule = (operation: IOperation, rule: IRule): boolean =>
+		operation.id === rule.operation && operation.state === rule.state;
 
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
@@ -194,8 +199,20 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 			if (isAdd) {
 				await setCurrentRulesState(
-					map<IRule, IRule>((currentRule: IRule) => {
-						const rule: IRule = clone(currentRule);
+					map<IRule, IRule>((currentRuleValue: IRule) => {
+						const rule: IRule = clone(currentRuleValue);
+						const task: ITask = tasks[currentRuleValue.task];
+
+						if (task) {
+							const operation: IOperation = filter((operationValue: IOperation) => {
+								return compareOperationRuleStrict(operationValue, currentRuleValue);
+							}, task.operations)[0];
+
+							if (operation) {
+								rule.selected = true;
+							}
+						}
+
 						forEach((assignedRule: IRule) => {
 							if (
 								rule.task === assignedRule.task &&
@@ -211,8 +228,21 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				);
 
 				await setAssignedRulesState(
-					map<IRule, IRule>((assignedRule: IRule) => {
-						const rule: IRule = clone(assignedRule);
+					map<IRule, IRule>((assignedRuleValue: IRule) => {
+						const rule: IRule = clone(assignedRuleValue);
+
+						const task: ITask = tasks[assignedRuleValue.task];
+
+						if (task) {
+							const operation: IOperation = filter((operationValue: IOperation) => {
+								return compareOperationRuleStrict(operationValue, assignedRuleValue);
+							}, task.operations)[0];
+
+							if (operation) {
+								rule.selected = true;
+							}
+						}
+
 						forEach((currentRule: IRule) => {
 							if (
 								rule.task === currentRule.task &&
@@ -228,13 +258,14 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				);
 			} else {
 				await setCurrentRulesState(
-					map<IRule, IRule>(ruleValue => {
+					map<IRule, IRule>(currentRuleValue => {
 						let selected: boolean = false;
 
-						const task: ITask = tasks[ruleValue.task];
+						const task: ITask = tasks[currentRuleValue.task];
+
 						if (task) {
 							const operation: IOperation = filter((operationValue: IOperation) => {
-								return compareOperationRule(operationValue, ruleValue);
+								return compareOperationRuleStrict(operationValue, currentRuleValue);
 							}, task.operations)[0];
 
 							if (operation) {
@@ -242,18 +273,19 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 							}
 						}
 
-						return { ...ruleValue, selected };
+						return { ...currentRuleValue, selected };
 					}, currentRules),
 				);
 
 				setAssignedRulesState(
-					map<IRule, IRule>(ruleValue => {
+					map<IRule, IRule>(assignedRuleValue => {
 						let selected: boolean = false;
 
-						const task: ITask = tasks[ruleValue.task];
+						const task: ITask = tasks[assignedRuleValue.task];
+
 						if (task) {
 							const operation: IOperation = filter((operationValue: IOperation) => {
-								return compareOperationRule(operationValue, ruleValue);
+								return compareOperationRuleStrict(operationValue, assignedRuleValue);
 							}, task.operations)[0];
 
 							if (operation) {
@@ -261,7 +293,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 							}
 						}
 
-						return { ...ruleValue, selected };
+						return { ...assignedRuleValue, selected };
 					}, assignedRules),
 				);
 			}
@@ -269,50 +301,194 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	};
 
 	const updateRulesState = () => {
-		setCurrentRulesState(
-			map<IRule, IRule>(currentRule => {
-				let selected: boolean = false;
+		if (isAdd) {
+			setCurrentRulesState(
+				map<IRule, IRule>(currentRuleValue => {
+					let selected: boolean = false;
 
-				const task: ITask = tasks[currentRule.task];
-				if (task) {
-					const operation: IOperation = filter((operationValue: IOperation) => {
-						return compareOperationRule(operationValue, currentRule);
-					}, task.operations)[0];
+					const task: ITask = tasks[currentRuleValue.task];
 
-					if (operation) {
-						selected = true;
+					if (task) {
+						const operation: IOperation = filter((operationValue: IOperation) => {
+							return compareOperationRuleStrict(operationValue, currentRuleValue);
+						}, task.operations)[0];
+
+						if (operation) {
+							selected = true;
+						}
 					}
-				}
 
-				return { ...currentRule, selected };
-			}, currentRulesState),
-		);
+					return { ...currentRuleValue, selected };
+				}, currentRulesState),
+			);
 
-		setAssignedRulesState(
-			map<IRule, IRule>(assignedRule => {
-				let selected: boolean = false;
+			setAssignedRulesState(
+				map<IRule, IRule>(assignedRuleValue => {
+					let selected: boolean = false;
 
-				const task: ITask = tasks[assignedRule.task];
+					const task: ITask = tasks[assignedRuleValue.task];
 
-				if (task) {
-					const operation: IOperation = filter((operationValue: IOperation) => {
-						return compareOperationRule(operationValue, assignedRule);
-					}, task.operations)[0];
+					if (task) {
+						const operation: IOperation = filter((operationValue: IOperation) => {
+							return compareOperationRuleStrict(operationValue, assignedRuleValue);
+						}, task.operations)[0];
 
-					if (operation) {
-						selected = true;
+						if (operation) {
+							selected = true;
+						}
 					}
-				}
 
-				return { ...assignedRule, selected };
-			}, assignedRulesState),
-		);
+					return { ...assignedRuleValue, selected };
+				}, assignedRulesState),
+			);
+		} else {
+			setCurrentRulesState(
+				map<IRule, IRule>(currentRuleValue => {
+					let selected: boolean = false;
+
+					const task: ITask = tasks[currentRuleValue.task];
+
+					if (task) {
+						const operation: IOperation = filter((operationValue: IOperation) => {
+							return compareOperationRuleStrict(operationValue, currentRuleValue);
+						}, task.operations)[0];
+
+						if (operation) {
+							selected = true;
+						}
+					}
+
+					return { ...currentRuleValue, selected };
+				}, currentRulesState),
+			);
+
+			setAssignedRulesState(
+				map<IRule, IRule>(assignedRuleValue => {
+					let selected: boolean = false;
+
+					const task: ITask = tasks[assignedRuleValue.task];
+
+					if (task) {
+						const operation: IOperation = filter((operationValue: IOperation) => {
+							return compareOperationRuleStrict(operationValue, assignedRuleValue);
+						}, task.operations)[0];
+
+						if (operation) {
+							selected = true;
+						}
+					}
+
+					return { ...assignedRuleValue, selected };
+				}, assignedRulesState),
+			);
+		}
 	};
 
 	const initTasks = async () => {
 		if (isAdd) {
-			if (templates[0] && templates[0].tasks) {
-				handleSetTasks(templates[0].tasks);
+			if (templates[0] && templates[0].tasks && currentUser && currentUser.tasks) {
+				if (currentUser.tasks.length >= templates[0].tasks.length) {
+					const resultTasks: ITask[] = map<ITask, ITask>(currentTaskValue => {
+						const assignedTask: ITask = filter<ITask>(assignedTaskValue => {
+							return assignedTaskValue.id === currentTaskValue.id;
+						}, templates[0].tasks)[0];
+
+						if (currentTaskValue.operations.length > assignedTask.operations.length) {
+							const operations: IOperation[] = reduce<IOperation, IOperation[]>(
+								(accOperations, currentOperationValue) => {
+									const assignedOperation: IOperation = filter<IOperation>(
+										assignedOperationValue =>
+											currentOperationValue.id === assignedOperationValue.id &&
+											currentOperationValue.state === assignedOperationValue.state,
+										assignedTask.operations,
+									)[0];
+
+									if (assignedOperation) {
+										const attributes: IAttribute[] = [
+											...currentOperationValue.attributes,
+											...assignedOperation.attributes,
+										];
+
+										return [...accOperations, { ...assignedOperation, attributes }];
+									}
+
+									return [...accOperations, currentOperationValue];
+								},
+								[],
+								currentTaskValue.operations,
+							);
+
+							return { ...currentTaskValue, operations };
+						} else {
+							const operations: IOperation[] = reduce<IOperation, IOperation[]>(
+								(accOperations, assignedOperationValue) => {
+									const currentOperation: IOperation = filter<IOperation>(
+										currentOperationValue => assignedOperationValue.id === currentOperationValue.id,
+										currentTaskValue.operations,
+									)[0];
+
+									if (currentOperation) {
+										const hasConflict: boolean =
+											currentOperation.state !== assignedOperationValue.state;
+
+										if (hasConflict) {
+											return accOperations;
+										}
+
+										const attributes: IAttribute[] = [
+											...assignedOperationValue.attributes,
+											...currentOperation.attributes,
+										];
+
+										return [...accOperations, { ...currentOperation, attributes }];
+									} else {
+										return [...accOperations, assignedOperationValue];
+									}
+								},
+								[],
+								assignedTask.operations,
+							);
+
+							return { ...assignedTask, operations };
+						}
+					}, currentUser.tasks);
+
+					handleSetTasks(resultTasks);
+				} else {
+					const resultTasks: ITask[] = map<ITask, ITask>(assignedTaskValue => {
+						const currentTask: ITask = filter<ITask>(currentTaskValue => {
+							return currentTaskValue.id === assignedTaskValue.id;
+						}, currentUser.tasks || [])[0];
+
+						const operations: IOperation[] = reduce<IOperation, IOperation[]>(
+							(accOperations, assignedOperationValue) => {
+								const currentOperation: IOperation = filter<IOperation>(
+									currentTaskValue =>
+										assignedOperationValue.id === currentTaskValue.id &&
+										assignedOperationValue.state === currentTaskValue.state,
+									currentTask.operations,
+								)[0];
+
+								if (currentOperation) {
+									const attributes: IAttribute[] = [
+										...assignedOperationValue.attributes,
+										...currentOperation.attributes,
+									];
+
+									return [...accOperations, { ...currentOperation, attributes }];
+								}
+
+								return accOperations;
+							},
+							[],
+							assignedTaskValue.operations,
+						);
+
+						return { ...assignedTaskValue, operations };
+					}, templates[0].tasks);
+
+					handleSetTasks(resultTasks);
+				}
 			}
 		}
 
@@ -362,6 +538,82 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		updateRulesState();
 	}, [tasks]);
 
+	const onSelectOperation = (tasksValue: ITask[], rule: IRule): void => {
+		const task: ITask = tasks[rule.task];
+		const operations: IOperation[] = clone(task.operations);
+		const currentOperation: IOperation = filter<IOperation>(
+			operationValue => operationValue.id === rule.operation,
+			filter<ITask>(taskValue => taskValue.id === rule.task, tasksValue)[0].operations,
+		)[0];
+
+		const result: ITasks = clone(tasks);
+
+		const index = findIndex(propEq('id', currentOperation.id))(operations);
+
+		if (index !== -1) {
+			operations[index].attributes = [
+				...operations[index].attributes,
+				...currentOperation.attributes,
+			];
+
+			result[task.id] = {
+				...task,
+				operations,
+			};
+		} else {
+			result[task.id] = {
+				...task,
+				operations: [...operations, { ...currentOperation, selected: true }],
+			};
+		}
+
+		setTasks(result);
+	};
+
+	const onRemoveOperation = (rule: IRule): void => {
+		const task: ITask = tasks[rule.task];
+		const operations: IOperation[] = task.operations;
+
+		const index: number = findIndex(propEq('id', rule.operation))(task.operations);
+		const operation: IOperation = find(propEq('id', rule.operation))(task.operations);
+
+		if (index !== -1) {
+			if (operation.attributes.length > rule.attributes.length) {
+				const removedOperation: IOperation = operations[index];
+				removedOperation.attributes = reduce<IAttribute, IAttribute[]>(
+					(accAttributes, attributeValue) => {
+						const hasAttribute: boolean =
+							findIndex(propEq('values', attributeValue.values))(rule.attributes) !== -1;
+
+						if (hasAttribute) {
+							return accAttributes;
+						}
+
+						return [...accAttributes, attributeValue];
+					},
+					[],
+					removedOperation.attributes,
+				);
+
+				setTasks({
+					...tasks,
+					[task.id]: {
+						...task,
+						operations,
+					},
+				});
+			} else {
+				setTasks({
+					...tasks,
+					[task.id]: {
+						...task,
+						operations: remove(index, 1, operations),
+					},
+				});
+			}
+		}
+	};
+
 	const onSelectOperationOverwrite = (tasksArr: ITask[], rule: IRule): void => {
 		const task: ITask = tasks[rule.task];
 		const operations: IOperation[] = task.operations;
@@ -409,19 +661,35 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 	const handleClose = (): void => history.goBack();
 
 	const handleRemoveCurrent = (rule: IRule) => (): void => {
-		onRemoveOperationOverwrite(rule);
+		if (isAdd) {
+			onRemoveOperation(rule);
+		} else {
+			onRemoveOperationOverwrite(rule);
+		}
 	};
 
 	const handleRemoveAssigned = (rule: IRule) => (): void => {
-		onRemoveOperationOverwrite(rule);
+		if (isAdd) {
+			onRemoveOperation(rule);
+		} else {
+			onRemoveOperationOverwrite(rule);
+		}
 	};
 
 	const handleAddCurrent = (rule: IRule) => (): void => {
-		onSelectOperationOverwrite(currentUser.tasks || [], rule);
+		if (isAdd) {
+			onSelectOperation(currentUser.tasks || [], rule);
+		} else {
+			onSelectOperationOverwrite(currentUser.tasks || [], rule);
+		}
 	};
 
 	const handleAddAssigned = (rule: IRule) => (): void => {
-		onSelectOperationOverwrite(templates[0].tasks, rule);
+		if (isAdd) {
+			onSelectOperation(templates[0].tasks, rule);
+		} else {
+			onSelectOperationOverwrite(templates[0].tasks, rule);
+		}
 	};
 
 	const handleClear = (): void => {
