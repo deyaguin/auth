@@ -10,7 +10,6 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { RouteComponentProps } from 'react-router';
 
 import { CONFLICT_RESOLUTION_VARIANTS } from '../../constants';
-import { OPERATION_STATES } from '../../constants/ui';
 import {
 	IUser,
 	ITasks,
@@ -22,6 +21,7 @@ import {
 	IRuleAttribute,
 } from '../../types';
 import { Page, RestrictionsTable, RestrictionsFilter, RulesList } from '../../components';
+import { tasksToRules, tasksToObject, compareOperationRuleStrict } from './utils';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -79,75 +79,6 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 
 	const isOverwritePartially: boolean =
 		queryVariant === CONFLICT_RESOLUTION_VARIANTS.OVERWRITE_PARTIALLY;
-
-	const tasksToRules = reduce<ITask, IRule[]>(
-		(accRules: IRule[], taskValue: ITask) => [
-			...accRules,
-			...reduce<IOperation, IRule[]>(
-				(accOperations: IRule[], operationValue: IOperation) => {
-					const attributes: IRuleAttribute[] = map<IAttribute, IRuleAttribute>(
-						(attributeValue: IAttribute) => ({
-							condition: attributeValue.condition,
-							key: attributeValue.key,
-							values: attributeValue.values,
-						}),
-						operationValue.attributes,
-					);
-
-					const result: IRule = {
-						attributes,
-						conflicted: false,
-						operation: operationValue.id,
-						task: taskValue.id,
-						text: `${taskValue.name}/${operationValue.name}/${
-							OPERATION_STATES[operationValue.state as string]
-						}`,
-					};
-
-					if (operationValue.state) {
-						result.state = operationValue.state;
-					}
-
-					return [...accOperations, result];
-				},
-				[] as IRule[],
-				taskValue.operations,
-			),
-		],
-		[] as IRule[],
-	);
-
-	const tasksToObject = reduce(
-		(acc: ITasks, item: ITask) => ({
-			...acc,
-			[item.id]: {
-				...item,
-				operations: map(
-					(operation: IOperation) => ({ ...operation, selected: true }),
-					item.operations,
-				),
-			},
-		}),
-		{},
-	);
-
-	const compareOperationRuleStrict = (operation: IOperation, rule: IRule): boolean => {
-		let isEquals: boolean = false;
-
-		forEach((attributeValue: IAttribute) => {
-			forEach((ruleAttributeValue: IRuleAttribute) => {
-				if (
-					attributeValue.condition === ruleAttributeValue.condition &&
-					attributeValue.key === ruleAttributeValue.key &&
-					attributeValue.values === ruleAttributeValue.values
-				) {
-					isEquals = true;
-				}
-			}, rule.attributes);
-		}, operation.attributes);
-
-		return operation.id === rule.operation && operation.state === rule.state && isEquals;
-	};
 
 	const [initialized, setInitialized]: [boolean, (initialized: boolean) => void] = useState(false);
 
@@ -607,11 +538,13 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 					},
 				});
 			} else {
+				const remainingOperations: IOperation[] = remove(index, 1, operations);
+
 				setTasks({
 					...tasks,
 					[task.id]: {
 						...task,
-						operations: remove(index, 1, operations),
+						operations: remainingOperations,
 					},
 				});
 			}
