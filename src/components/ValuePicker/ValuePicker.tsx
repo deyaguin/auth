@@ -17,12 +17,10 @@ const ValuePicker: FC<IStatePickerProps> = ({
 	optionValues,
 	textFieldProps,
 }) => {
-	const handleSetValue = (e: ChangeEvent<HTMLSelectElement>) => {
-		onChange(e.currentTarget.value);
-	};
+	const handleSetValue = (e: ChangeEvent<HTMLSelectElement>) => onChange(e.currentTarget.value);
 
 	const getOptions = compose(
-		map((key: string) => (
+		map<string, ReactNode>((key: string) => (
 			<option key={key} value={key}>
 				{optionValues[key]}
 			</option>

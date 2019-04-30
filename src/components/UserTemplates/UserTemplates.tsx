@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 
-import { SetLimit, SetOffset, ITemplate, IFilters, SelectedItem } from '../../types';
+import { SetLimit, SetOffset, ITemplate, IFilters, SelectedItem, IValues } from '../../types';
 import TemplateFilter from '../TemplatesFilter';
 import TemplatesTable from '../TemplatesTable';
 
@@ -31,10 +31,10 @@ interface IUserTemplatesProps extends WithStyles<typeof styles> {
 	setOffset: SetOffset;
 	actions?: ReactNode;
 	selectedItems: SelectedItem[];
-	setFilters: (filters: { [name: string]: string }) => void;
+	setFilters: (filters: IValues) => void;
 	clearFilters: () => void;
-	clearSelectedItems: () => void;
 	onSelectItems: (items: SelectedItem[]) => void;
+	clearSelectedItems?: () => void;
 }
 
 const UserTemplates: FC<IUserTemplatesProps> = ({
@@ -59,13 +59,18 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 		}
 	}, []);
 
-	const handlePageSizeChange = (pageSize: number): void => {
-		setLimit(pageSize);
-	};
+	const currentPage: number = limit / offset;
 
-	const handleCurrentPageChange = (currentPage: number): void => {
-		setOffset(currentPage * limit);
-	};
+	const handlePageSizeChange = (pageSize: number): void => setLimit(pageSize);
+
+	const handleCurrentPageChange = (currentPageValue: number): void =>
+		setOffset(currentPageValue * limit);
+
+	const actionsElement: ReactNode = actions && (
+		<Grid item={true} container={true} justify="center" alignItems="flex-end" spacing={16}>
+			{actions}
+		</Grid>
+	);
 
 	return (
 		<Fade in={true} timeout={400}>
@@ -85,7 +90,7 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 					<Paper className={classes.paper}>
 						<TemplatesTable
 							selectable={true}
-							currentPage={offset / limit}
+							currentPage={currentPage}
 							pageSize={limit}
 							templates={templates}
 							total={total}
@@ -96,11 +101,7 @@ const UserTemplates: FC<IUserTemplatesProps> = ({
 						/>
 					</Paper>
 				</Grid>
-				{actions && (
-					<Grid item={true} container={true} justify="center" alignItems="flex-end" spacing={16}>
-						{actions}
-					</Grid>
-				)}
+				{actionsElement}
 			</Grid>
 		</Fade>
 	);
