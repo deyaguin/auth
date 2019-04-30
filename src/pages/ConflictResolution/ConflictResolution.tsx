@@ -21,7 +21,15 @@ import {
 	IRuleAttribute,
 } from '../../types';
 import { Page, RestrictionsTable, RestrictionsFilter, RulesList } from '../../components';
-import { tasksToRules, tasksToObject, compareOperationRuleStrict } from './utils';
+import {
+	tasksToRules,
+	tasksToObject,
+	compareOperationRuleStrict,
+	onRemoveOperationOverwrite,
+	onSelectOperationOverwrite,
+	onSelectOperation,
+	onRemoveOperation,
+} from './utils';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -469,163 +477,37 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 		updateRulesState();
 	}, [tasks]);
 
-	const onSelectOperation = (tasksValue: ITask[], rule: IRule): void => {
-		const task: ITask = tasks[rule.task];
-		const operations: IOperation[] = clone(task.operations);
-		const operation: IOperation = filter<IOperation>(
-			operationValue => operationValue.id === rule.operation,
-			filter<ITask>(taskValue => taskValue.id === rule.task, tasksValue)[0].operations,
-		)[0];
-
-		const result: ITasks = clone(tasks);
-
-		const index = findIndex(propEq('id', operation.id))(operations);
-
-		if (index !== -1) {
-			if (operations[index].state !== operation.state) {
-				result[task.id] = {
-					...task,
-					operations: [...remove(index, 1, operations), { ...operation, selected: true }],
-				};
-			} else {
-				operations[index].attributes = [...operations[index].attributes, ...operation.attributes];
-
-				result[task.id] = {
-					...task,
-					operations,
-				};
-			}
-		} else {
-			result[task.id] = {
-				...task,
-				operations: [...operations, { ...operation, selected: true }],
-			};
-		}
-
-		setTasks(result);
-	};
-
-	const onRemoveOperation = (rule: IRule): void => {
-		const task: ITask = tasks[rule.task];
-		const operations: IOperation[] = task.operations;
-
-		const index: number = findIndex(propEq('id', rule.operation))(task.operations);
-		const operation: IOperation = find(propEq('id', rule.operation))(task.operations);
-
-		if (index !== -1) {
-			if (operation.attributes.length > rule.attributes.length) {
-				const removedOperation: IOperation = operations[index];
-				removedOperation.attributes = reduce<IAttribute, IAttribute[]>(
-					(accAttributes, attributeValue) => {
-						const hasAttribute: boolean =
-							findIndex(propEq('values', attributeValue.values))(rule.attributes) !== -1;
-
-						if (hasAttribute) {
-							return accAttributes;
-						}
-
-						return [...accAttributes, attributeValue];
-					},
-					[],
-					removedOperation.attributes,
-				);
-
-				setTasks({
-					...tasks,
-					[task.id]: {
-						...task,
-						operations,
-					},
-				});
-			} else {
-				const remainingOperations: IOperation[] = remove(index, 1, operations);
-
-				setTasks({
-					...tasks,
-					[task.id]: {
-						...task,
-						operations: remainingOperations,
-					},
-				});
-			}
-		}
-	};
-
-	const onSelectOperationOverwrite = (tasksArr: ITask[], rule: IRule): void => {
-		const task: ITask = tasks[rule.task];
-		const operations: IOperation[] = task.operations;
-		const operation: IOperation = filter<IOperation>(
-			operationValue => operationValue.id === rule.operation,
-			filter<ITask>(taskValue => taskValue.id === rule.task, tasksArr)[0].operations,
-		)[0];
-
-		const result: ITasks = clone(tasks);
-
-		const index: number = findIndex(propEq('id', operation.id))(task.operations);
-
-		if (index !== -1) {
-			result[task.id] = {
-				...task,
-				operations: [...remove(index, 1, operations), { ...operation, selected: true }],
-			};
-		} else {
-			result[task.id] = {
-				...task,
-				operations: [...operations, { ...operation, selected: true }],
-			};
-		}
-
-		setTasks(result);
-	};
-
-	const onRemoveOperationOverwrite = (rule: IRule): void => {
-		const task: ITask = tasks[rule.task];
-		const operations: IOperation[] = task.operations;
-
-		const index: number = findIndex(propEq('id', rule.operation))(task.operations);
-
-		if (index !== -1) {
-			setTasks({
-				...tasks,
-				[task.id]: {
-					...task,
-					operations: remove(index, 1, operations),
-				},
-			});
-		}
-	};
-
 	const handleClose = (): void => history.goBack();
 
 	const handleRemoveCurrent = (rule: IRule) => (): void => {
 		if (isAdd) {
-			onRemoveOperation(rule);
+			setTasks(onRemoveOperation(tasks)(rule));
 		} else {
-			onRemoveOperationOverwrite(rule);
+			setTasks(onRemoveOperationOverwrite(tasks)(rule));
 		}
 	};
 
 	const handleRemoveAssigned = (rule: IRule) => (): void => {
 		if (isAdd) {
-			onRemoveOperation(rule);
+			setTasks(onRemoveOperation(tasks)(rule));
 		} else {
-			onRemoveOperationOverwrite(rule);
+			setTasks(onRemoveOperationOverwrite(tasks)(rule));
 		}
 	};
 
 	const handleAddCurrent = (rule: IRule) => (): void => {
 		if (isAdd) {
-			onSelectOperation(currentUser.tasks || [], rule);
+			setTasks(onSelectOperation(tasks)(currentUser.tasks || [], rule));
 		} else {
-			onSelectOperationOverwrite(currentUser.tasks || [], rule);
+			setTasks(onSelectOperationOverwrite(tasks)(currentUser.tasks || [], rule));
 		}
 	};
 
 	const handleAddAssigned = (rule: IRule) => (): void => {
 		if (isAdd) {
-			onSelectOperation(templates[0].tasks, rule);
+			setTasks(onSelectOperation(tasks)(templates[0].tasks, rule));
 		} else {
-			onSelectOperationOverwrite(templates[0].tasks, rule);
+			setTasks(onSelectOperationOverwrite(tasks)(templates[0].tasks, rule));
 		}
 	};
 
