@@ -1,4 +1,5 @@
 import React, { FC, ReactNode, ChangeEvent } from 'react';
+import { map, keys, compose } from 'ramda';
 import TextField, { TextFieldProps } from '@material-ui/core/TextField';
 
 interface IStatePickerProps {
@@ -20,11 +21,14 @@ const ValuePicker: FC<IStatePickerProps> = ({
 		onChange(e.currentTarget.value);
 	};
 
-	const options: ReactNode[] = Object.keys(optionValues).map((key: string) => (
-		<option key={key} value={key}>
-			{optionValues[key]}
-		</option>
-	));
+	const getOptions = compose(
+		map((key: string) => (
+			<option key={key} value={key}>
+				{optionValues[key]}
+			</option>
+		)),
+		keys,
+	);
 
 	return (
 		<TextField
@@ -36,7 +40,7 @@ const ValuePicker: FC<IStatePickerProps> = ({
 			fullWidth={true}
 			SelectProps={{ native: true }}
 		>
-			{options}
+			{getOptions(optionValues)}
 		</TextField>
 	);
 };
