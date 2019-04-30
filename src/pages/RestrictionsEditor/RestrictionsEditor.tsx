@@ -66,41 +66,32 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 
 		return null;
 	}
-	const renderActions = (): ReactNode => (
-		<Grid item={true} container={true} justify="center" spacing={16}>
+
+	const renderAction = (
+		disabled: boolean,
+		show: boolean,
+		text: string,
+		onClick: () => void,
+	): ReactNode =>
+		show && (
 			<Grid item={true}>
 				<Button
-					disabled={isTasks}
+					disabled={disabled}
 					className={classes.button}
 					color="primary"
 					variant="outlined"
-					onClick={handlePrev}
+					onClick={onClick}
 				>
-					Назад
+					{text}
 				</Button>
 			</Grid>
-			<Grid item={true}>
-				{isTasks && (
-					<Button
-						onClick={handleNext}
-						className={classes.button}
-						color="primary"
-						variant="outlined"
-					>
-						Далее
-					</Button>
-				)}
-				{isRestrictions && (
-					<Button
-						onClick={handleComplete}
-						className={classes.button}
-						color="primary"
-						variant="outlined"
-					>
-						Готово
-					</Button>
-				)}
-			</Grid>
+		);
+
+	const renderActions = (): ReactNode => (
+		<Grid item={true} container={true} justify="center" spacing={16}>
+			{renderAction(isTasks, true, 'Назад', handlePrev)}
+			{renderAction(false, isTasks, 'Далее', handleNext)}
+			{renderAction(false, isRestrictions, 'Готово', handleComplete)}
 		</Grid>
 	);
 
