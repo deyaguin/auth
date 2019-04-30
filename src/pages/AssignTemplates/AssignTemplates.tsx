@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -69,9 +69,33 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 			variant,
 		})}`;
 
-	const handleSelectItems = (items: SelectedItem[]): void => {
-		setSelectedItems(items);
-	};
+	const handleSelectItems = (items: SelectedItem[]): void => setSelectedItems(items);
+
+	const renderAction = (to: string, text: string): ReactNode => (
+		<Grid item={true}>
+			<Link className={classes.link} to={to}>
+				<Button
+					className={classes.button}
+					variant="outlined"
+					color="primary"
+					disabled={selectionsCount < 1}
+				>
+					{text}
+				</Button>
+			</Link>
+		</Grid>
+	);
+
+	const renderActions = (): ReactNode => (
+		<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
+			{renderAction(conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE), 'Перезаписать')}
+			{renderAction(
+				conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE_PARTIALLY),
+				'Перезаписать частично',
+			)}
+			{renderAction(conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.ADD), 'Добавить')}
+		</Grid>
+	);
 
 	return (
 		<Page
@@ -105,48 +129,7 @@ const AssignTemplates: FC<IAssignTemplatesProps> = ({
 					selectedItems={pageSelections}
 					clearSelectedItems={clearSelectedItems}
 				/>
-				<Grid container={true} item={true} direction="row" justify="center" spacing={24}>
-					<Grid item={true}>
-						<Link
-							className={classes.link}
-							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE)}
-						>
-							<Button
-								className={classes.button}
-								variant="outlined"
-								color="primary"
-								disabled={selectionsCount < 1}
-							>
-								Перезаписать
-							</Button>
-						</Link>
-					</Grid>
-					<Grid item={true}>
-						<Link
-							className={classes.link}
-							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.OVERWRITE_PARTIALLY)}
-						>
-							<Button
-								className={classes.button}
-								variant="outlined"
-								color="primary"
-								disabled={selectionsCount < 1}
-							>
-								Перезаписать частично
-							</Button>
-						</Link>
-					</Grid>
-					<Grid item={true}>
-						<Link
-							className={classes.link}
-							to={conflictResolutionPath(CONFLICT_RESOLUTION_VARIANTS.ADD)}
-						>
-							<Button className={classes.button} variant="outlined" color="primary">
-								Добавить
-							</Button>
-						</Link>
-					</Grid>
-				</Grid>
+				{renderActions()}
 			</Grid>
 		</Page>
 	);
