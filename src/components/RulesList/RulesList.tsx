@@ -21,44 +21,43 @@ import { IRule, IRuleAttribute } from '../../types';
 
 const HEADER_LIST_TEXT = '#Задача/Операция/Состояние/Атрибут/Тип/Условие/Значение';
 
-const styles = (theme: Theme) =>
-	createStyles({
-		added: {
-			color: green[500],
-		},
-		buttons: {
-			width: 80,
-		},
-		conflictItem: {
-			backgroundColor: red[50],
-			borderColor: red[500],
-		},
-		conflictText: {
-			color: red[500],
-		},
-		container: {
-			flexGrow: 1,
-			height: '100%',
-			maxWidth: 300,
-			overflowX: 'hidden',
-			overflowY: 'auto',
-			width: 300,
-		},
-		removed: {},
-		selectedItem: {
-			backgroundColor: green[50],
-			borderColor: green[500],
-		},
-		selectedText: {
-			color: green[500],
-		},
-		subheader: {
-			backgroundColor: commomColor.white,
-			height: 56,
-			lineHeight: '24px',
-			padding: '12px 16px',
-		},
-	});
+const styles = createStyles({
+	added: {
+		color: green[500],
+	},
+	buttons: {
+		width: 80,
+	},
+	conflictItem: {
+		backgroundColor: red[50],
+		borderColor: red[500],
+	},
+	conflictText: {
+		color: red[500],
+	},
+	container: {
+		flexGrow: 1,
+		height: '100%',
+		maxWidth: 300,
+		overflowX: 'hidden',
+		overflowY: 'auto',
+		width: 300,
+	},
+	removed: {},
+	selectedItem: {
+		backgroundColor: green[50],
+		borderColor: green[500],
+	},
+	selectedText: {
+		color: green[500],
+	},
+	subheader: {
+		backgroundColor: commomColor.white,
+		height: 56,
+		lineHeight: '24px',
+		padding: '12px 16px',
+	},
+});
 
 interface IConflictsListProps extends WithStyles<typeof styles> {
 	rules?: IRule[];

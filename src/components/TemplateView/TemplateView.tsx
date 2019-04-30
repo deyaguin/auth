@@ -21,10 +21,10 @@ const styles = (theme: Theme) =>
 
 interface ITemplateViewProps extends WithStyles<typeof styles> {
 	name: string;
-	tags?: string;
-	comment?: string;
 	tasks: ITasks;
 	className?: string;
+	tags?: string;
+	comment?: string;
 }
 
 const TemplateView: FC<ITemplateViewProps> = ({

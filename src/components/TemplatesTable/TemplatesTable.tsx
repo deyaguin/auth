@@ -73,9 +73,7 @@ const TemplatesTable: FC<ITemplatesTableProps> = ({
 }) => {
 	const handleTemplateDelete = (id: string) => (): void => templateDelete && templateDelete(id);
 
-	const handleCurrentPageChange = (pageNumber: number): void => {
-		onCurrentPageChange(pageNumber);
-	};
+	const handleCurrentPageChange = (pageNumber: number): void => onCurrentPageChange(pageNumber);
 
 	const renderActions = (id: string): ReactNode => (
 		<div className={classes.actions} key={id}>

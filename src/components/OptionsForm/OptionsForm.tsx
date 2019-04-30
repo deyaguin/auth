@@ -30,8 +30,8 @@ const styles = (theme: Theme) =>
 
 interface IOprionsProps extends WithStyles<typeof styles> {
 	initialValues: IValues;
-	onSubmit: (values: IValues) => void;
 	formActions?: ReactNode;
+	onSubmit: (values: IValues) => void;
 }
 
 const ValidationSchema: Yup.Schema<IValues> = Yup.object().shape({
@@ -41,9 +41,7 @@ const ValidationSchema: Yup.Schema<IValues> = Yup.object().shape({
 });
 
 const Options: FC<IOprionsProps> = ({ classes, formActions, initialValues, onSubmit }) => {
-	const handleSubmit = (values: IValues, actions: FormikActions<IValues>): void => {
-		onSubmit(values);
-	};
+	const handleSubmit = (values: IValues, actions: FormikActions<IValues>): void => onSubmit(values);
 
 	const renderTextField = (label: string, fieldName: string, required: boolean) => ({
 		field,

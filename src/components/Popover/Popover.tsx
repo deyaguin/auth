@@ -21,12 +21,12 @@ const styles = (theme: Theme) =>
 	});
 
 interface IPopperProps extends WithStyles<typeof styles> {
-	onAgree: () => void;
-	onCancel?: () => void;
 	title: string;
 	content?: string;
 	agreeText: string;
 	cancelText: string;
+	onAgree: () => void;
+	onCancel?: () => void;
 	children: (setButtonRef: (node: any) => void, onClick: () => void) => ReactNode;
 }
 
@@ -73,13 +73,9 @@ class Popper extends Component<IPopperProps, { open: boolean }> {
 		);
 	}
 
-	private onClose = (): void => {
-		this.setState({ open: false });
-	};
+	private onClose = (): void => this.setState({ open: false });
 
-	private onOpen = (): void => {
-		this.setState({ open: true });
-	};
+	private onOpen = (): void => this.setState({ open: true });
 
 	private handleAgree = (): void => {
 		const { onAgree } = this.props;

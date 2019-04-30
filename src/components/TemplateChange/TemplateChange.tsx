@@ -93,9 +93,7 @@ const TemplateChange: FC<ITemplateChangeProps> = ({ classes, tasks, action, init
 		setActiveStep(activeStep + 1);
 	};
 
-	const handlePrevStep = (): void => {
-		setActiveStep(activeStep - 1);
-	};
+	const handlePrevStep = (): void => setActiveStep(activeStep - 1);
 
 	const handleComplete = (): void => {
 		console.log({ ...optionsValues, tasks: tasksValues });

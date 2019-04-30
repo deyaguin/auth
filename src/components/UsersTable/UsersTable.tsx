@@ -36,7 +36,7 @@ const styles = createStyles({
 		textDecoration: 'none',
 	},
 	table: {
-		flex: 1,
+		flexGrow: 1,
 	},
 });
 

@@ -7,17 +7,17 @@ import { TableHeaderRow, TableFilterRow } from '@devexpress/dx-react-grid-materi
 import { TABLE_ACTIONS_WIDTH } from '../../constants/ui';
 
 interface ITableActionsProps {
+	width?: number;
 	actions: (id: string) => ReactNode;
 	headerActions?: () => ReactNode;
 	filterActions?: () => ReactNode;
-	width?: number;
 }
 
 const TableActions: FC<ITableActionsProps> = ({
-	headerActions = () => null,
-	filterActions = () => null,
 	actions,
 	width = TABLE_ACTIONS_WIDTH,
+	headerActions = () => null,
+	filterActions = () => null,
 }) => {
 	const getterComputed: any = ({ tableColumns }: Getters): any => [
 		...tableColumns,

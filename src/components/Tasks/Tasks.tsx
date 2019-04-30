@@ -35,22 +35,22 @@ const styles = (theme: Theme) =>
 	});
 
 interface ITasksProps extends WithStyles<typeof styles> {
-	setValue: (tasksValues: IValues) => void;
-	selectedTasks: { [name: string]: any };
+	selectedTasks: ITasks;
 	tasks: ITask[];
+	setValue: (tasksValues: IValues) => void;
 }
 
 const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }) => {
 	const handleSelectTask = ({ destination, source, draggableId }: DropResult): void => {
 		if (source.droppableId === LIST && destination && destination.droppableId === SELECTED) {
-			const filteredTask: ITask = filter((item: ITask) => item.id === draggableId, tasks)[0];
+			const filteredTask: ITask = filter<ITask>(item => item.id === draggableId, tasks)[0];
 
 			setValue({
 				...selectedTasks,
 				[draggableId]: {
 					...filteredTask,
-					operations: map(
-						(item: IOperation) => ({
+					operations: map<IOperation, IOperation>(
+						item => ({
 							...item,
 							selected: true,
 						}),
@@ -66,7 +66,7 @@ const Tasks: FC<ITasksProps> = ({ classes, selectedTasks = {}, setValue, tasks }
 	};
 
 	const getSelectedTasksArray: (tasks: ITasks) => ITask[] = compose(
-		map((key: string) => selectedTasks[key]),
+		map<string, ITask>(key => selectedTasks[key]),
 		keys,
 	);
 

@@ -36,6 +36,7 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 	clearFilters,
 }) => {
 	const [expanded, setExpanded]: [boolean, (expanded: boolean) => void] = useState(false);
+
 	const [filtersState, setFiltersState]: [IFilters, (filtersState: IFilters) => void] = useState(
 		filters,
 	);
@@ -47,9 +48,7 @@ const TemplatesFilter: FC<ITemplatesFilterProps> = ({
 	const handleSetFiltersState = (filterName: string) => (e: ChangeEvent<HTMLInputElement>): void =>
 		setFiltersState({ ...filtersState, [filterName]: e.currentTarget.value });
 
-	const handleSetFilter = (): void => {
-		setFilters(filtersState);
-	};
+	const handleSetFilter = (): void => setFilters(filtersState);
 
 	const handleClearFilter = (): void => {
 		clearFilters();

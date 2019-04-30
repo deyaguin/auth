@@ -30,8 +30,8 @@ const styles = createStyles({
 });
 
 interface IAppBarProps extends WithStyles<typeof styles> {
-	onMenuClick: (e: any) => void;
 	open: boolean;
+	onMenuClick: (e: any) => void;
 }
 
 const AppBar: FC<IAppBarProps> = ({ open, classes, onMenuClick }) => {

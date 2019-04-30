@@ -1,5 +1,5 @@
 import React, { Component, ReactNode, ChangeEvent, MouseEvent } from 'react';
-import { clone, filter } from 'ramda';
+import { clone, filter, find, propEq, map } from 'ramda';
 import { Draggable, Droppable, DraggableProvided, DroppableProvided } from 'react-beautiful-dnd';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -20,7 +20,7 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { ITask, IOperation, IValues } from '../../types';
+import { ITask, ITasks, IOperation, IValues } from '../../types';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -89,8 +89,8 @@ interface ITasksListProps extends WithStyles<typeof styles> {
 	subheader: string;
 	tasks: ITask[];
 	droppableId: string;
+	selectedTasks?: ITasks;
 	setValue?: (values: IValues) => void;
-	selectedTasks?: { [id: string]: ITask };
 }
 
 interface ITasksListState {
@@ -186,16 +186,18 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		e.stopPropagation();
 
 		if (setValue && selectedTasks) {
-			const selectedTask: ITask = clone(selectedTasks[taskId]);
+			const selectedTask = clone<ITask>(selectedTasks[taskId]);
 
-			const filteredOperation: IOperation = filter(
-				item => item.id === operationId,
+			const filteredOperation = find<IOperation>(
+				propEq('id', operationId),
 				selectedTask.operations,
-			)[0];
+			);
 
-			filteredOperation.selected = !filteredOperation.selected;
+			if (filteredOperation) {
+				filteredOperation.selected = !filteredOperation.selected;
 
-			setValue({ ...selectedTasks, [taskId]: selectedTask });
+				setValue({ ...selectedTasks, [taskId]: selectedTask });
+			}
 		}
 	};
 
@@ -238,6 +240,31 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		);
 	};
 
+	private renderOperationCheckbox = (taskId: string, operationId: string): ReactNode => {
+		const { selectedTasks, classes } = this.props;
+
+		if (selectedTasks) {
+			const task: ITask = selectedTasks[taskId];
+
+			const operation = find<IOperation>(
+				propEq('id', operationId),
+				selectedTasks[taskId].operations,
+			);
+
+			if (operation) {
+				return (
+					<Checkbox
+						className={classes.operationCheckbox}
+						checked={operation.selected}
+						onChange={this.handleSetValue(task.id, operation.id)}
+					/>
+				);
+			}
+		}
+
+		return null;
+	};
+
 	private renderOperationsList = (task: ITask): ReactNode => {
 		const { classes, setValue, selectedTasks } = this.props;
 		const { collapsedTasks } = this.state;
@@ -249,26 +276,19 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 				timeout="auto"
 				unmountOnExit={true}
 			>
-				{task.operations.map(operation => (
-					<div
-						onClick={this.handleSetValue(task.id, operation.id)}
-						className={classes.nestedListItem}
-						key={operation.id}
-					>
-						<ListItemText>{operation.name}</ListItemText>
-						{setValue && selectedTasks && (
-							<Checkbox
-								className={classes.operationCheckbox}
-								checked={
-									selectedTasks[task.id].operations.filter(
-										(item: IOperation) => item.id === operation.id,
-									)[0].selected
-								}
-								onChange={this.handleSetValue(task.id, operation.id)}
-							/>
-						)}
-					</div>
-				))}
+				{map<IOperation, ReactNode>(
+					operation => (
+						<div
+							onClick={this.handleSetValue(task.id, operation.id)}
+							className={classes.nestedListItem}
+							key={operation.id}
+						>
+							<ListItemText>{operation.name}</ListItemText>
+							{setValue && selectedTasks && this.renderOperationCheckbox(task.id, operation.id)}
+						</div>
+					),
+					task.operations,
+				)}
 			</Collapse>
 		);
 	};
@@ -277,11 +297,13 @@ class TasksList extends Component<ITasksListProps, ITasksListState> {
 		const { classes } = this.props;
 		const { collapsedTasks } = this.state;
 
+		const growAnimationTimeout: number = i * 50;
+
 		return (
 			<Draggable key={task.id} draggableId={task.id} index={i}>
 				{(provided: DraggableProvided) => (
 					<div ref={provided.innerRef}>
-						<Grow in={true} timeout={i * 50}>
+						<Grow in={true} timeout={growAnimationTimeout}>
 							<ListItem
 								{...provided.draggableProps}
 								{...provided.dragHandleProps}

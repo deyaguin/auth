@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, useState } from 'react';
+import React, { FC, ChangeEvent, useState, ReactNode } from 'react';
 import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -38,6 +38,7 @@ const RestrictionsFilter: FC<IRestrictionsFilterProps> = ({
 	clearFilters,
 }) => {
 	const [expanded, setExpanded]: [boolean, (expanded: boolean) => void] = useState(false);
+
 	const [filtersState, setFiltersState]: [IFilters, (filtersState: IFilters) => void] = useState(
 		filters,
 	);
@@ -55,15 +56,39 @@ const RestrictionsFilter: FC<IRestrictionsFilterProps> = ({
 			setFiltersState({ ...filtersState, [filterName]: e.currentTarget.value });
 	};
 
-	const handleSetFilter = (): void => {
-		setFilters(filtersState);
-	};
+	const handleSetFilter = (): void => setFilters(filtersState);
 
 	const handleClearFilter = (): void => {
 		clearFilters();
 
 		setFiltersState({});
 	};
+
+	const renderTextField = (name: string, label: string): ReactNode => (
+		<TextField
+			value={filtersState[name] || ''}
+			onChange={handleSetFiltersState(name)}
+			label={label}
+			InputLabelProps={{
+				shrink: true,
+			}}
+		/>
+	);
+
+	const renderValuePicker = (
+		options: { [name: string]: string },
+		name: string,
+		label: string,
+	): ReactNode => (
+		<ValuePicker
+			value={filtersState[name] || 'not_selected'}
+			onChange={handleSetFiltersState(name)}
+			optionValues={{ ...options, not_selected: 'Не выбрано' }}
+			textFieldProps={{
+				label,
+			}}
+		/>
+	);
 
 	return (
 		<div className={classes.root}>
@@ -79,66 +104,14 @@ const RestrictionsFilter: FC<IRestrictionsFilterProps> = ({
 				</ExpansionPanelSummary>
 				<ExpansionPanelDetails>
 					<Grid container={true} spacing={32}>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.task || ''}
-								onChange={handleSetFiltersState('task')}
-								label="Задача"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.operation || ''}
-								onChange={handleSetFiltersState('operation')}
-								label="Операция"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<ValuePicker
-								value={filtersState.state || 'not_selected'}
-								onChange={handleSetFiltersState('state')}
-								optionValues={{ ...OPERATION_STATES, not_selected: 'Не выбрано' }}
-								textFieldProps={{
-									label: 'Состояние',
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.attribute || ''}
-								onChange={handleSetFiltersState('attribute')}
-								label="Атрибут"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<ValuePicker
-								value={filtersState.condition || 'not_selected'}
-								onChange={handleSetFiltersState('condition')}
-								optionValues={{ ...CONDITIONS, not_selected: 'Не выбрано' }}
-								textFieldProps={{
-									label: 'Условие',
-								}}
-							/>
-						</Grid>
-						<Grid item={true}>
-							<TextField
-								value={filtersState.value || ''}
-								onChange={handleSetFiltersState('value')}
-								label="Значение"
-								InputLabelProps={{
-									shrink: true,
-								}}
-							/>
-						</Grid>
+						<Grid item={true}>{renderTextField('task', 'Задача')}</Grid>
+						<Grid item={true}>{renderTextField('operation', 'Операция')}</Grid>
+						<Grid item={true}>{renderTextField('task', 'Задача')}</Grid>
+						<Grid item={true}>{renderTextField('attribute', 'Атрибут')}</Grid>
+						<Grid item={true}>{renderTextField('task', 'Задача')}</Grid>
+						<Grid item={true}>{renderTextField('value', 'Значение')}</Grid>
+						<Grid item={true}>{renderValuePicker(OPERATION_STATES, 'state', 'Состояние')}</Grid>
+						<Grid item={true}>{renderValuePicker(CONDITIONS, 'condition', 'Условие')}</Grid>
 					</Grid>
 				</ExpansionPanelDetails>
 				<ExpansionPanelActions>

@@ -44,8 +44,8 @@ const styles = createStyles({
 
 interface IRestrictionsTableProps extends WithStyles<typeof styles> {
 	tasks?: { [id: string]: ITask };
-	setValue?: (tasksValues: IValues) => void;
 	editable?: boolean;
+	setValue?: (tasksValues: IValues) => void;
 }
 
 const COLUMNS = [
@@ -63,7 +63,7 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	editable = true,
 }) => {
 	const defaultExpandedIds: number[] = compose(
-		reduce<string, number[]>((acc: number[], key: string): number[] => {
+		reduce<string, number[]>((acc, key): number[] => {
 			const tasksResult: number[] = [...acc, acc.length];
 
 			return [
@@ -107,8 +107,8 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: map(
-						(item: IOperation) => (item.id === operationId ? { ...item, state: value } : item),
+					operations: map<IOperation, IOperation>(
+						item => (item.id === operationId ? { ...item, state: value } : item),
 						task.operations,
 					),
 				},
@@ -126,13 +126,13 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: map(
-						(operation: IOperation) =>
+					operations: map<IOperation, IOperation>(
+						operation =>
 							operation.id === operationId
 								? {
 										...operation,
-										attributes: map(
-											(attribute: IAttribute) =>
+										attributes: map<IAttribute, IAttribute>(
+											attribute =>
 												attribute.key === key ? { ...attribute, condition: value } : attribute,
 											operation.attributes,
 										),
@@ -156,13 +156,13 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 				...tasks,
 				[taskId]: {
 					...task,
-					operations: map(
-						(operation: IOperation) =>
+					operations: map<IOperation, IOperation>(
+						operation =>
 							operation.id === operationId
 								? {
 										...operation,
-										attributes: map(
-											(attribute: IAttribute) =>
+										attributes: map<IAttribute, IAttribute>(
+											attribute =>
 												attribute.key === key ? { ...attribute, values: targetValues } : attribute,
 											operation.attributes,
 										),
@@ -180,14 +180,14 @@ const RestrictionsTable: FC<IRestrictionsTableProps> = ({
 	const mapTasks = ({ operations, ...restTask }: ITask): ITask => ({
 		...restTask,
 		operations: reduce<IOperation, IOperation[]>(
-			(acc: IOperation[], { attributes, state, selected, ...restOperation }: IOperation) =>
+			(acc, { attributes, state, selected, ...restOperation }) =>
 				selected
 					? [
 							...acc,
 							{
 								...restOperation,
-								attributes: map(
-									(item: IAttribute) => ({
+								attributes: map<IAttribute, IAttribute>(
+									item => ({
 										...item,
 										attr: `${item.key} (${item.title})`,
 										condition: item.condition || 'equal',

@@ -19,9 +19,9 @@ const styles = createStyles({
 interface IUserRestrictionsProps extends WithStyles<typeof styles> {
 	values: { tasks?: ITasks; tag?: string };
 	filters: { [name: string]: string };
+	actions?: ReactNode;
 	setFilters: (filters: { [name: string]: string }) => void;
 	clearFilters: () => void;
-	actions?: ReactNode;
 	setRestritionsValues: (values: IValues) => void;
 }
 
