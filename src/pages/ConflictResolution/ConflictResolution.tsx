@@ -1,7 +1,5 @@
-// todo refact this component
-
 import React, { FC, useState, useEffect, ReactNode } from 'react';
-import { reduce, map, forEach, filter, clone, propEq, findIndex, remove, find } from 'ramda';
+import { reduce, map, forEach, filter, clone } from 'ramda';
 import queryString from 'query-string';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -10,17 +8,8 @@ import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/s
 import { RouteComponentProps } from 'react-router';
 
 import { CONFLICT_RESOLUTION_VARIANTS } from '../../constants';
-import {
-	IUser,
-	ITasks,
-	ITask,
-	ITemplate,
-	IOperation,
-	IAttribute,
-	IRule,
-	IRuleAttribute,
-} from '../../types';
-import { Page, RestrictionsTable, RestrictionsFilter, RulesList } from '../../components';
+import { IUser, ITasks, ITask, ITemplate, IOperation, IAttribute, IRule } from '../../types';
+import { Page, RestrictionsTable, RulesList } from '../../components';
 import {
 	tasksToRules,
 	tasksToObject,
@@ -141,6 +130,7 @@ const ConflictResolution: FC<IConflictResolutionProps> = ({
 				await setCurrentRulesState(
 					map<IRule, IRule>((currentRuleValue: IRule) => {
 						const rule: IRule = clone(currentRuleValue);
+
 						const task: ITask = tasks[currentRuleValue.task];
 
 						if (task) {

@@ -65,9 +65,7 @@ const Users: FC<IUsersProps> = ({
 
 	const currentPage: number = offset / limit;
 
-	const handleSetSelectedItems = (items: SelectedItem[]): void => {
-		setSelectedItems(items);
-	};
+	const handleSetSelectedItems = (items: SelectedItem[]): void => setSelectedItems(items);
 
 	const handleDelete = (id: string): void => {
 		userDelete(id);
@@ -75,13 +73,9 @@ const Users: FC<IUsersProps> = ({
 		setSnackbar('Пользователь успешно удален', 'success');
 	};
 
-	const handlePageSizeChange = (pageSize: number): void => {
-		setLimit(pageSize);
-	};
+	const handlePageSizeChange = (pageSize: number): void => setLimit(pageSize);
 
-	const handleCurrentPageChange = (page: number): void => {
-		setOffset(page * limit);
-	};
+	const handleCurrentPageChange = (page: number): void => setOffset(page * limit);
 
 	return (
 		<Page

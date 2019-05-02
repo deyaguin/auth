@@ -99,13 +99,10 @@ const UserEdit: FC<IUserEditProps> = ({
 
 	const [tagsValue, setTagsValue]: [string, (tagValue: string) => void] = useState(tags || '');
 
-	const handleSetTagsValue = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleSetTagsValue = (e: ChangeEvent<HTMLInputElement>) =>
 		setTagsValue(e.currentTarget.value);
-	};
 
-	const handleRestrictionsEditor = (): void => {
-		setTasks(tasksToObject(tasks));
-	};
+	const handleRestrictionsEditor = (): void => setTasks(tasksToObject(tasks));
 
 	const renderLoginField = (): ReactNode => (
 		<Grid item={true}>

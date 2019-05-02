@@ -77,9 +77,7 @@ const UserCreate: FC<IUserCreateProps> = ({
 		(loginValueTouched: boolean) => void
 	] = useState(false);
 
-	const handleSelectItems = (items: SelectedItem[]) => {
-		setSelectedItems(items);
-	};
+	const handleSelectItems = (items: SelectedItem[]) => setSelectedItems(items);
 
 	const handleSetLoginValue = (e: ChangeEvent<HTMLInputElement>): void => {
 		setLoginValue(e.currentTarget.value);

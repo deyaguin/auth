@@ -51,9 +51,7 @@ const RestrictionsEditor: FC<IRestrictionsEditorProps> = ({
 		setTasks(values);
 	};
 
-	const handleNext = (): void => {
-		setSelectedStep(STEPS.restrictions);
-	};
+	const handleNext = (): void => setSelectedStep(STEPS.restrictions);
 
 	const handlePrev = (): void => setSelectedStep(STEPS.tasks);
 
